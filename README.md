@@ -62,12 +62,16 @@ Open the `server` and `client` in separate VSCode workspaces or open the combine
 
 ### Purpose
 
-2-5 sentences describing what the system does
+The website is a note-sharing service where users can upload their notes to files. User's can like or dislike other people's notes. User's can also comment on notes and commits. The notes will be divided into subjects and topics. Furthermore users are able to create quizzes where they can add questions and answers that are visible to all other users, so every user can take quizzes.
 
 ### Pages
 
-* Home: 1-3 sentences describing what the page displays and what a user can do
-* Shopping cart: ...
+* Home: On the home page you can see all the subjects you are in. You can search for subjects (join new ones) and also see your profile.
+* Log in: Log in or create a user using username, id, password and email.
+* Subject pages: Shows an overview of the file (canvas) of the subject. Also shows topics and quizzes that can be taken
+* Profile page: Shows user profile, data.
+* Creating page (Notes, Questions): Page for adding notes and questions.
+* Quiz taking page: Page to take quizzes, shows questions, score.
 
 ### Entity-Relationship (ER) Diagram
 
