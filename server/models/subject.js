@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 
-const {Schema} = new mongoose.Schema;
+const Schema = mongoose.Schema;
 
 const subjectSchema = new Schema({
     title: {
@@ -9,13 +9,13 @@ const subjectSchema = new Schema({
         trim: true, // removes trailing spaces
     },
     createdBy: {
-        type: Schema.Types.ObjectID, 
+        type: Schema.Types.ObjectId, 
         ref: "User", // tells mongoDB this is linked to a user ID
         required: true,
     },
     files: [
         {
-            type: Schema.Types.ObjectID,
+            type: Schema.Types.ObjectId,
             ref: "File",
         },
     ],
@@ -25,6 +25,6 @@ const subjectSchema = new Schema({
     }
 });
 
-const Subject = new mongoose.model("Suject", subjectSchema);
+const Subject = new mongoose.model("Subject", subjectSchema);
 
-export default Subject;
+module.exports = Subject;

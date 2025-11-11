@@ -1,5 +1,5 @@
 const express = require("express");
-import Subject from "../models/subject.js";
+var Subject = require("../models/subject.js");
 
 const router = express.Router();
 
@@ -14,4 +14,4 @@ router.post("/", async(req, res) => {
     }
 });
 
-export default router;
+module.exports = router;
