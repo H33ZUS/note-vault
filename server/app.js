@@ -4,6 +4,7 @@ var morgan = require('morgan');
 var path = require('path');
 var cors = require('cors');
 var history = require('connect-history-api-fallback');
+var subjectRoutes = require('./routes/subject.js');
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/animalDevelopmentDB';
@@ -38,6 +39,9 @@ app.get('/api', function(req, res) {
 app.use('/api/*', function (req, res) {
     res.status(404).json({ 'message': 'Not Found' });
 });
+
+// routing for subjects
+app.use('/api/subjects', subjectRoutes);
 
 // Configuration for serving frontend in production mode
 // Support Vuejs HTML 5 history mode
