@@ -12,6 +12,7 @@ const subjectSchema = new Schema({
         type: Schema.Types.ObjectId, 
         ref: "User", // tells mongoDB this is linked to a user ID
         required: true,
+        immutable: true,
     },
     files: [
         {
@@ -22,6 +23,7 @@ const subjectSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
+        immutable: true,
     }
 });
 
