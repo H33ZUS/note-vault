@@ -34,4 +34,13 @@ router.post("/login", async(req, res) => {
     }
 });
 
+router.delete("/:username/", async(req, res) => {
+    try {
+        var user = await User.findOneAndDelete({username: req.params.username});
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(400).json({error: err.message})
+    }
+});
+
 module.exports = router;
