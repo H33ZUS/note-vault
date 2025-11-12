@@ -13,4 +13,25 @@ router.post("/", async(req, res) => {
     }
 });
 
+router.post("/login", async(req, res) => {
+    const { username, password } = req.body
+    try {
+        const user = await User.findOne({
+            username: username,
+            password: password
+        });   
+
+        if (user) {
+            res.status(200).json({
+                message: "Login successful",
+                user: user
+            });
+        } else {
+            res.status(401).json({error: "Invalid username or password"});
+        }
+    } catch (err) {
+        res.status(400).json({error: err.message});
+    }
+});
+
 module.exports = router;
