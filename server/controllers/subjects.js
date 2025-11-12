@@ -14,4 +14,24 @@ router.post("/", async(req, res) => {
     }
 });
 
+// get all
+router.get("/", async(req, res) => {
+    try {
+        const subjects = await Subject.find();
+        res.json(subjects); 
+    } catch (err) {
+        res.status(404).json({error: err.message});
+    }
+});
+
+// get one
+router.get("/:id", async(req, res) => {
+    try {
+        const subjects = await Subject.findById(req.params.id);
+        res.json(subjects);
+    } catch {
+        res.status(404).send("Not found");
+    }
+})
+
 module.exports = router;
