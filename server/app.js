@@ -6,6 +6,7 @@ var cors = require('cors');
 var history = require('connect-history-api-fallback');
 var userRoutes = require("./controllers/users");
 var subjectRoutes = require('./controllers/subjects.js');
+var noteCommitRoutes = require("./controllers/noteCommits.js");
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/notesSharingDB';
@@ -38,6 +39,9 @@ app.get('/api', function(req, res) {
 
 // routing for users
 app.use("/api/users", userRoutes);
+
+// routing for noteCommits
+app.use("/api/noteCommits", noteCommitRoutes);
 
 // routing for subjects
 app.use('/api/subjects', subjectRoutes);
