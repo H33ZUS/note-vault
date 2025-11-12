@@ -4,10 +4,11 @@ var morgan = require('morgan');
 var path = require('path');
 var cors = require('cors');
 var history = require('connect-history-api-fallback');
+var userRoutes = require("./controllers/users");
 var subjectRoutes = require('./controllers/subjects.js');
 
 // Variables
-var mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/animalDevelopmentDB';
+var mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/notesSharingDB';
 var port = process.env.PORT || 3000;
 
 // Connect to MongoDB
@@ -34,6 +35,9 @@ app.use(cors());
 app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });
+
+// routing for users
+app.use("/api/users", userRoutes);
 
 // routing for subjects
 app.use('/api/subjects', subjectRoutes);
