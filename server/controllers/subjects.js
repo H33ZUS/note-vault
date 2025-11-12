@@ -32,6 +32,24 @@ router.get("/:id", async(req, res) => {
     } catch {
         res.status(404).send("Not found");
     }
-})
+});
+
+router.put("/:id", async(req, res) => {
+    try {
+        const subjects = await Subject.findByIdAndUpdate(req.params.id, req.body, {new: true});
+        res.json(subjects)  
+    } catch {
+        res.status(404).send("Not found");
+    }
+});
+
+router.delete("/:id", async(req, res) => {
+    try {
+        await Subject.findByIdAndDelete(req.params.id)
+        res.status(204).send();
+    } catch {
+        res.status(404).send("Not Found");
+    }
+});
 
 module.exports = router;
