@@ -1,11 +1,19 @@
 const express = require("express");
 var NoteCommit = require("../models/noteCommit.js");
+var NoteFile = require("../models/noteFile.js")
 
-const router = express.Router();
+const router = express.Router({mergeParams: true}); 
 
-router.post("/", async(req, res) => {
+router.post("/noteCommit", async(req, res) => {
+
+    const {noteFileId} = req.params;
+
     try {
-        const noteCommit = new NoteCommit(req.body);
+        const noteFile = await NoteFile.findById(noteFileId);
+        if (!noteFile) {
+            return res.status(404).json({error: "Parent NoteFile not found"});
+        }
+        const noteCommit = new NoteCommit({...req.body, noteFileId: noteFileId});
         await noteCommit.save();
         res.status(201).json(noteCommit);
     } catch (err) {
@@ -13,13 +21,21 @@ router.post("/", async(req, res) => {
     }
 });
 
-router.get("/", async(req, res) => {
+router.get("/noteCommit", async(req, res) => {
+
+    const {noteFileId} = req.params;
+
     try {
-        const noteCommit = await NoteCommit.find();
-        res.json();
+        const noteCommit = await NoteCommit.find({noteFileId: noteFileId});
+        if (noteCommit.length == 0) {
+            return res.status(404).json({error: "No NoteCommits found for this NoteFile"});
+        }
+        res.json(noteCommit);
     } catch (err) {
         res.status(404).json({error: err.message});
     }
 });
+
+// use same path for the rest of the operations but with /:commitId 
 
 module.exports = router;
