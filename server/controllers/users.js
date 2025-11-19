@@ -52,4 +52,22 @@ router.put("/:id", async(req, res) => {
     }
 });
 
+router.get("/", async(req, res) => {
+    try {
+        const user = await User.find();
+        res.json(user); 
+    } catch (err) {
+        res.status(404).json({error: err.message});
+    }
+});
+
+router.get("/:id", async(req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        res.json(user); 
+    } catch (err) {
+        res.status(404).json({error: err.message});
+    }
+});
+
 module.exports = router;
