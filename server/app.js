@@ -7,6 +7,7 @@ var history = require('connect-history-api-fallback');
 var userRoutes = require("./controllers/users");
 var subjectRoutes = require('./controllers/subjects.js');
 var noteCommitRoutes = require("./controllers/noteCommits.js");
+var enrollment = require("./controllers/enrollment.js")
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/notesSharingDB';
@@ -36,6 +37,9 @@ app.use(cors());
 app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });
+
+//routing for subject enrollment
+app.use("/api/enrollment", enrollmentRoutes);
 
 // routing for users
 app.use("/api/users", userRoutes);
