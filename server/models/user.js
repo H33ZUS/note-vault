@@ -19,7 +19,11 @@ const userSchema = new Schema({
         type: String,
         required: true,
         unique: true
-    }
+    },
+    enrolledIn: [{
+        type: Schema.Types.ObjectId,
+        ref: "Subject",
+    }]
 });
 
 const User = mongoose.model("UserModel", userSchema);
