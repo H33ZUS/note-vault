@@ -7,7 +7,7 @@ var history = require('connect-history-api-fallback');
 var userRoutes = require("./controllers/users");
 var subjectRoutes = require('./controllers/subjects.js');
 var noteCommitRoutes = require("./controllers/noteCommits.js");
-var enrollment = require("./controllers/enrollment.js")
+var enrollmentRoutes = require("./controllers/enrollment.js")
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/notesSharingDB';
