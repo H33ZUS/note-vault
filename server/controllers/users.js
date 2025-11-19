@@ -43,4 +43,13 @@ router.delete("/:username/", async(req, res) => {
     }
 });
 
+router.put("/:id", async(req, res) => {
+    try {
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
+        res.json(user)  
+    } catch {
+        res.status(404).send("Not found");
+    }
+});
+
 module.exports = router;
