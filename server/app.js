@@ -4,6 +4,9 @@ var morgan = require('morgan');
 var path = require('path');
 var cors = require('cors');
 var history = require('connect-history-api-fallback');
+var cookieParser = require("cookie-parser");
+var session = require("express-session");
+var MongoStore = require("connect-mongo");
 var userRoutes = require("./controllers/users");
 var subjectRoutes = require('./controllers/subjects.js');
 var noteCommitRoutes = require("./controllers/noteCommits.js");
@@ -24,6 +27,25 @@ mongoose.connect(mongoURI).catch(function(err) {
 
 // Create Express app
 var app = express();
+
+mongoose.Promise = global.Promise;
+
+app.use(cookieParser());
+app.use(session({
+    secret: "my-secret",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: mongoURI,
+        collectionName: "sessions",
+    }),
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
+        secure: app.get("env") === "production"
+    }
+}));
+
 // Parse requests of content-type 'application/json'
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
