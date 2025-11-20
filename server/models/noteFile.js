@@ -19,7 +19,6 @@ const noteFileSchema = new Schema ({
         type: Date,
         default: Date.now,
         required: true,
-        immutable: true,
     },
     notes: [
         {
