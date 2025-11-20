@@ -7,6 +7,7 @@ var history = require('connect-history-api-fallback');
 var userRoutes = require("./controllers/users");
 var subjectRoutes = require('./controllers/subjects.js');
 var noteCommitRoutes = require("./controllers/noteCommits.js");
+var enrollmentRoutes = require("./controllers/enrollment.js")
 var noteFileRoutes = require("./controllers/noteFiles.js");
 
 // Variables
@@ -37,6 +38,9 @@ app.use(cors());
 app.get('/api', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });
+
+//routing for subject enrollment
+app.use("/api/enrollment", enrollmentRoutes);
 
 // routing for users
 app.use("/api/users", userRoutes);
