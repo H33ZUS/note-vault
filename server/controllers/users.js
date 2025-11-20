@@ -43,4 +43,31 @@ router.delete("/:username/", async(req, res) => {
     }
 });
 
+router.put("/:id", async(req, res) => {
+    try {
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
+        res.json(user)  
+    } catch {
+        res.status(404).send("Not found");
+    }
+});
+
+router.get("/", async(req, res) => {
+    try {
+        const user = await User.find();
+        res.json(user); 
+    } catch (err) {
+        res.status(404).json({error: err.message});
+    }
+});
+
+router.get("/:id", async(req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        res.json(user); 
+    } catch (err) {
+        res.status(404).json({error: err.message});
+    }
+});
+
 module.exports = router;

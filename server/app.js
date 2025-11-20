@@ -8,6 +8,7 @@ var userRoutes = require("./controllers/users");
 var subjectRoutes = require('./controllers/subjects.js');
 var noteCommitRoutes = require("./controllers/noteCommits.js");
 var enrollmentRoutes = require("./controllers/enrollment.js")
+var noteFileRoutes = require("./controllers/noteFiles.js");
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/notesSharingDB';
@@ -44,8 +45,11 @@ app.use("/api/enrollment", enrollmentRoutes);
 // routing for users
 app.use("/api/users", userRoutes);
 
+// routing for noteFiles
+subjectRoutes.use("/:subjectId/noteFile", noteFileRoutes);
+
 // routing for noteCommits
-app.use("/api/noteCommits", noteCommitRoutes);
+noteFileRoutes.use("/:noteFileId", noteCommitRoutes);
 
 // routing for subjects
 app.use('/api/subjects', subjectRoutes);
