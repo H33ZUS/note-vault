@@ -4,6 +4,7 @@ var User = require("../models/user");
 
 const router = express.Router();
 
+// CREATE A USER
 router.post("/", async(req, res) => {
     try {
         const user = new User(req.body);
@@ -14,16 +15,17 @@ router.post("/", async(req, res) => {
     }
 });
 
+// USER LOGIN
 router.post("/login", async(req, res) => {
     const { username, password } = req.body
     try {
-        const user = await User.findOne({
+        const user = await User.findOne({ // Checks if user is existent
             username: username,
             password: password
         });   
 
         if (user) {
-            req.session.userId = user._id;
+            req.session.userId = user._id; // Checks if the session id is the same as the user id
 
             req.session.save(err => {
                 if (err) {
@@ -44,8 +46,9 @@ router.post("/login", async(req, res) => {
     }
 });
 
+// USER LOGOUT
 router.post("/logout", (req, res) => {
-    req.session.destroy(err => {
+    req.session.destroy(err => { // destroys the current session for the user
         if (err) {
             return res.status(500).json({message: "Unable to log out"})
         } else {
@@ -55,6 +58,17 @@ router.post("/logout", (req, res) => {
     });
 });
 
+// DELETE ALL USERS
+router.delete("/", isAuthenticated, async(req, res) => {
+    try {
+        var result = await User.deleteMany({})
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(400).json({error: err.message})
+    }
+});
+
+// DELETE ONE USER
 router.delete("/:username/", isAuthenticated, async(req, res) => {
     try {
         var user = await User.findOneAndDelete({username: req.params.username});
@@ -64,15 +78,43 @@ router.delete("/:username/", isAuthenticated, async(req, res) => {
     }
 });
 
-router.put("/:id", isAuthenticated, async(req, res) => {
+// UPDATE ONE VARIABLE OF A USER
+router.patch("/:id", isAuthenticated, async(req, res) => {
+    if (req.session.userId.toString() !== req.params.id) {
+        return res.status(403).json({message: "You are not authorized to update another user"})
+    }
+    
     try {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
-        res.json(user)  
-    } catch {
-        res.status(404).send("Not found");
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true});
+
+        if (!user) {
+            return res.status(404).json({message: "User not found"});
+        }
+        res.json(user);
+    } catch (err) {
+        res.status(400).send(err.message);
     }
 });
 
+// UPDATE EVERYTHING OF A USER
+router.put("/:id", isAuthenticated, async(req, res) => {
+    if (req.session.userId.toString() !== req.params.id) {
+        return res.status(403).json({message: "You are not authorized to update another user"})
+    }
+
+    try {
+        const user = await User.findOneAndReplace({_id: req.params.id}, req.body, {new: true, runValidators: true});
+
+        if (!user) {
+            return res.status(404).json({message: "User not found"});
+        }
+        res.json(user);
+    } catch (err) {
+        res.status(400).json({message: err.message});
+    }
+});
+
+// GET ALL USERS
 router.get("/", async(req, res) => {
     try {
         const user = await User.find();
@@ -82,6 +124,7 @@ router.get("/", async(req, res) => {
     }
 });
 
+// GET ONE USER
 router.get("/:id", async(req, res) => {
     try {
         const user = await User.findById(req.params.id);
