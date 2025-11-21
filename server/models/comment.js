@@ -13,7 +13,7 @@ const commentSchema = new Schema ({
     },
     createdBy: {
         type: Schema.Types.ObjectId,
-        ref: "UserModel",
+        ref: "User",
         required: true,
     },
     comment: {
