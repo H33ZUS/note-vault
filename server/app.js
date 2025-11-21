@@ -12,6 +12,7 @@ var subjectRoutes = require('./controllers/subjects.js');
 var noteCommitRoutes = require("./controllers/noteCommits.js");
 var enrollmentRoutes = require("./controllers/enrollment.js")
 var noteFileRoutes = require("./controllers/noteFiles.js");
+var commentRoutes = require("./controllers/comments.js")
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/notesSharingDB';
@@ -75,6 +76,9 @@ noteFileRoutes.use("/:noteFileId", noteCommitRoutes);
 
 // routing for subjects
 app.use('/api/subjects', subjectRoutes);
+
+//routing for comments
+noteCommitRoutes.use("/:noteCommitId/comments", commentRoutes);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use('/api/*', function (req, res) {
