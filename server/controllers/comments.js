@@ -90,7 +90,7 @@ router.put("/:id/edit", async(req, res) => {
         const createdBy = oldComment.createdBy;
 
         if (userId != createdBy) {
-            res.status(403).json({"error" : "different editor from auther"});
+            return res.status(403).json({"error" : "different editor from auther"});
         }
         const updatedComment = await Comment.findByIdAndUpdate(commentId, {comment}, {new : true, runValidators : true});
 
@@ -98,9 +98,9 @@ router.put("/:id/edit", async(req, res) => {
             return res.status(400).json({"error": "comment not found"});
         }
 
-        res.status(200).json(updatedComment);
+        return res.status(200).json(updatedComment);
     }catch(err){
-        res.status(400).json({"error" : err.message});
+        return res.status(400).json({"error" : err.message});
     }
 })
 
