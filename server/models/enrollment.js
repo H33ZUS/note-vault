@@ -20,7 +20,7 @@ const enrollmentSchema = new Schema ({
     }
 });
 
-enrollmentSchema.index({student: 1, subject: 1}, {unique: true});
+enrollmentSchema.index({userId: 1, subjectId: 1}, {unique: true});
 
 const Enrollment = new mongoose.model("Enrollment", enrollmentSchema);
 
