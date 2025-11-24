@@ -28,6 +28,10 @@ const commentSchema = new Schema ({
         type: Schema.Types.ObjectId,
         ref: "Comment"
     },
+    deleted: {
+        type: Boolean,
+        default : false,
+    }
 
 });
 
