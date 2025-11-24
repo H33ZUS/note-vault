@@ -1,7 +1,7 @@
 const express = require("express");
 var Comment = require("../models/comment.js");
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.post("/", async(req, res) => {
     try{
