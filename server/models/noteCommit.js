@@ -29,8 +29,7 @@ const noteCommitSchema = new Schema ({
         required: true
     },
     topic: {
-        type: Schema.Types.ObjectId,
-        ref: "Topic",
+        type: String,
         required: true
     },
     noteFileId: {

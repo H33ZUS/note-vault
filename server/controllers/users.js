@@ -1,6 +1,6 @@
 const express = require("express");
 const isAuthenticated = require("../middleware/auth");
-var User = require("../models/user");
+const User = require("../models/user");
 
 const router = express.Router();
 
@@ -9,8 +9,30 @@ router.post("/", async(req, res) => {
     try {
         const user = new User(req.body);
         await user.save();
-        res.status(201).json(user);
+
+        const userObj = user.toObject();
+
+        userObj.links = [
+            {rel : "self", method : "GET", href : `/api/users/${user._id}`},
+            {rel : "update", method : "PUT", href : `/api/users/${user._id}`},
+            {rel : "partial-update", method : "PATCH", href : `/api/users/${user._id}`},
+            {rel : "delete", method : "DELETE", href : `/api/users/${user._id}`},
+            {rel : "all-users", method : "GET", href : "/api/users"},
+        ]
+
+        res.status(201).json(userObj);
     } catch (err) {
+        if (err.code === 11000) {
+            let field = "Field";
+            if (err.message.includes("email")) {
+                field = "Email";
+            } else if (err.message.includes("username")) {
+                field = "Username";
+            }
+
+            return res.status(409).json({error: `${field} already registered`});
+        }
+
         res.status(400).json({error: err.message});
     }
 });
@@ -18,10 +40,14 @@ router.post("/", async(req, res) => {
 // USER LOGIN
 router.post("/login", async(req, res) => {
     const { username, password } = req.body
+
+    if (!username || !password) {
+        return res.status(400).json({error: "Missing required fields: username and password are required for login."});
+    }
     try {
         const user = await User.findOne({ // Checks if user is existent
             username: username,
-            password: password
+            password: password,
         });   
 
         if (user) {
@@ -47,7 +73,7 @@ router.post("/login", async(req, res) => {
 });
 
 // USER LOGOUT
-router.post("/logout", (req, res) => {
+router.post("/logout", isAuthenticated, (req, res) => {
     req.session.destroy(err => { // destroys the current session for the user
         if (err) {
             return res.status(500).json({message: "Unable to log out"})
@@ -64,7 +90,7 @@ router.delete("/", isAuthenticated, async(req, res) => {
         var result = await User.deleteMany({})
         res.status(200).json(result);
     } catch (err) {
-        res.status(400).json({error: err.message})
+        res.status(500).json({error: err.message})
     }
 });
 
@@ -72,9 +98,14 @@ router.delete("/", isAuthenticated, async(req, res) => {
 router.delete("/:username/", isAuthenticated, async(req, res) => {
     try {
         var user = await User.findOneAndDelete({username: req.params.username});
+
+        if (user == null) {
+            return res.status(404).json({message: "User not found"})
+        }
+
         res.status(200).json(user);
     } catch (err) {
-        res.status(400).json({error: err.message})
+        res.status(500).json({error: err.message})
     }
 });
 
