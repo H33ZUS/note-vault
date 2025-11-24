@@ -66,10 +66,9 @@ The website is a note-sharing service where users can upload their notes to file
 
 ### Advanced feature
 
-Our proposal for an advanced feature would be to create a quiz from peoples added notes.
+Our proposal for an advanced feature is to create a quiz from peoples added notes.
 This would be done with the use of an AI api that would be given the users notes and
-then prompted to create questions and answers that would then be added so that users
-can take the quiz, and in theory never run out of questions to practice a subject.
+then prompted to create questions and answers that would then be added to the quiz so that users can take the quiz, and in theory never run out of questions to practice a subject.
 
 ### Pages
 
