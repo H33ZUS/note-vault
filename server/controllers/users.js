@@ -9,7 +9,18 @@ router.post("/", async(req, res) => {
     try {
         const user = new User(req.body);
         await user.save();
-        res.status(201).json(user);
+
+        const userObj = user.toObject();
+
+        userObj.links = [
+            {rel : "self", method : "GET", href : `/api/users/${user._id}`},
+            {rel : "update", method : "PUT", href : `/api/users/${user._id}`},
+            {rel : "partial-update", method : "PATCH", href : `/api/users/${user._id}`},
+            {rel : "delete", method : "DELETE", href : `/api/users/${user._id}`},
+            {rel : "all-users", method : "GET", href : "/api/users"},
+        ]
+
+        res.status(201).json(userObj);
     } catch (err) {
         res.status(400).json({error: err.message});
     }
