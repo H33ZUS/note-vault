@@ -1,6 +1,6 @@
 const express = require("express");
-var Subject = require("../models/subject.js");
-var NoteFile = require("../models/noteFile.js");
+const Subject = require("../models/subject.js");
+const NoteFile = require("../models/noteFile.js");
 
 const router = express.Router();
 
@@ -27,7 +27,7 @@ router.get("/", async(req, res) => {
         const subjects = await Subject.find();
         res.json(subjects); 
     } catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(404).json({error: err.message});
     }
 });
 
@@ -77,6 +77,15 @@ router.delete("/:id", async(req, res) => {
         res.status(204).send();
     } catch (err) {
         res.status(404).json({error: err.message});
+    }
+});
+
+router.delete("/", async(req, res) => {
+    try {
+        const subjects = await Subject.deleteMany({});
+        res.status(204).send();
+    } catch (err) {
+        res.status(400).json({error: err.message});
     }
 });
 
