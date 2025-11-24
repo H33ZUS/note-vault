@@ -31,10 +31,6 @@ const subjectSchema = new Schema({
         default: Date.now,
         immutable: true,
     },
-    enrolled: [{
-        type: Schema.Types.ObjectId,
-        ref: "User",
-    }]
 });
 
 const Subject = new mongoose.model("Subject", subjectSchema);
