@@ -81,7 +81,7 @@ app.use('/api/v1/subjects', subjectRoutes);
 noteCommitRoutes.use("/:noteCommitId/comments", commentRoutes);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
-app.use('/api/*', function (req, res) {
+app.use('/api/v1/*', function (req, res) {
     res.status(404).json({ 'message': 'Not Found' });
 });
 
@@ -114,7 +114,7 @@ app.use(function(err, req, res, next) {
 app.listen(port, function(err) {
     if (err) throw err;
     console.log(`Express server listening on port ${port}, in ${env} mode`);
-    console.log(`Backend: http://localhost:${port}/api/`);
+    console.log(`Backend: http://localhost:${port}/api/v1/`);
     console.log(`Frontend (production): http://localhost:${port}/`);
 });
 
