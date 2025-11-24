@@ -1,6 +1,6 @@
 const express = require("express");
 const isAuthenticated = require("../middleware/auth");
-var User = require("../models/user");
+const User = require("../models/user");
 
 const router = express.Router();
 
@@ -11,6 +11,17 @@ router.post("/", async(req, res) => {
         await user.save();
         res.status(201).json(user);
     } catch (err) {
+        if (err.code === 11000) {
+            let field = "Field";
+            if (err.message.includes("email")) {
+                field = "Email";
+            } else if (err.message.includes("username")) {
+                field = "Username";
+            }
+
+            return res.status(409).json({error: `${field} already registered`});
+        }
+
         res.status(400).json({error: err.message});
     }
 });
