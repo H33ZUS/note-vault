@@ -1,6 +1,6 @@
 const express = require("express");
-var NoteCommit = require("../models/noteCommit.js");
-var NoteFile = require("../models/noteFile.js")
+const NoteCommit = require("../models/noteCommit.js");
+const NoteFile = require("../models/noteFile.js")
 
 const router = express.Router({mergeParams: true}); 
 
@@ -25,8 +25,20 @@ router.get("/noteCommit", async(req, res) => {
 
     const {noteFileId} = req.params;
 
+    const {sort} = req.query;
+
+    let sortOptions = {};
+
+    if (sort === "likes") {
+        sortOptions = {likes: -1}; // highest first
+    } else if (sort === "newest") {
+        sortOptions = {createdAt: -1};
+    } else if (sort === "oldest") {
+        sortOptions = {createdAt: 1};
+    }
+
     try {
-        const noteCommit = await NoteCommit.find({noteFileId: noteFileId});
+        const noteCommit = await NoteCommit.find({noteFileId: noteFileId}).sort(sortOptions);
         if (noteCommit.length == 0) {
             return res.status(404).json({error: "No NoteCommits found for this NoteFile"});
         }

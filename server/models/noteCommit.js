@@ -1,4 +1,4 @@
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
@@ -17,6 +17,12 @@ const noteCommitSchema = new Schema ({
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        required: true,
+        immutable: true,
     },
     note: {
         type: String,
