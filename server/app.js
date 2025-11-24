@@ -58,15 +58,15 @@ app.options('*', cors());
 app.use(cors());
 
 // Import routes
-app.get('/api', function(req, res) {
+app.get('/api/v1', function(req, res) {
     res.json({'message': 'Welcome to your DIT342 backend ExpressJS project!'});
 });
 
 //routing for subject enrollment
-app.use("/api/enrollments", enrollmentRoutes);
+app.use("/api/v1/enrollments", enrollmentRoutes);
 
 // routing for users
-app.use("/api/users", userRoutes);
+app.use("/api/v1/users", userRoutes);
 
 // routing for noteFiles
 subjectRoutes.use("/:subjectId/noteFile", noteFileRoutes);
@@ -75,13 +75,13 @@ subjectRoutes.use("/:subjectId/noteFile", noteFileRoutes);
 noteFileRoutes.use("/:noteFileId", noteCommitRoutes);
 
 // routing for subjects
-app.use('/api/subjects', subjectRoutes);
+app.use('/api/v1/subjects', subjectRoutes);
 
 //routing for comments
 noteCommitRoutes.use("/:noteCommitId/comments", commentRoutes);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
-app.use('/api/*', function (req, res) {
+app.use('/api/v1/*', function (req, res) {
     res.status(404).json({ 'message': 'Not Found' });
 });
 
@@ -114,7 +114,7 @@ app.use(function(err, req, res, next) {
 app.listen(port, function(err) {
     if (err) throw err;
     console.log(`Express server listening on port ${port}, in ${env} mode`);
-    console.log(`Backend: http://localhost:${port}/api/`);
+    console.log(`Backend: http://localhost:${port}/api/v1/`);
     console.log(`Frontend (production): http://localhost:${port}/`);
 });
 
