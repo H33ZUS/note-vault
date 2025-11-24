@@ -21,10 +21,10 @@ router.post("/", async(req, res) => {
         commentedOnComment
     });
 
-    res.status(201).json(newComment);
+    return res.status(201).json(newComment);
 
     } catch(err){
-        res.status(400).json({error: err.message});
+        return res.status(400).json({error: err.message});
     }
 });
 
@@ -75,9 +75,9 @@ async function getCommentTree(noteFileId) {
 router.get("/", async(req, res) => {
     try {
         const tree = await getCommentTree(req.params.noteCommitId);
-        res.status(201).json(tree);
+        return res.status(201).json(tree);
     }catch(err){
-        res.status(400).json({"error" : err.message});
+        return res.status(400).json({"error" : err.message});
     }
 })
 
@@ -90,7 +90,7 @@ router.put("/:id/edit", async(req, res) => {
         const createdBy = oldComment.createdBy;
 
         if (userId != createdBy) {
-            res.status(403).json({"error" : "different editor from auther"});
+            return res.status(403).json({"error" : "different editor from auther"});
         }
         const updatedComment = await Comment.findByIdAndUpdate(commentId, {comment}, {new : true, runValidators : true});
 
@@ -98,9 +98,9 @@ router.put("/:id/edit", async(req, res) => {
             return res.status(400).json({"error": "comment not found"});
         }
 
-        res.status(200).json(updatedComment);
+        return res.status(200).json(updatedComment);
     }catch(err){
-        res.status(400).json({"error" : err.message});
+        return res.status(400).json({"error" : err.message});
     }
 })
 
@@ -114,21 +114,21 @@ router.delete("/:id/delete", async(req, res) => {
 
 
         if(userId != createdBy) {
-            res.status(403).json({"error": "non-auther cant delete comment"})
+            return res.status(403).json({"error": "non-auther cant delete comment"})
         }
 
         const deletedComment = await Comment.findById(commentId)
 
         if (!deletedComment) {
-            res.status(404).json({"error": "comment not found"});
+            return res.status(404).json({"error": "comment not found"});
         }
 
         deletedComment.deleted = !deletedComment.deleted;
         await deletedComment.save();
 
-        res.status(200).json({"comment deleted succesfully" : deletedComment})
+        return res.status(200).json({"comment deleted succesfully" : deletedComment})
     }catch(err){
-        res.status(400).json({"error" : err.message});
+        return res.status(400).json({"error" : err.message});
     }
 })
 
@@ -138,10 +138,10 @@ router.put("/:id/addLike", async(req, res) => {
         const {like, dislike} = req.body
 
         if(like && dislike) {
-            res.status(403).json({"error" : "Comments cant be both liked and disliked"})
+            return res.status(403).json({"error" : "Comments cant be both liked and disliked"})
         }
         if (!like && !dislike) {
-            res.status(400).json({"error" : "no likes"})
+            return res.status(400).json({"error" : "no likes"})
         }
 
         if (like) {
@@ -149,18 +149,18 @@ router.put("/:id/addLike", async(req, res) => {
                 {$inc: {"likes": 1}},
                 {new : true}
             )
-            res.status(200).json(updateLike)
+            return res.status(200).json(updateLike)
         }else {
             const updateLike = await Comment.findByIdAndUpdate(commentId, 
                 {$inc: {"dislikes": 1}},
                 {new : true}
                 
             )
-            res.status(200).json(updateLike)
+            return res.status(200).json(updateLike)
         }
 
     }catch(err){
-        res.status(400).json({"error" : err.message});
+        return res.status(400).json({"error" : err.message});
     }
 })
 
@@ -170,10 +170,10 @@ router.put("/:id/removeLike", async(req, res) => {
         const {like, dislike} = req.body
 
         if(like && dislike) {
-            res.status(403).json({"error" : "Comments cant be both liked and disliked"})
+            return res.status(403).json({"error" : "Comments cant be both liked and disliked"})
         }
         if (!like && !dislike) {
-            res.status(400).json({"error" : "no likes"})
+            return res.status(400).json({"error" : "no likes"})
         }
 
         if (like) {
@@ -181,17 +181,17 @@ router.put("/:id/removeLike", async(req, res) => {
                 {$inc: {"likes": -1}},
                 {new : true}
             )
-            res.status(200).json(updateLike)
+            return res.status(200).json(updateLike)
         }else {
             const updateLike = await Comment.findByIdAndUpdate(commentId, 
                 {$inc: {"dislikes": -1}},
                 {new : true}
                 
             )
-            res.status(200).json(updateLike)
+            return res.status(200).json(updateLike)
         }
     }catch(err){
-        res.status(400).json({"error" : err.message})
+        return res.status(400).json({"error" : err.message})
     }
 })
 
