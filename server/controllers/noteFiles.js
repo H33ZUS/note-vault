@@ -1,6 +1,6 @@
 const express = require("express");
-var NoteFile = require("../models/noteFile.js");
-var Subject = require("../models/subject.js");
+const NoteFile = require("../models/noteFile.js");
+const Subject = require("../models/subject.js");
 
 const router = express.Router({mergeParams: true}); // to access parents parameters
 
@@ -28,10 +28,14 @@ router.get("/", async(req, res) => {
     const subjectId = req.params.subjectId;
 
     try {
+        const subject = await Subject.findById(subjectId);
+        if (!subject) {
+            return res.status(404).json({error: "Subject not found"});
+        }
         const noteFile = await NoteFile.find({subjectId: subjectId});
         res.json(noteFile);
     } catch (err) {
-        res.status(404).json({error: err.message});
+        res.status(400).json({error: err.message});
     }
 });
 
@@ -47,7 +51,7 @@ router.get("/:noteFileId", async(req, res) => {
         }
         res.json(noteFile);
     } catch (err) {
-        res.status(404).json({error: err.message});
+        res.status(400).json({error: err.message});
     }
 });
 
@@ -63,7 +67,7 @@ router.patch("/:noteFileId", async(req, res) => {
         }
         res.json(noteFile);
     } catch (err) {
-        res.status(404).json({error: err.message});
+        res.status(400).json({error: err.message});
     }
 });
 
@@ -103,8 +107,18 @@ router.delete("/:noteFileId", async(req, res) => {
         }
         res.status(204).send();
     } catch (err) {
-        res.status(404).json({error: err.message});
+        res.status(400).json({error: err.message});
     }
 });
+
+// Delete all
+router.delete("/", async(req, res) => {
+     try {
+        const noteFiles = await NoteFile.deleteMany({});
+        res.status(204).send();
+    } catch (err) {
+        res.status(400).json({error: err.message});
+    }
+})
 
 module.exports = router;
