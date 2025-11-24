@@ -10,7 +10,7 @@ var MongoStore = require("connect-mongo");
 var userRoutes = require("./controllers/users");
 var subjectRoutes = require('./controllers/subjects.js');
 var noteCommitRoutes = require("./controllers/noteCommits.js");
-var enrollmentRoutes = require("./controllers/enrollment.js")
+var enrollmentRoutes = require("./controllers/enrollments.js")
 var noteFileRoutes = require("./controllers/noteFiles.js");
 
 // Variables
@@ -62,7 +62,7 @@ app.get('/api', function(req, res) {
 });
 
 //routing for subject enrollment
-app.use("/api/enrollment", enrollmentRoutes);
+app.use("/api/enrollments", enrollmentRoutes);
 
 // routing for users
 app.use("/api/users", userRoutes);
