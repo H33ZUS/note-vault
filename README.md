@@ -64,6 +64,13 @@ Open the `server` and `client` in separate VSCode workspaces or open the combine
 
 The website is a note-sharing service where users can upload their notes to files. User's can like or dislike other people's notes. User's can also comment on notes and commits. The notes will be divided into subjects and topics. Furthermore users are able to create quizzes where they can add questions and answers that are visible to all other users, so every user can take quizzes.
 
+### Advanced feature
+
+Our proposal for an advanced feature would be to create a quiz from peoples added notes.
+This would be done with the use of an AI api that would be given the users notes and
+then prompted to create questions and answers that would then be added so that users
+can take the quiz, and in theory never run out of questions to practice a subject.
+
 ### Pages
 
 * Home: On the home page you can see all the subjects you are in. You can search for subjects (join new ones) and also see your profile.
