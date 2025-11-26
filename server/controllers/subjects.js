@@ -71,10 +71,16 @@ router.put("/:id", async(req, res) => {
 });
     
 
+// WE ALSO NEED TO DELETE THE NOTE FILE WHEN DELETING A SUBJECT
 router.delete("/:id", async(req, res) => {
     try {
-        await Subject.findByIdAndDelete(req.params.id)
-        res.status(204).send();
+        const result = await Subject.findByIdAndDelete(req.params.id);
+
+        if (result == null) {
+            return res.status(404).json({message: "Subject does not exist."});
+        }
+
+        res.status(200).send();
     } catch (err) {
         res.status(404).json({error: err.message});
     }
