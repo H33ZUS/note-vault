@@ -55,57 +55,17 @@ router.get("/:noteFileId", async(req, res) => {
     }
 });
 
-router.patch("/:noteFileId", async(req, res) => {
-
-    const {subjectId, noteFileId} = req.params;
-
-    try {
-        const noteFile = await NoteFile.findByIdAndUpdate({_id: noteFileId, subjectId: subjectId}, req.body, {new: true});
-
-        if (!noteFile) {
-            return res.status(404).json({error: "NoteFile not found or does not belong to the specified Subject"});
-        }
-        res.json(noteFile);
-    } catch (err) {
-        res.status(400).json({error: err.message});
-    }
-});
-
-router.put("/:noteFileId", async(req, res) => {
-
-    const {subjectId, noteFileId} = req.params;
-
-    try {
-    
-        const requiredFields = ["updatedAt", "notes"];
-        const missing = requiredFields.filter(f => !(f in req.body));
-
-        if (missing.length > 0) {
-            return res.status(400).json({error: `PUT requires all fields: Missing ${missing.join(", ")}`});
-        }
-
-        const updated = await Subject.findByIdAndUpdate({_id: noteFileId, subjectId: subjectId}, {$set: req.body}, {new: true, runValidators: true});
-
-        if (!updated) {
-            return res.status(404).json({error: "NoteFile not found"})
-        }
-        res.json(updated);
-    } catch (err) {
-        res.status(500).json({error: err.message});
-    }
-});
-
 router.delete("/:noteFileId", async(req, res) => {
 
     const {subjectId, noteFileId} = req.params;
 
     try {
-        const noteFile = await NoteFile.findByIdAndDelete({_id: noteFileId, subjectId: subjectId});
+        const noteFile = await NoteFile.findOneAndDelete({_id: noteFileId, subjectId: subjectId});
 
-        if (!noteFile) {
+        if (noteFile == null) {
             return res.status(404).json({error: "NoteFile not found or does not belong to the specified Subject"});
         }
-        res.status(204).send();
+        res.status(200).send();
     } catch (err) {
         res.status(400).json({error: err.message});
     }
@@ -115,7 +75,7 @@ router.delete("/:noteFileId", async(req, res) => {
 router.delete("/", async(req, res) => {
      try {
         const noteFiles = await NoteFile.deleteMany({});
-        res.status(204).send();
+        res.status(200).send();
     } catch (err) {
         res.status(400).json({error: err.message});
     }

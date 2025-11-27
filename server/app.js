@@ -69,7 +69,7 @@ app.use("/api/v1/enrollments", enrollmentRoutes);
 app.use("/api/v1/users", userRoutes);
 
 // routing for noteFiles
-subjectRoutes.use("/:subjectId/noteFile", noteFileRoutes);
+subjectRoutes.use("/:subjectId/noteFiles", noteFileRoutes);
 
 // routing for noteCommits
 noteFileRoutes.use("/:noteFileId", noteCommitRoutes)
