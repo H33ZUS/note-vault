@@ -1,7 +1,7 @@
 const express = require("express");
 const NoteCommit = require("../models/noteCommit.js");
 const NoteFile = require("../models/noteFile.js")
-const isAuthenticated = require("../middleware/auth.js");
+const { isAuthenticated, isAuthorized } = require("../middleware/auth.js");
 
 const router = express.Router({mergeParams: true}); 
 

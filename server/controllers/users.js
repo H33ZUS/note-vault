@@ -1,5 +1,5 @@
 const express = require("express");
-const isAuthenticated = require("../middleware/auth");
+const { isAuthenticated, isAuthorized } = require("../middleware/auth");
 const User = require("../models/user");
 
 const router = express.Router();
@@ -85,10 +85,10 @@ router.post("/logout", isAuthenticated, (req, res) => {
 });
 
 // DELETE ALL USERS
-router.delete("/", isAuthenticated, async(req, res) => {
+router.delete("/", isAuthenticated, isAuthorized("admin"), async(req, res) => {
     try {
         var result = await User.deleteMany({})
-        res.status(200).json(result);
+        res.status(200).json(result); 
     } catch (err) {
         res.status(500).json({error: err.message})
     }

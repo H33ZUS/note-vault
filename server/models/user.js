@@ -20,6 +20,12 @@ const userSchema = new Schema({
         required: true,
         unique: true
     },
+    roles: {
+        type: [String],
+        default: ["student"],
+        enum: ["student", "teacher", "admin"],
+        required: true
+    }
 });
 
 const User = mongoose.model("User", userSchema);

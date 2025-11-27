@@ -1,7 +1,7 @@
 const express = require("express");
 var Subject = require("../models/subject.js");
 var Enrollment = require("../models/enrollment.js");
-const isAuthenticated = require("../middleware/auth.js");
+const { isAuthenticated, isAuthorized } = require("../middleware/auth.js");
 
 const router = express.Router();
 
