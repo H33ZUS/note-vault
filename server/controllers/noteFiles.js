@@ -60,12 +60,12 @@ router.delete("/:noteFileId", async(req, res) => {
     const {subjectId, noteFileId} = req.params;
 
     try {
-        const noteFile = await NoteFile.findByIdAndDelete({_id: noteFileId, subjectId: subjectId});
+        const noteFile = await NoteFile.findOneAndDelete({_id: noteFileId, subjectId: subjectId});
 
-        if (!noteFile) {
+        if (noteFile == null) {
             return res.status(404).json({error: "NoteFile not found or does not belong to the specified Subject"});
         }
-        res.status(204).send();
+        res.status(200).send();
     } catch (err) {
         res.status(400).json({error: err.message});
     }
@@ -75,7 +75,7 @@ router.delete("/:noteFileId", async(req, res) => {
 router.delete("/", async(req, res) => {
      try {
         const noteFiles = await NoteFile.deleteMany({});
-        res.status(204).send();
+        res.status(200).send();
     } catch (err) {
         res.status(400).json({error: err.message});
     }
