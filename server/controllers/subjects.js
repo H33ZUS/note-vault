@@ -1,6 +1,9 @@
 const express = require("express");
 const Subject = require("../models/subject.js");
 const NoteFile = require("../models/noteFile.js");
+const User = require("../models/user.js");
+const isAuthenticated = require("../middleware/auth");
+const Enrollment = require("../models/enrollment.js");
 
 const router = express.Router();
 
@@ -40,6 +43,37 @@ router.get("/:id", async(req, res) => {
         res.status(404).json({error: err.message});
     }
 });
+
+// get subjects user is not enrolled in
+router.get("/available", isAuthenticated, async(req, res) => {
+    try {
+        const userId = req.session.userId;
+
+        const user = await User.findById(userId).populate("subjects");
+        const enrolledIds = user.subjects.map(sub => sub._id);
+
+        const available = await Subject.find({ _id: {$nin: enrolledIds }});
+
+        res.json(available);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// get subjects user is enrolled in
+router.get("/enrolled", isAuthenticated, async(req, res) => {
+    try {
+        const userId = req.session.userId;
+
+        const enrollments = await Enrollment.find({ userId}).select("subjectId");
+        const enrolledIds = enrollments.map(e => e.subjectId);
+
+        const subjects = await Subject.find({ _id: { $nin: enrolledIds } });
+        res.json(subjects);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+})
 
 router.patch("/:id", async(req, res) => {
     try {
