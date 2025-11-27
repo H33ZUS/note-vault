@@ -1,10 +1,11 @@
 const express = require("express");
 const NoteCommit = require("../models/noteCommit.js");
 const NoteFile = require("../models/noteFile.js")
+const isAuthenticated = require("../middleware/auth.js");
 
 const router = express.Router({mergeParams: true}); 
 
-router.post("/noteCommit", async(req, res) => {
+router.post("/noteCommits", async(req, res) => {
 
     const {noteFileId} = req.params;
 
@@ -21,7 +22,7 @@ router.post("/noteCommit", async(req, res) => {
     }
 });
 
-router.get("/noteCommit", async(req, res) => {
+router.get("/noteCommits", async(req, res) => {
 
     const {noteFileId} = req.params;
 
@@ -45,6 +46,21 @@ router.get("/noteCommit", async(req, res) => {
         res.json(noteCommit);
     } catch (err) {
         res.status(404).json({error: err.message});
+    }
+});
+
+// DELETE ONE USER
+router.delete("/noteCommits/:id", isAuthenticated, async(req, res) => {
+    try {
+        var result = await NoteCommit.findByIdAndDelete(req.params.id);
+
+        if (result == null) {
+            return res.status(404).json({message: "Note Commit not found"})
+        }
+
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json({error: err.message})
     }
 });
 
