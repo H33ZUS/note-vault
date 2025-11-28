@@ -35,6 +35,20 @@ const commentSchema = new Schema ({
 
 });
 
+commentSchema.pre("deleteOne", { document: true, query: false }, async function(next) {
+    try {
+        const children = await this.model("Comment").find({ commentedOnComment: this._id });
+
+        for (let child of children) {
+            await child.deleteOne();
+        }
+
+        next();
+    } catch (err) {
+        console.error(err);
+    }
+});
+
 const Comment = new mongoose.model("Comment", commentSchema);
 
 module.exports = Comment;

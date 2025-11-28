@@ -52,7 +52,8 @@ router.get("/noteCommits", async(req, res) => {
 // DELETE ONE NOTE FILE
 router.delete("/noteCommits/:id", isAuthenticated, async(req, res) => {
     try {
-        var result = await NoteCommit.findByIdAndDelete(req.params.id);
+        const noteCommit = await NoteCommit.findById(req.params.id);
+        const result = await noteCommit.deleteOne();
 
         if (result == null) {
             return res.status(404).json({message: "Note Commit not found"})

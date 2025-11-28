@@ -33,6 +33,29 @@ const subjectSchema = new Schema({
     },
 });
 
+subjectSchema.pre("deleteOne", { document: true, query: false }, async function(next) {
+    const NoteFile = this.model("NoteFile");
+    const Enrollment = this.model("Enrollment");
+
+    try {
+        const noteFiles = await NoteFile.find({ subjectId: this._id });
+
+        for (let noteFile of noteFiles) {
+            await noteFile.deleteOne();
+        }
+
+        const enrollments = await Enrollment.find({ subjectId: this._id });
+
+        for (let enrollment of enrollments) {
+            await enrollment.deleteOne();
+        }
+
+        next();
+    } catch (err) {
+        console.error(err);
+    }
+});
+
 const Subject = new mongoose.model("Subject", subjectSchema);
 
 module.exports = Subject;

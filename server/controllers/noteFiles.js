@@ -1,5 +1,6 @@
 const express = require("express");
 const NoteFile = require("../models/noteFile.js");
+const NoteCommit = require("../models/noteCommit.js");
 const Subject = require("../models/subject.js");
 
 const router = express.Router({mergeParams: true}); // to access parents parameters
@@ -39,7 +40,7 @@ router.get("/", async(req, res) => {
     }
 });
 
-router.get("/:noteFileId", async(req, res) => {
+router.get("/:id", async(req, res) => {
 
     const {subjectId, noteFileId} = req.params;
 
@@ -55,17 +56,20 @@ router.get("/:noteFileId", async(req, res) => {
     }
 });
 
-router.delete("/:noteFileId", async(req, res) => {
+router.delete("/:id", async(req, res) => {
 
-    const {subjectId, noteFileId} = req.params;
+    const { id: noteFileId, subjectId} = req.params;
 
     try {
-        const noteFile = await NoteFile.findOneAndDelete({_id: noteFileId, subjectId: subjectId});
+        const noteFile = await NoteFile.findOne({ _id: noteFileId, subjectId: subjectId });
 
         if (noteFile == null) {
             return res.status(404).json({error: "NoteFile not found or does not belong to the specified Subject"});
         }
-        res.status(200).send();
+
+        await noteFile.deleteOne();
+
+        res.status(200).json({ message: `Note File deleted successfully.` });
     } catch (err) {
         res.status(400).json({error: err.message});
     }
@@ -74,8 +78,20 @@ router.delete("/:noteFileId", async(req, res) => {
 // Delete all
 router.delete("/", async(req, res) => {
      try {
-        const noteFiles = await NoteFile.deleteMany({});
-        res.status(200).send();
+        const noteFiles = await NoteFile.find({});
+
+        if (!noteFiles || noteFiles.length === 0) {
+            return res.status(404).json({ message: "There exists no note files for this subject" });
+        }
+
+        let deletedCount = 0;
+
+        for (const noteFile of noteFiles) {
+            await noteFile.deleteOne();
+            deletedCount++;
+        }
+
+        res.status(200).json({ message: `${deletedCount} Note Files deleted successfully.` });
     } catch (err) {
         res.status(400).json({error: err.message});
     }
