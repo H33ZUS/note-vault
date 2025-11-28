@@ -42,10 +42,10 @@ router.get("/", async(req, res) => {
 
 router.get("/:id", async(req, res) => {
 
-    const {subjectId, noteFileId} = req.params;
+    const { id: noteFileId, subjectId } = req.params;
 
     try {
-        const noteFile = await NoteFile.findById({_id: noteFileId, subjectId: subjectId});
+        const noteFile = await NoteFile.findOne({_id: noteFileId, subjectId: subjectId});
 
         if (!noteFile) {
             return res.status(404).json({error: "NoteFile not found or does not belong to the specified Subject"});

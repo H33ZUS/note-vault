@@ -53,11 +53,12 @@ router.get("/noteCommits", async(req, res) => {
 router.delete("/noteCommits/:id", isAuthenticated, async(req, res) => {
     try {
         const noteCommit = await NoteCommit.findById(req.params.id);
-        const result = await noteCommit.deleteOne();
 
-        if (result == null) {
+        if (noteCommit == null) {
             return res.status(404).json({message: "Note Commit not found"})
         }
+
+        const result = await noteCommit.deleteOne();
 
         res.status(200).json(result);
     } catch (err) {
