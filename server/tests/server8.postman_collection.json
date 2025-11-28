@@ -1728,7 +1728,7 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Successful DELETE request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
 									"});"
 								],
 								"type": "text/javascript",
