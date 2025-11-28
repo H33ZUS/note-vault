@@ -2,9 +2,10 @@ const express = require("express");
 const Subject = require("../models/subject.js");
 const NoteFile = require("../models/noteFile.js");
 
+const { isAuthenticated, isAuthorized } = require("../middleware/auth.js");
 const router = express.Router();
 
-router.post("/", async(req, res) => {
+router.post("/", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
 
     try {
         const subject = new Subject(req.body);
@@ -41,7 +42,7 @@ router.get("/:id", async(req, res) => {
     }
 });
 
-router.patch("/:id", async(req, res) => {
+router.patch("/:id", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
     try {
         const subjects = await Subject.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true, runValidators: true});
         res.json(subjects);  
@@ -50,7 +51,7 @@ router.patch("/:id", async(req, res) => {
     }
 });
 
-router.put("/:id", async(req, res) => {
+router.put("/:id", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
     try {
         const requiredFields = ["title", "noteFile", "quizFile"];
         const missing = requiredFields.filter(f => !(f in req.body)); // checks for missing fields in requiredFields
@@ -72,7 +73,7 @@ router.put("/:id", async(req, res) => {
     
 
 // WE ALSO NEED TO DELETE THE NOTE FILE WHEN DELETING A SUBJECT
-router.delete("/:id", async(req, res) => {
+router.delete("/:id", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
     try {
         const result = await Subject.findByIdAndDelete(req.params.id);
 
@@ -86,7 +87,7 @@ router.delete("/:id", async(req, res) => {
     }
 });
 
-router.delete("/", async(req, res) => {
+router.delete("/", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
     try {
         const subjects = await Subject.deleteMany({});
         res.status(204).send();

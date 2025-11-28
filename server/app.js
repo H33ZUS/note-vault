@@ -13,6 +13,7 @@ var noteCommitRoutes = require("./controllers/noteCommits.js");
 var enrollmentRoutes = require("./controllers/enrollments.js")
 var noteFileRoutes = require("./controllers/noteFiles.js");
 var commentRoutes = require("./controllers/comments.js")
+const bootstrapAdmin = require("./utils/bootstrap.js");
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/notesSharingDB';
@@ -25,6 +26,8 @@ mongoose.connect(mongoURI).catch(function(err) {
     process.exit(1);
 }).then(function() {
     console.log(`Connected to MongoDB with URI: ${mongoURI}`); // mistake when forward porting
+
+    bootstrapAdmin();
 });
 
 // Create Express app

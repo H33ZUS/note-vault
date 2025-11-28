@@ -1183,32 +1183,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"// Login user using pm.sendRequest (Newman-compatible)\r",
-									"pm.sendRequest({\r",
-									"    url: pm.variables.replaceIn('{{baseURL}}/api/v1/users/login'),\r",
-									"    method: 'POST',\r",
-									"    header: {\r",
-									"        'Content-Type': 'application/json'\r",
-									"    },\r",
-									"    body: {\r",
-									"        mode: 'raw',\r",
-									"        raw: JSON.stringify({\r",
-									"            username: pm.variables.replaceIn('{{username}}'),\r",
-									"            password: pm.variables.replaceIn('{{password}}')\r",
-									"        })\r",
-									"    }\r",
-									"}, function (err, response) {\r",
-									"    if (err) {\r",
-									"        console.error(\"Error logging in user:\", err);\r",
-									"        return;\r",
-									"    }\r",
-									"\r",
-									"    if (response.code === 200) {\r",
-									"        console.log(\"User logged in successfully\");\r",
-									"    } else {\r",
-									"        console.log(\"Login response:\", response.code, response.json());\r",
-									"    }\r",
-									"});"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {},
@@ -1241,7 +1216,7 @@
 					"response": []
 				},
 				{
-					"name": "201 - Create user Copy",
+					"name": "201 - Create admin user",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1285,7 +1260,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"roles\": [\"admin\", \"teacher\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1364,6 +1339,204 @@
 					"response": []
 				},
 				{
+					"name": "201 - Create user Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate random values using Postman's dynamic variables\r",
+									"const randomUsername = pm.variables.replaceIn('{{$randomUserName}}');\r",
+									"const randomPassword = pm.variables.replaceIn('{{$randomPassword}}');\r",
+									"const randomEmail = pm.variables.replaceIn('{{$randomEmail}}');\r",
+									"const wrong_password = pm.variables.replaceIn('{{$randomPassword}');\r",
+									"\r",
+									"// Set these as variables so they can be used in the request body\r",
+									"pm.environment.set('username', randomUsername);\r",
+									"pm.environment.set('password', randomPassword);\r",
+									"pm.environment.set('email', randomEmail);\r",
+									"pm.environment.set(\"wrong_password\", wrong_password);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"userId\", pm.response.json()._id);\r",
+									"\r",
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "200 - Update user role",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// pm.environment.set(\"username\", pm.response.json().username);\r",
+									"\r",
+									"pm.test(\"Successful PATCH request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roles\": [\"teacher\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/:id/role",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								":id",
+								"role"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "400 - Update user role",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate random values using Postman's dynamic variables\r",
+									"const newRandomUsername = pm.variables.replaceIn('{{$randomUserName}}');\r",
+									"\r",
+									"// Set these as variables so they can be used in the request body\r",
+									"pm.variables.set('newUsername', newRandomUsername);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"username\", pm.response.json().username);\r",
+									"\r",
+									"pm.test(\"Successful PATCH request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roles\": [\"knecht\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/:id/role",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								":id",
+								"role"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "200 - Delete all users",
 					"event": [
 						{
@@ -1414,7 +1587,7 @@
 			"name": "subject tests",
 			"item": [
 				{
-					"name": "201 - Create user Copy",
+					"name": "201 - Create teacher user",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1458,7 +1631,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"roles\": [\"teacher\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2266,7 +2439,7 @@
 			"name": "enrollment tests",
 			"item": [
 				{
-					"name": "201 - Create user Copy",
+					"name": "201 - Create teacher user Copy",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2310,7 +2483,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"roles\": [\"teacher\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2835,7 +3008,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"roles\": [\"teacher\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3568,7 +3741,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"roles\": [\"teacher\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4324,7 +4497,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"roles\": [\"teacher\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

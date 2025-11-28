@@ -1,6 +1,7 @@
 const express = require("express");
-const isAuthenticated = require("../middleware/auth");
+const { isAuthenticated, isAuthorized } = require("../middleware/auth");
 const User = require("../models/user");
+const compareArrays = require("../utils/misc");
 
 const router = express.Router();
 
@@ -84,11 +85,48 @@ router.post("/logout", isAuthenticated, (req, res) => {
     });
 });
 
+// CHANGE ROLE OF A USER (FOR ADMINS ONLY)
+router.patch("/:id/role", isAuthenticated, isAuthorized("admin"), async (req, res) => {
+    const { roles: newRoles } = req.body;
+
+    if (!Array.isArray(newRoles) || newRoles.some(r => !["student", "teacher", "admin"].includes(r))) {
+        return res.status(400).json({ message: "Invalid role array provided. Rules must be 'student', 'admin' or 'teacher'."})
+    }
+
+    try {
+        const targetUser = await User.findById(req.params.id);
+
+        if (!targetUser) {
+            return res.status(404).json({ message: "Target user not found"});
+        }
+
+        if (req.session.userId.toString() === req.params.id.toString()) {
+            if (targetUser.roles.includes("admin") && !newRoles.includes("admin")) {
+                return res.status(403).json({ message: "You cannot revoke admin role if you are an admin"});
+            }
+
+            if (compareArrays(targetUser.roles, newRoles)) {
+                return res.status(400).json({ message: "You did not specify new roles to be updated"});
+            }
+        }
+
+        if (targetUser.roles.includes("admin") && req.session.userId.toString() !== req.params.id.toString()) {
+            return res.status(403).json({ message: "Cannot change the role of another admin user"});
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, { $set: { roles: newRoles } }, { new: true, runValidators: true, select: "username roles email"});
+
+        res.status(200).json({ message: `User ${updatedUser.username} roles updated.`, roles: updatedUser.roles });
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+});
+
 // DELETE ALL USERS
-router.delete("/", isAuthenticated, async(req, res) => {
+router.delete("/", isAuthenticated, isAuthorized("admin"), async(req, res) => {
     try {
         var result = await User.deleteMany({})
-        res.status(200).json(result);
+        res.status(200).json(result); 
     } catch (err) {
         res.status(500).json({error: err.message})
     }
@@ -111,12 +149,14 @@ router.delete("/:username/", isAuthenticated, async(req, res) => {
 
 // UPDATE ONE VARIABLE OF A USER
 router.patch("/:id", isAuthenticated, async(req, res) => {
+    const { roles, ...updateData } = req.body;
+
     if (req.session.userId.toString() !== req.params.id) {
         return res.status(403).json({message: "You are not authorized to update another user"})
     }
     
     try {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true});
+        const user = await User.findByIdAndUpdate(req.params.id, updateData, {new: true, runValidators: true, select: "-password"});
 
         if (!user) {
             return res.status(404).json({message: "User not found"});
@@ -129,12 +169,14 @@ router.patch("/:id", isAuthenticated, async(req, res) => {
 
 // UPDATE EVERYTHING OF A USER
 router.put("/:id", isAuthenticated, async(req, res) => {
+    const { roles, ...updateData } = req.body;
+
     if (req.session.userId.toString() !== req.params.id) {
         return res.status(403).json({message: "You are not authorized to update another user"})
     }
 
     try {
-        const user = await User.findOneAndReplace({_id: req.params.id}, req.body, {new: true, runValidators: true});
+        const user = await User.findOneAndReplace({ _id: req.params.id }, updateData, { new: true, runValidators: true, select: "-password" });
 
         if (!user) {
             return res.status(404).json({message: "User not found"});
