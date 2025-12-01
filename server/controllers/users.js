@@ -52,19 +52,19 @@ router.post("/login", async(req, res) => {
         });   
 
         if (user) {
-            req.session.userId = user._id; // Checks if the session id is the same as the user id
+            const userId = user._id;
 
-            req.session.save(err => {
-                if (err) {
-                    return res.status(500).json({error: "Failed creating session"});
-                }
-
-                return res.status(200).json({
-                    message: "Login successful",
-                    user: user
-                });
+            res.cookie("auth_token", userId.toString(), {
+                maxAge: 1000 * 60 * 60 * 24,
+                httpOnly: true,
+                secure: true,
+                sameSite: "Lax"
             })
-            
+
+            return res.status(200).json({
+                message: "Login successful",
+                user: user
+            });   
         } else {
             res.status(401).json({error: "Invalid username or password"});
         }
@@ -79,7 +79,7 @@ router.post("/logout", isAuthenticated, (req, res) => {
         if (err) {
             return res.status(500).json({message: "Unable to log out"})
         } else {
-            res.clearCookie("connect.sid");
+            res.clearCookie("auth_token");
             return res.json({message: "Logout successful"})
         }
     });
