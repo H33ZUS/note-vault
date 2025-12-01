@@ -54,8 +54,15 @@ app.use(express.json());
 // HTTP request logger
 app.use(morgan('dev'));
 // Enable cross-origin resource sharing for frontend must be registered before api
-app.options('*', cors());
-app.use(cors());
+const FRONTEND_ORIGIN = 'http://localhost:5173';
+
+const corsOptions = {
+    origin: FRONTEND_ORIGIN,
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATH,POST,DELETE',
+    optionsSuccessStatus: 204
+};
+app.use(cors(corsOptions));
 
 // Import routes
 app.get('/api/v1', function(req, res) {
@@ -68,14 +75,14 @@ app.use("/api/v1/enrollments", enrollmentRoutes);
 // routing for users
 app.use("/api/v1/users", userRoutes);
 
+// routing for subjects
+app.use('/api/v1/subjects', subjectRoutes);
+
 // routing for noteFiles
 subjectRoutes.use("/:subjectId/noteFile", noteFileRoutes);
 
 // routing for noteCommits
 noteFileRoutes.use("/:noteFileId", noteCommitRoutes)
-
-// routing for subjects
-app.use('/api/v1/subjects', subjectRoutes);
 
 //routing for comments
 noteCommitRoutes.use("/:noteCommitId/comments", commentRoutes);

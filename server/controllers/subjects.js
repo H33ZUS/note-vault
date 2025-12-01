@@ -1,6 +1,8 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const Subject = require("../models/subject.js");
 const NoteFile = require("../models/noteFile.js");
+const ObjectId = mongoose.Types.ObjectId;
 const User = require("../models/user.js");
 const isAuthenticated = require("../middleware/auth");
 const Enrollment = require("../models/enrollment.js");
@@ -34,6 +36,51 @@ router.get("/", async(req, res) => {
     }
 });
 
+// get subjects user is not enrolled in
+router.get("/available", async(req, res) => {
+
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    try {
+        const userId = req.session.userId;
+        // const userId = "692984f7ce1510ed7a64bbc1";
+
+        const userCheck = await User.findById(userId);
+        if (!userCheck) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const enrollments = await Enrollment.find({ userId: userId }).select("subjectId");
+        const enrolledIds = enrollments.map(e => e.subjectId);
+
+        const available = await Subject.find({ _id: { $nin: enrolledIds }});
+
+        res.json(available);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// get subjects user is enrolled in
+router.get("/enrolled", async(req, res) => {
+
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    try {
+        const userId = req.session.userId;
+
+        const enrollments = await Enrollment.find({ userId}).select("subjectId");
+        const enrolledIds = enrollments.map(e => e.subjectId);
+
+        const subjects = await Subject.find({ _id: { $in: enrolledIds } });
+        res.json(subjects);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
 // get one
 router.get("/:id", async(req, res) => {
     try {
@@ -44,36 +91,6 @@ router.get("/:id", async(req, res) => {
     }
 });
 
-// get subjects user is not enrolled in
-router.get("/available", isAuthenticated, async(req, res) => {
-    try {
-        const userId = req.session.userId;
-
-        const user = await User.findById(userId).populate("subjects");
-        const enrolledIds = user.subjects.map(sub => sub._id);
-
-        const available = await Subject.find({ _id: {$nin: enrolledIds }});
-
-        res.json(available);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-});
-
-// get subjects user is enrolled in
-router.get("/enrolled", isAuthenticated, async(req, res) => {
-    try {
-        const userId = req.session.userId;
-
-        const enrollments = await Enrollment.find({ userId}).select("subjectId");
-        const enrolledIds = enrollments.map(e => e.subjectId);
-
-        const subjects = await Subject.find({ _id: { $nin: enrolledIds } });
-        res.json(subjects);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-})
 
 router.patch("/:id", async(req, res) => {
     try {
