@@ -75,13 +75,14 @@ router.put("/:id", isAuthenticated, isAuthorized("teacher"), async(req, res) => 
 // WE ALSO NEED TO DELETE THE NOTE FILE WHEN DELETING A SUBJECT
 router.delete("/:id", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
     try {
-        const result = await Subject.findByIdAndDelete(req.params.id);
+        const subject = await Subject.findById(req.params.id);
+        const subjectResult = await subject.deleteOne();
 
-        if (result == null) {
-            return res.status(404).json({message: "Subject does not exist."});
+        if (subjectResult == null) {
+            return res.status(404).json({ message: "Subject does not exist." });
         }
 
-        res.status(200).send();
+        res.status(200).json({ message: `Subject deleted successfully.` });
     } catch (err) {
         res.status(404).json({error: err.message});
     }
@@ -89,8 +90,20 @@ router.delete("/:id", isAuthenticated, isAuthorized("teacher"), async(req, res) 
 
 router.delete("/", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
     try {
-        const subjects = await Subject.deleteMany({});
-        res.status(204).send();
+        const subjects = await Subject.find({});
+
+        if (!subjects || subjects.length === 0) {
+            return res.status(404).json({ message: "There exists no subject" });
+        }
+
+        let deletedCount = 0;
+
+        for (const subject of subjects) {
+            await subject.deleteOne();
+            deletedCount++;
+        }
+
+        res.status(200).json({ message: `${deletedCount} subjects deleted successfully.` });
     } catch (err) {
         res.status(400).json({error: err.message});
     }

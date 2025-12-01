@@ -125,23 +125,41 @@ router.patch("/:id/role", isAuthenticated, isAuthorized("admin"), async (req, re
 // DELETE ALL USERS
 router.delete("/", isAuthenticated, isAuthorized("admin"), async(req, res) => {
     try {
-        var result = await User.deleteMany({})
-        res.status(200).json(result); 
+        const users = await User.find({});
+
+        if (!users || users.length === 0) {
+            return res.status(404).json({ message: "There exists no users" });
+        }
+
+        let deletedCount = 0;
+
+        for (const user of users) {
+            await user.deleteOne();
+            deletedCount++;
+        }
+
+        res.status(200).json({ message: `${deletedCount} users deleted successfully.` });
     } catch (err) {
         res.status(500).json({error: err.message})
     }
 });
 
 // DELETE ONE USER
-router.delete("/:username/", isAuthenticated, async(req, res) => {
+router.delete("/:id/", isAuthenticated, async(req, res) => {
     try {
-        var user = await User.findOneAndDelete({username: req.params.username});
+        const user = await User.findById(req.params.id);
 
         if (user == null) {
             return res.status(404).json({message: "User not found"})
         }
 
-        res.status(200).json(user);
+        const result = await user.deleteOne();
+
+        if (!result) {
+            return res.status(500).json({ message: "Unable to delete user" });
+        }
+
+        res.status(200).json(result);
     } catch (err) {
         res.status(500).json({error: err.message})
     }
