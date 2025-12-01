@@ -1112,14 +1112,14 @@
 					"response": []
 				},
 				{
-					"name": "200 - Delete user",
+					"name": "403 - Delete user",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
 									"pm.test(\"Successful DELETE request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([403]);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -1156,7 +1156,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "{{userId}}"
+									"value": "this_user_does_not_exist"
 								}
 							]
 						}
@@ -1164,14 +1164,14 @@
 					"response": []
 				},
 				{
-					"name": "404 - Delete user",
+					"name": "200 - Delete user",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
 									"pm.test(\"Successful DELETE request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
 									"});"
 								],
 								"type": "text/javascript",
