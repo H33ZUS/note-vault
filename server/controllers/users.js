@@ -80,9 +80,9 @@ router.post("/logout", isAuthenticated, (req, res) => {
 });
 
 // CHANGE ROLE OF A USER (FOR ADMINS ONLY)
-router.patch("/role", isAuthenticated, isAuthorized("admin"), async (req, res) => {
+router.patch("/:id/roles", isAuthenticated, isAuthorized("admin"), async (req, res) => {
     const { roles: newRoles } = req.body;
-    const user = req.user._id
+    const user = req.params.id
 
     if (!Array.isArray(newRoles) || newRoles.some(r => !["student", "teacher", "admin"].includes(r))) {
         return res.status(400).json({ message: "Invalid role array provided. Rules must be 'student', 'admin' or 'teacher'."})
@@ -109,7 +109,7 @@ router.patch("/role", isAuthenticated, isAuthorized("admin"), async (req, res) =
             return res.status(403).json({ message: "Cannot change the role of another admin user"});
         }
 
-        const updatedUser = await User.findByIdAndUpdate(req.user._id, { $set: { roles: newRoles } }, { new: true, runValidators: true, select: "username roles email"});
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, { $set: { roles: newRoles } }, { new: true, runValidators: true, select: "username roles email"});
 
         res.status(200).json({ message: `User ${updatedUser.username} roles updated.`, roles: updatedUser.roles });
     } catch (err) {
