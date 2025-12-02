@@ -117,7 +117,6 @@ export default {
       try {
         const res = await fetch('http://localhost:3000/api/v1/subjects', {
           method: 'POST',
-          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({ title: this.subjectTitle })
@@ -185,7 +184,7 @@ export default {
     async leaveSubject(subjectId) {
 
       try {
-        const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}/enroll`, {
+        const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}/unenroll`, {
           method: 'DELETE',
           credentials: 'include'
         })
