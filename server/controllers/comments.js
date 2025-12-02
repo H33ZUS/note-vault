@@ -81,7 +81,7 @@ router.get("/", async(req, res) => {
     }
 })
 
-router.put("/:id/edit", async(req, res) => {
+router.put("/:id/", async(req, res) => {
     try{
         const commentId = req.params.id
         const {comment, userId} = req.body
@@ -104,7 +104,7 @@ router.put("/:id/edit", async(req, res) => {
     }
 })
 
-router.delete("/:id/delete", async(req, res) => {
+router.delete("/:id/", async(req, res) => {
     try{
         const commentId = req.params.id;
         const {userId} = req.body;
@@ -132,7 +132,7 @@ router.delete("/:id/delete", async(req, res) => {
     }
 })
 
-router.put("/:id/addLike", async(req, res) => {
+router.post("/:id/likes", async(req, res) => {
     try{
         const commentId = req.params.id
         const {like, dislike} = req.body
@@ -164,7 +164,7 @@ router.put("/:id/addLike", async(req, res) => {
     }
 })
 
-router.put("/:id/removeLike", async(req, res) => {
+router.post("/:id/likes", async(req, res) => {
     try{
         const commentId = req.params.id
         const {like, dislike} = req.body

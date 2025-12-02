@@ -36,7 +36,7 @@ router.post("/:id/enroll", isAuthenticated, async(req, res) => {
 });
 
 // DROP OUT OF SUBJECT
-router.delete("/:id/enroll", isAuthenticated, async(req, res) => {
+router.post("/:id/unenroll", isAuthenticated, async(req, res) => {
     const subjectId = req.params.id;
     const userId = req.user._id;
 

@@ -4,13 +4,220 @@
 		"name": "Note Sharing Tests",
 		"description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "49950854",
-		"_collection_link": "https://willyrys-5117182.postman.co/workspace/Notes-Sharing~06220ac2-ab0a-4330-8d8a-2bc0af835941/collection/49950854-14ba522e-defc-48e7-8df9-dd571b159448?action=share&source=collection_link&creator=49950854"
+		"_exporter_id": "50009984",
+		"_collection_link": "https://willyrys-5117182.postman.co/workspace/Notes-Sharing~06220ac2-ab0a-4330-8d8a-2bc0af835941/collection/49950854-14ba522e-defc-48e7-8df9-dd571b159448?action=share&source=collection_link&creator=50009984"
 	},
 	"item": [
 		{
 			"name": "user tests",
 			"item": [
+				{
+					"name": "401 - Get one user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([401]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "401 - Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([401]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate random values using Postman's dynamic variables",
+									"const newRandomUsername = pm.variables.replaceIn('{{$randomUserName}}');",
+									"const newRandomPassword = pm.variables.replaceIn('{{$randomPassword}}');",
+									"const newRandomEmail = pm.variables.replaceIn('{{$randomEmail}}');",
+									"",
+									"// Set these as variables so they can be used in the request body",
+									"pm.variables.set('newUsername', newRandomUsername);",
+									"pm.variables.set('newPassword', newRandomPassword);",
+									"pm.variables.set('newEmail', newRandomEmail);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{newUsername}}\", \r\n    \"password\": \"{{newPassword}}\",\r\n    \"email\": \"{{newEmail}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "401 - Update User (one variable)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([401]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"username\": \"{{newUsername}}\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "401 - Delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([401]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "400  - Create user",
 					"event": [
@@ -323,14 +530,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users",
+							"raw": "{{baseURL}}/api/v1/users/ids",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users"
+								"users",
+								"ids"
 							]
 						},
 						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
@@ -369,74 +577,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "404 - Get one user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful GET request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "this_user_does_not_exists"
-								}
+								"users"
 							]
 						}
 					},
@@ -495,90 +643,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "403 - Update user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful PUT request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([403]);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"// Generate random values using Postman's dynamic variables",
-									"const newRandomUsername = pm.variables.replaceIn('{{$randomUserName}}');",
-									"const newRandomPassword = pm.variables.replaceIn('{{$randomPassword}}');",
-									"const newRandomEmail = pm.variables.replaceIn('{{$randomEmail}}');",
-									"",
-									"// Set these as variables so they can be used in the request body",
-									"pm.variables.set('newUsername', newRandomUsername);",
-									"pm.variables.set('newPassword', newRandomPassword);",
-									"pm.variables.set('newEmail', newRandomEmail);"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"{{newUsername}}\", \r\n    \"password\": \"{{newPassword}}\",\r\n    \"email\": \"{{newEmail}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "this_user_id_does_not_exist"
-								}
+								"users"
 							]
 						}
 					},
@@ -631,82 +703,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "403 - Update User (one variable)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful PUT request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([403]);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\"username\": \"{{newUsername}}\" \r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "this_user_does_not_exist"
-								}
+								"users"
 							]
 						}
 					},
@@ -923,21 +927,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
+								"users"
 							]
 						}
 					},
@@ -984,21 +981,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "this_user_does_not_exist"
-								}
+								"users"
 							]
 						}
 					},
@@ -1112,58 +1102,6 @@
 					"response": []
 				},
 				{
-					"name": "403 - Delete user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful DELETE request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([403]);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "this_user_does_not_exist"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "200 - Delete user",
 					"event": [
 						{
@@ -1195,21 +1133,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
+								"users"
 							]
 						}
 					},
@@ -1447,7 +1378,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id/role",
+							"raw": "{{baseURL}}/api/v1/users/:id/roles",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -1456,7 +1387,7 @@
 								"v1",
 								"users",
 								":id",
-								"role"
+								"roles"
 							],
 							"variable": [
 								{
@@ -1515,7 +1446,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id/role",
+							"raw": "{{baseURL}}/api/v1/users/:id/roles",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -1524,7 +1455,7 @@
 								"v1",
 								"users",
 								":id",
-								"role"
+								"roles"
 							],
 							"variable": [
 								{
@@ -1568,14 +1499,15 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users",
+							"raw": "{{baseURL}}/api/v1/users/ids",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users"
+								"users",
+								"ids"
 							]
 						}
 					},
@@ -2869,7 +2801,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful DELETE request\", function () {\r",
+									"pm.test(\"Successful POST request\", function () {\r",
 									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
 									"});"
 								],
@@ -2880,10 +2812,10 @@
 						}
 					],
 					"request": {
-						"method": "DELETE",
+						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/enrollments/:id/enroll",
+							"raw": "{{baseURL}}/api/v1/enrollments/:id/unenroll",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -2892,7 +2824,7 @@
 								"v1",
 								"enrollments",
 								":id",
-								"enroll"
+								"unenroll"
 							],
 							"variable": [
 								{
@@ -2922,7 +2854,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful DELETE request\", function () {\r",
+									"pm.test(\"Successful POST request\", function () {\r",
 									"    pm.expect(pm.response.code).to.be.oneOf([400]);\r",
 									"});"
 								],
@@ -2933,10 +2865,10 @@
 						}
 					],
 					"request": {
-						"method": "DELETE",
+						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/enrollments/:id/enroll",
+							"raw": "{{baseURL}}/api/v1/enrollments/:id/unenroll",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -2945,7 +2877,7 @@
 								"v1",
 								"enrollments",
 								":id",
-								"enroll"
+								"unenroll"
 							],
 							"variable": [
 								{
@@ -5212,7 +5144,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/edit",
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -5226,7 +5158,7 @@
 								"{{noteCommitId}}",
 								"comments",
 								"{{commentId}}",
-								"edit"
+								""
 							]
 						}
 					},
@@ -5273,7 +5205,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/:commentId/edit",
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/:commentId/",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -5287,7 +5219,7 @@
 								"{{noteCommitId}}",
 								"comments",
 								":commentId",
-								"edit"
+								""
 							],
 							"variable": [
 								{
@@ -5340,7 +5272,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/edit",
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -5354,7 +5286,7 @@
 								"{{noteCommitId}}",
 								"comments",
 								"{{commentId}}",
-								"edit"
+								""
 							]
 						}
 					},
@@ -5378,7 +5310,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful PUT request\", function () {",
+									"pm.test(\"Successful POST request\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([200]);",
 									"});"
 								],
@@ -5389,7 +5321,7 @@
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -5401,7 +5333,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/addLike",
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -5415,7 +5347,7 @@
 								"{{noteCommitId}}",
 								"comments",
 								"{{commentId}}",
-								"addLike"
+								"likes"
 							]
 						}
 					},
@@ -5439,7 +5371,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful PUT request\", function () {",
+									"pm.test(\"Successful POST request\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([400]);",
 									"});"
 								],
@@ -5450,7 +5382,7 @@
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -5462,7 +5394,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/addLike",
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -5476,7 +5408,7 @@
 								"{{noteCommitId}}",
 								"comments",
 								"{{commentId}}",
-								"addLike"
+								"likes"
 							]
 						}
 					},
@@ -5489,7 +5421,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful PUT request\", function () {",
+									"pm.test(\"Successful POST request\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([403]);",
 									"});"
 								],
@@ -5511,7 +5443,7 @@
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -5523,7 +5455,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/addLike",
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -5537,7 +5469,7 @@
 								"{{noteCommitId}}",
 								"comments",
 								"{{commentId}}",
-								"addLike"
+								"likes"
 							]
 						}
 					},
@@ -5561,7 +5493,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful PUT request\", function () {",
+									"pm.test(\"Successful POST request\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([200]);",
 									"});"
 								],
@@ -5572,7 +5504,7 @@
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -5584,7 +5516,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/removeLike",
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -5598,7 +5530,7 @@
 								"{{noteCommitId}}",
 								"comments",
 								"{{commentId}}",
-								"removeLike"
+								"likes"
 							]
 						}
 					},
@@ -5611,7 +5543,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful PUT request\", function () {",
+									"pm.test(\"Successful POST request\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([403]);",
 									"});"
 								],
@@ -5633,7 +5565,7 @@
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -5645,7 +5577,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/removeLike",
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -5659,7 +5591,7 @@
 								"{{noteCommitId}}",
 								"comments",
 								"{{commentId}}",
-								"removeLike"
+								"likes"
 							]
 						}
 					},
@@ -5672,7 +5604,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Successful PUT request\", function () {",
+									"pm.test(\"Successful POST request\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([400]);",
 									"});"
 								],
@@ -5694,7 +5626,7 @@
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -5706,7 +5638,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/removeLike",
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -5720,68 +5652,7 @@
 								"{{noteCommitId}}",
 								"comments",
 								"{{commentId}}",
-								"removeLike"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "200 - Delete comment",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful DELETE request\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([200]);",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"userId\" : \"{{userId}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/delete",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"subjects",
-								"{{subjectId}}",
-								"noteFiles",
-								"{{noteFileId}}",
-								"{{noteCommitId}}",
-								"comments",
-								"{{commentId}}",
-								"delete"
+								"likes"
 							]
 						}
 					},
@@ -5828,7 +5699,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/delete",
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -5842,7 +5713,113 @@
 								"{{noteCommitId}}",
 								"comments",
 								"{{commentId}}",
-								"delete"
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "200 - Delete comment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\" : \"{{userId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								"{{commentId}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "200 - Delete all subjects Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
 							]
 						}
 					},
