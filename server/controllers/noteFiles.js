@@ -1,5 +1,6 @@
 const express = require("express");
 const NoteFile = require("../models/noteFile.js");
+const NoteCommit = require("../models/noteCommit.js");
 const Subject = require("../models/subject.js");
 
 const router = express.Router({mergeParams: true}); // to access parents parameters
@@ -39,12 +40,12 @@ router.get("/", async(req, res) => {
     }
 });
 
-router.get("/:noteFileId", async(req, res) => {
+router.get("/:id", async(req, res) => {
 
-    const {subjectId, noteFileId} = req.params;
+    const { id: noteFileId, subjectId } = req.params;
 
     try {
-        const noteFile = await NoteFile.findById({_id: noteFileId, subjectId: subjectId});
+        const noteFile = await NoteFile.findOne({_id: noteFileId, subjectId: subjectId});
 
         if (!noteFile) {
             return res.status(404).json({error: "NoteFile not found or does not belong to the specified Subject"});
@@ -55,57 +56,20 @@ router.get("/:noteFileId", async(req, res) => {
     }
 });
 
-router.patch("/:noteFileId", async(req, res) => {
+router.delete("/:id", async(req, res) => {
 
-    const {subjectId, noteFileId} = req.params;
+    const { id: noteFileId, subjectId} = req.params;
 
     try {
-        const noteFile = await NoteFile.findByIdAndUpdate({_id: noteFileId, subjectId: subjectId}, req.body, {new: true});
+        const noteFile = await NoteFile.findOne({ _id: noteFileId, subjectId: subjectId });
 
-        if (!noteFile) {
+        if (noteFile == null) {
             return res.status(404).json({error: "NoteFile not found or does not belong to the specified Subject"});
         }
-        res.json(noteFile);
-    } catch (err) {
-        res.status(400).json({error: err.message});
-    }
-});
 
-router.put("/:noteFileId", async(req, res) => {
+        await noteFile.deleteOne();
 
-    const {subjectId, noteFileId} = req.params;
-
-    try {
-    
-        const requiredFields = ["updatedAt", "notes"];
-        const missing = requiredFields.filter(f => !(f in req.body));
-
-        if (missing.length > 0) {
-            return res.status(400).json({error: `PUT requires all fields: Missing ${missing.join(", ")}`});
-        }
-
-        const updated = await Subject.findByIdAndUpdate({_id: noteFileId, subjectId: subjectId}, {$set: req.body}, {new: true, runValidators: true});
-
-        if (!updated) {
-            return res.status(404).json({error: "NoteFile not found"})
-        }
-        res.json(updated);
-    } catch (err) {
-        res.status(500).json({error: err.message});
-    }
-});
-
-router.delete("/:noteFileId", async(req, res) => {
-
-    const {subjectId, noteFileId} = req.params;
-
-    try {
-        const noteFile = await NoteFile.findByIdAndDelete({_id: noteFileId, subjectId: subjectId});
-
-        if (!noteFile) {
-            return res.status(404).json({error: "NoteFile not found or does not belong to the specified Subject"});
-        }
-        res.status(204).send();
+        res.status(200).json({ message: `Note File deleted successfully.` });
     } catch (err) {
         res.status(400).json({error: err.message});
     }
@@ -114,8 +78,20 @@ router.delete("/:noteFileId", async(req, res) => {
 // Delete all
 router.delete("/", async(req, res) => {
      try {
-        const noteFiles = await NoteFile.deleteMany({});
-        res.status(204).send();
+        const noteFiles = await NoteFile.find({});
+
+        if (!noteFiles || noteFiles.length === 0) {
+            return res.status(404).json({ message: "There exists no note files for this subject" });
+        }
+
+        let deletedCount = 0;
+
+        for (const noteFile of noteFiles) {
+            await noteFile.deleteOne();
+            deletedCount++;
+        }
+
+        res.status(200).json({ message: `${deletedCount} Note Files deleted successfully.` });
     } catch (err) {
         res.status(400).json({error: err.message});
     }

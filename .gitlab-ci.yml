@@ -30,6 +30,8 @@ test:
     MONGODB_URI: "mongodb://mongo:27017/serverTestDB"
   script:
     - cd server
+    - npm start &
+    - npx wait-on http://localhost:3000/api/v1
     - npm run ci-test
 
 deploy:

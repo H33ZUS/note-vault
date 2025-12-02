@@ -75,7 +75,7 @@ async function getCommentTree(noteFileId) {
 router.get("/", async(req, res) => {
     try {
         const tree = await getCommentTree(req.params.noteCommitId);
-        return res.status(201).json(tree);
+        return res.status(200).json(tree);
     }catch(err){
         return res.status(400).json({"error" : err.message});
     }
@@ -177,6 +177,12 @@ router.put("/:id/removeLike", async(req, res) => {
         }
 
         if (like) {
+            const checkLikes = await Comment.findById(req.params.id);
+
+            if (checkLikes.likes <= 0 || checkLikes <= 0) {
+                return res.status(404).json({message: "You cannot remove a like or dislike from a comment with 0 likes or dislikes"})
+            }
+
             const updateLike = await Comment.findByIdAndUpdate(commentId, 
                 {$inc: {"likes": -1}},
                 {new : true}

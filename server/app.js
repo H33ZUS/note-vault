@@ -5,14 +5,13 @@ var path = require('path');
 var cors = require('cors');
 var history = require('connect-history-api-fallback');
 var cookieParser = require("cookie-parser");
-var session = require("express-session");
-var MongoStore = require("connect-mongo");
 var userRoutes = require("./controllers/users");
 var subjectRoutes = require('./controllers/subjects.js');
 var noteCommitRoutes = require("./controllers/noteCommits.js");
 var enrollmentRoutes = require("./controllers/enrollments.js")
 var noteFileRoutes = require("./controllers/noteFiles.js");
 var commentRoutes = require("./controllers/comments.js")
+const bootstrapAdmin = require("./utils/bootstrap.js");
 
 // Variables
 var mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/notesSharingDB';
@@ -25,6 +24,8 @@ mongoose.connect(mongoURI).catch(function(err) {
     process.exit(1);
 }).then(function() {
     console.log(`Connected to MongoDB with URI: ${mongoURI}`); // mistake when forward porting
+
+    bootstrapAdmin();
 });
 
 // Create Express app
@@ -33,20 +34,6 @@ var app = express();
 mongoose.Promise = global.Promise;
 
 app.use(cookieParser());
-app.use(session({
-    secret: "my-secret",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-        mongoUrl: mongoURI,
-        collectionName: "sessions",
-    }),
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-        secure: app.get("env") === "production"
-    }
-}));
 
 // Parse requests of content-type 'application/json'
 app.use(express.urlencoded({ extended: true }));
@@ -59,9 +46,9 @@ const FRONTEND_ORIGIN = 'http://localhost:5173';
 const corsOptions = {
     origin: FRONTEND_ORIGIN,
     credentials: true,
-    methods: 'GET,HEAD,PUT,PATH,POST,DELETE',
-    optionsSuccessStatus: 204
+    methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'HEAD']
 };
+
 app.use(cors(corsOptions));
 
 // Import routes
@@ -79,7 +66,7 @@ app.use("/api/v1/users", userRoutes);
 app.use('/api/v1/subjects', subjectRoutes);
 
 // routing for noteFiles
-subjectRoutes.use("/:subjectId/noteFile", noteFileRoutes);
+subjectRoutes.use("/:subjectId/noteFiles", noteFileRoutes);
 
 // routing for noteCommits
 noteFileRoutes.use("/:noteFileId", noteCommitRoutes)
