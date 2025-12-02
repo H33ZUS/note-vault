@@ -9,7 +9,7 @@ const router = express.Router();
 router.post("/", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
 
     try {
-        const userId = req.userId._id;
+        const userId = req.user._id;
         const subject = await Subject.create({
             title: req.body.title,
             createdBy: userId
