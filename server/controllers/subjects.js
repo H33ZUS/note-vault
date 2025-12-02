@@ -1,18 +1,15 @@
-const express = require("express");
-const mongoose = require("mongoose");
+const express = require("express"); 
 const Subject = require("../models/subject.js");
 const NoteFile = require("../models/noteFile.js");
 const User = require("../models/user.js");
-const isAuthenticated = require("../middleware/auth");
 const Enrollment = require("../models/enrollment.js");
-
 const { isAuthenticated, isAuthorized } = require("../middleware/auth.js");
 const router = express.Router();
 
 router.post("/", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
 
     try {
-        const userId = req.session.userId
+        const userId = req.userId._id;
         const subject = await Subject.create({
             title: req.body.title,
             createdBy: userId
@@ -40,13 +37,13 @@ router.get("/", async(req, res) => {
 });
 
 // get subjects user is not enrolled in
-router.get("/available", async(req, res) => {
+router.get("/available", isAuthenticated, async(req, res) => {
 
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
     try {
-        const userId = req.session.userId;
+        const userId = req.user._id;
 
         const userCheck = await User.findById(userId);
         if (!userCheck) {
@@ -65,13 +62,13 @@ router.get("/available", async(req, res) => {
 });
 
 // get subjects user is enrolled in
-router.get("/enrolled", async(req, res) => {
+router.get("/enrolled", isAuthenticated, async(req, res) => {
 
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
     try {
-        const userId = req.session.userId;
+        const userId = req.user._id
 
         const enrollments = await Enrollment.find({ userId}).select("subjectId");
         const enrolledIds = enrollments.map(e => e.subjectId);
