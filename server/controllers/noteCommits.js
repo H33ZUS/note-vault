@@ -1,7 +1,7 @@
 const express = require("express");
 const NoteCommit = require("../models/noteCommit.js");
 const NoteFile = require("../models/noteFile.js")
-const isAuthenticated = require("../middleware/auth.js");
+const { isAuthenticated, isAuthorized } = require("../middleware/auth.js");
 
 const router = express.Router({mergeParams: true}); 
 
@@ -52,11 +52,13 @@ router.get("/noteCommits", async(req, res) => {
 // DELETE ONE NOTE FILE
 router.delete("/noteCommits/:id", isAuthenticated, async(req, res) => {
     try {
-        var result = await NoteCommit.findByIdAndDelete(req.params.id);
+        const noteCommit = await NoteCommit.findById(req.params.id);
 
-        if (result == null) {
+        if (noteCommit == null) {
             return res.status(404).json({message: "Note Commit not found"})
         }
+
+        const result = await noteCommit.deleteOne();
 
         res.status(200).json(result);
     } catch (err) {
@@ -66,7 +68,7 @@ router.delete("/noteCommits/:id", isAuthenticated, async(req, res) => {
 
 // UPDATE ONE VARIABLE OF A NOTE FILE
 router.patch("/noteCommits/:id", isAuthenticated, async(req, res) => {
-    userSessionId = req.session.userId;
+    userId = req.user._id;
     
     try {
         const existingNoteCommit = await NoteCommit.findById(req.params.id);
@@ -75,7 +77,7 @@ router.patch("/noteCommits/:id", isAuthenticated, async(req, res) => {
             return res.status(404).json({message: "Note Commit not found"});
         }
 
-        if (!existingNoteCommit.userId == userSessionId) {
+        if (!existingNoteCommit.userId == userId) {
             return res.status(403).json({message: "You are not authorized to update another user's note commit"})
         }
 

@@ -6,6 +6,8 @@
       <router-link to="/subjects/create">Create Subject</router-link>
       |
       <router-link to="/profile/view">Profile</router-link>
+      |
+      <router-link to="/login">Login</router-link>
     </div>
     <!-- Render the content of the current page view -->
     <router-view/>

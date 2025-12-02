@@ -623,7 +623,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\"username\": \"{{newUsername}}\" \r\n}",
+							"raw": "{\r\n// \"username\": \"{{newUsername}}\",\r\n\"roles\": [\"admin\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1112,14 +1112,14 @@
 					"response": []
 				},
 				{
-					"name": "404 - Delete user",
+					"name": "403 - Delete user",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
 									"pm.test(\"Successful DELETE request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([403]);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -1143,7 +1143,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:username",
+							"raw": "{{baseURL}}/api/v1/users/:id",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -1151,12 +1151,12 @@
 								"api",
 								"v1",
 								"users",
-								":username"
+								":id"
 							],
 							"variable": [
 								{
-									"key": "username",
-									"value": "this_user_name_does_not_exist"
+									"key": "id",
+									"value": "this_user_does_not_exist"
 								}
 							]
 						}
@@ -1183,32 +1183,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"// Login user using pm.sendRequest (Newman-compatible)\r",
-									"pm.sendRequest({\r",
-									"    url: pm.variables.replaceIn('{{baseURL}}/api/v1/users/login'),\r",
-									"    method: 'POST',\r",
-									"    header: {\r",
-									"        'Content-Type': 'application/json'\r",
-									"    },\r",
-									"    body: {\r",
-									"        mode: 'raw',\r",
-									"        raw: JSON.stringify({\r",
-									"            username: pm.variables.replaceIn('{{username}}'),\r",
-									"            password: pm.variables.replaceIn('{{password}}')\r",
-									"        })\r",
-									"    }\r",
-									"}, function (err, response) {\r",
-									"    if (err) {\r",
-									"        console.error(\"Error logging in user:\", err);\r",
-									"        return;\r",
-									"    }\r",
-									"\r",
-									"    if (response.code === 200) {\r",
-									"        console.log(\"User logged in successfully\");\r",
-									"    } else {\r",
-									"        console.log(\"Login response:\", response.code, response.json());\r",
-									"    }\r",
-									"});"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {},
@@ -1220,7 +1195,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:username",
+							"raw": "{{baseURL}}/api/v1/users/:id",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -1228,12 +1203,12 @@
 								"api",
 								"v1",
 								"users",
-								":username"
+								":id"
 							],
 							"variable": [
 								{
-									"key": "username",
-									"value": "{{username}}"
+									"key": "id",
+									"value": "{{userId}}"
 								}
 							]
 						}
@@ -1241,7 +1216,7 @@
 					"response": []
 				},
 				{
-					"name": "201 - Create user Copy",
+					"name": "201 - Create admin user",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1285,7 +1260,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"roles\": [\"admin\", \"teacher\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1360,6 +1335,204 @@
 							]
 						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "201 - Create user Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate random values using Postman's dynamic variables\r",
+									"const randomUsername = pm.variables.replaceIn('{{$randomUserName}}');\r",
+									"const randomPassword = pm.variables.replaceIn('{{$randomPassword}}');\r",
+									"const randomEmail = pm.variables.replaceIn('{{$randomEmail}}');\r",
+									"const wrong_password = pm.variables.replaceIn('{{$randomPassword}');\r",
+									"\r",
+									"// Set these as variables so they can be used in the request body\r",
+									"pm.environment.set('username', randomUsername);\r",
+									"pm.environment.set('password', randomPassword);\r",
+									"pm.environment.set('email', randomEmail);\r",
+									"pm.environment.set(\"wrong_password\", wrong_password);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"userId\", pm.response.json()._id);\r",
+									"\r",
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "200 - Update user role",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// pm.environment.set(\"username\", pm.response.json().username);\r",
+									"\r",
+									"pm.test(\"Successful PATCH request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roles\": [\"teacher\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/:id/role",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								":id",
+								"role"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "400 - Update user role",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate random values using Postman's dynamic variables\r",
+									"const newRandomUsername = pm.variables.replaceIn('{{$randomUserName}}');\r",
+									"\r",
+									"// Set these as variables so they can be used in the request body\r",
+									"pm.variables.set('newUsername', newRandomUsername);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"username\", pm.response.json().username);\r",
+									"\r",
+									"pm.test(\"Successful PATCH request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roles\": [\"knecht\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/:id/role",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								":id",
+								"role"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						}
 					},
 					"response": []
 				},
@@ -1414,7 +1587,7 @@
 			"name": "subject tests",
 			"item": [
 				{
-					"name": "201 - Create user Copy",
+					"name": "201 - Create teacher user",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -1458,7 +1631,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"roles\": [\"teacher\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1533,6 +1706,51 @@
 							]
 						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "404 - Delete all subjects",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
 					},
 					"response": []
 				},
@@ -2216,7 +2434,7 @@
 					"response": []
 				},
 				{
-					"name": "204 - Delete all subjects",
+					"name": "200 - Delete all subjects",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2234,7 +2452,7 @@
 							"script": {
 								"exec": [
 									"pm.test(\"Successful DELETE request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([204]);\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -2266,7 +2484,7 @@
 			"name": "enrollment tests",
 			"item": [
 				{
-					"name": "201 - Create user Copy",
+					"name": "201 - Create teacher user Copy",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2310,7 +2528,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"roles\": [\"teacher\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2835,7 +3053,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"roles\": [\"teacher\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3031,7 +3249,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/:subjectId/noteFiles",
+							"raw": "{{baseURL}}/api/v1/subjects/:id/noteFiles",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -3039,12 +3257,12 @@
 								"api",
 								"v1",
 								"subjects",
-								":subjectId",
+								":id",
 								"noteFiles"
 							],
 							"variable": [
 								{
-									"key": "subjectId",
+									"key": "id",
 									"value": "{{subjectId}}"
 								}
 							]
@@ -3568,7 +3786,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"roles\": [\"teacher\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4267,7 +4485,7 @@
 								},
 								{
 									"key": "noteCommitId",
-									"value": "6967968dc934e145695a089c"
+									"value": "{{noteCommitId}}"
 								}
 							]
 						}
@@ -4324,7 +4542,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"roles\": [\"teacher\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4562,7 +4780,7 @@
 					"response": []
 				},
 				{
-					"name": "201 - Post comment",
+					"name": "201 - Post comment on note",
 					"event": [
 						{
 							"listen": "test",
@@ -4601,6 +4819,86 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"comment\" : \"{{text}}\",\n    \"createdBy\" : \"{{userId}}\",\n    \"commentedOnNote\" : \"{{noteCommitId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/:subjectId/noteFiles/:noteFileId/:noteCommitId/comments/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								":subjectId",
+								"noteFiles",
+								":noteFileId",
+								":noteCommitId",
+								"comments",
+								""
+							],
+							"variable": [
+								{
+									"key": "subjectId",
+									"value": "{{subjectId}}"
+								},
+								{
+									"key": "noteFileId",
+									"value": "{{noteFileId}}"
+								},
+								{
+									"key": "noteCommitId",
+									"value": "{{noteCommitId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "201 - Post comment on comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"commentId\", pm.response.json()._id);",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate random values using Postman's dynamic variables",
+									"const randomText = pm.variables.replaceIn('{{$randomPhrase}}');",
+									"",
+									"// Set these as variables so they can be used in the request body",
+									"pm.variables.set('text', randomText);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comment\" : \"{{text}}\",\n    \"createdBy\" : \"{{userId}}\",\n    \"commentedOnComment\" : \"{{commentId}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

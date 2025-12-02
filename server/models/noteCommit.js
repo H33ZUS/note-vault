@@ -40,6 +40,22 @@ const noteCommitSchema = new Schema ({
     }
 });
 
+noteCommitSchema.pre("deleteOne", { document: true, query: false }, async function(next) {
+    const Comment = this.model("Comment");
+
+    try {
+        const comments = await Comment.find({ commentedOnNote: this._id });
+
+        for (let comment of comments) {
+            await comment.deleteOne();
+        }
+
+        next();
+    } catch (err) {
+        console.error(err);
+    }
+});
+
 const NoteCommit = new mongoose.model("NoteCommit", noteCommitSchema);
 
 module.exports = NoteCommit;
