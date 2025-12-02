@@ -44,7 +44,7 @@
         </button>
 
         <div v-if="createMessage" class="alert alert-info mt-3">
-            {{message}}
+            {{ createMessage }}
         </div>
     </div>
 
@@ -118,7 +118,8 @@ export default {
         const res = await fetch('http://localhost:3000/api/v1/subjects', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: this.subjectTitle, createdBy: '692d8f584b1598a0e8282713' }) // temp user
+          credentials: 'include',
+          body: JSON.stringify({ title: this.subjectTitle })
         })
 
         if (!res.ok) throw new Error('Failed to create subject')
@@ -151,7 +152,9 @@ export default {
       try {
         const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}/enroll`, {
           method: 'POST',
-          credentials: 'include'
+          credentials: 'include',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify({ subjectId }),
         })
         if (!res.ok) throw new Error('Failed to join')
         this.joinMessage = 'Successfully joined'

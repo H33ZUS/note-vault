@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Subject = require("../models/subject.js");
 const NoteFile = require("../models/noteFile.js");
-const ObjectId = mongoose.Types.ObjectId;
 const User = require("../models/user.js");
 const isAuthenticated = require("../middleware/auth");
 const Enrollment = require("../models/enrollment.js");
@@ -12,8 +11,11 @@ const router = express.Router();
 router.post("/", async(req, res) => {
 
     try {
-        const subject = new Subject(req.body);
-        await subject.save();
+        const userId = req.session.userId
+        const subject = await Subject.create({
+            title: req.body.title,
+            createdBy: userId
+        });
 
         const defaultNoteFile = new NoteFile({ // noteFile created when subject is created
             title: `Untitled Note for ${subject.name || subject._id}`,
@@ -44,7 +46,6 @@ router.get("/available", async(req, res) => {
     res.set('Expires', '0');
     try {
         const userId = req.session.userId;
-        // const userId = "692984f7ce1510ed7a64bbc1";
 
         const userCheck = await User.findById(userId);
         if (!userCheck) {
