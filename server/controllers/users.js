@@ -180,15 +180,12 @@ router.patch("/:id", isAuthenticated, async(req, res) => {
 });
 
 // UPDATE EVERYTHING OF A USER
-router.put("/:id", isAuthenticated, async(req, res) => {
+router.put("/", isAuthenticated, async(req, res) => {
     const { roles, ...updateData } = req.body;
-
-    if (req.user._id.toString() !== req.params.id.toString()) {
-        return res.status(403).json({message: "You are not authorized to update another user"})
-    }
+    const userId = req.user._id
 
     try {
-        const user = await User.findOneAndReplace({ _id: req.params.id }, updateData, { new: true, runValidators: true, select: "-password" });
+        const user = await User.findOneAndReplace({ _id: userId }, updateData, { new: true, runValidators: true, select: "-password" });
 
         if (!user) {
             return res.status(404).json({message: "User not found"});
@@ -200,7 +197,7 @@ router.put("/:id", isAuthenticated, async(req, res) => {
 });
 
 // GET ALL USERS
-router.get("/", async(req, res) => {
+router.get("/ids", async(req, res) => {
     try {
         const user = await User.find();
         res.json(user); 
@@ -210,15 +207,17 @@ router.get("/", async(req, res) => {
 });
 
 // GET ONE USER
-router.get("/:id", async(req, res) => {
+router.get("/", isAuthenticated, async(req, res) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.user._id);
 
         if (user == null) {
             return res.status(404).json({message: "User not found"});
         }
         res.json(user); 
     } catch (err) {
+        console.log(req.user)
+        console.log(req.user._id)
         res.status(404).json({error: err.message});
     }
 });

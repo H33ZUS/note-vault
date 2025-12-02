@@ -11,8 +11,21 @@
             <h3>Username: {{username}}</h3>
         </div>
 
-        <h3>Email: {{email}}</h3>
-        <h3>Password: {{passwordHidden}}</h3>
+        <div v-if="edit">
+            <label>Email</label>
+            <input type="text" v-model="email" class="form-control"/>
+        </div>
+        <div v-else>
+            <h3>Email: {{email}}</h3>
+        </div>
+
+        <div v-if="edit">
+            <label>Password</label>
+            <input type="text" v-model="password" class="form-control"/>
+        </div>
+        <div v-else>
+            <h3>Password: {{password}}</h3>
+        </div>
 
         <!-- EditButton -->
         <button class="btn btn-primary mt-3" @click="toggleEdit">
@@ -49,9 +62,10 @@ export default {
     async toggleEdit() {
       try {
         if (this.edit) {
-          const res = await fetch('http://localhost:3000/api/v1/users/6924d1a33ca69fb646002ab6', {
+          const res = await fetch('http://localhost:3000/api/v1/users/', {
             method: 'PUT',
             headers: { 'Content-type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({
               username: this.username,
               password: this.password,
@@ -69,9 +83,10 @@ export default {
     },
     async getUserData() {
       try {
-        const res = await fetch('http://localhost:3000/api/v1/users/6924d1a33ca69fb646002ab6', {
+        const res = await fetch('http://localhost:3000/api/v1/users/', {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
         }) // temp user
 
         if (!res.ok) throw new Error('Failed to get user')
