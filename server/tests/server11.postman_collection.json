@@ -1532,41 +1532,6 @@
 					"response": []
 				},
 				{
-					"name": "200 - Delete all subjects Copy",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful DELETE request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": "{{baseURL}}/api/v1/subjects"
-					},
-					"response": []
-				},
-				{
 					"name": "404 - Delete all subjects",
 					"event": [
 						{
