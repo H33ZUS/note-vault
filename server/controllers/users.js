@@ -195,6 +195,10 @@ router.put("/", isAuthenticated, async(req, res) => {
     const userId = req.user._id
 
     try {
+        if (updateData.password) {
+            const saltRounds = 10
+            updateData.password = await bcrypt.hash(updateData.password, saltRounds)
+        }
         const user = await User.findOneAndReplace({ _id: userId }, updateData, { new: true, runValidators: true, select: "-password" });
 
         if (!user) {
