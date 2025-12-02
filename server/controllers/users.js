@@ -56,9 +56,12 @@ router.post("/login", async(req, res) => {
     }
     try {
         const user = await User.findOne({ username: username });   
-
+        console.log("User found.");
+        
         if (user) {
             const isMatch = await bcrypt.compare(password, user.password);
+            console.log("Match found.");
+            console.log(isMatch);
 
             if (isMatch) {
                 const userId = user._id;
@@ -69,6 +72,7 @@ router.post("/login", async(req, res) => {
                     secure: req.app.get("env") === "production",
                     sameSite: "Lax"
                 })
+                console.log("Cookie created.");
 
                 return res.status(200).json({
                     message: "Login successful",
@@ -78,9 +82,9 @@ router.post("/login", async(req, res) => {
                         roles: user.roles
                     }
                 });
+            } else {
+                return res.status(401).json({error: "Invalid username or password"});
             }
-        } else {
-            res.status(401).json({error: "Invalid username or password"});
         }
     } catch (err) {
         res.status(400).json({error: err.message});
