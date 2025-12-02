@@ -68,7 +68,7 @@ router.delete("/noteCommits/:id", isAuthenticated, async(req, res) => {
 
 // UPDATE ONE VARIABLE OF A NOTE FILE
 router.patch("/noteCommits/:id", isAuthenticated, async(req, res) => {
-    userSessionId = req.session.userId;
+    userId = req.user._id;
     
     try {
         const existingNoteCommit = await NoteCommit.findById(req.params.id);
@@ -77,7 +77,7 @@ router.patch("/noteCommits/:id", isAuthenticated, async(req, res) => {
             return res.status(404).json({message: "Note Commit not found"});
         }
 
-        if (!existingNoteCommit.userId == userSessionId) {
+        if (!existingNoteCommit.userId == userId) {
             return res.status(403).json({message: "You are not authorized to update another user's note commit"})
         }
 

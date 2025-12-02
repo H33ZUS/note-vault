@@ -8,7 +8,7 @@ const router = express.Router();
 // ENROLL IN SUBJECT
 router.post("/:id/enroll", isAuthenticated, async(req, res) => {
     const subjectId = req.params.id;
-    const userId = req.session.userId;
+    const userId = req.user._id;
 
     try {
         const subject = await Subject.findById(subjectId);
@@ -38,7 +38,7 @@ router.post("/:id/enroll", isAuthenticated, async(req, res) => {
 // DROP OUT OF SUBJECT
 router.delete("/:id/enroll", isAuthenticated, async(req, res) => {
     const subjectId = req.params.id;
-    const userId = req.session.userId;
+    const userId = req.user._id;
 
     try {
         const result = await Enrollment.findOneAndDelete({

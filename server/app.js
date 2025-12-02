@@ -5,8 +5,6 @@ var path = require('path');
 var cors = require('cors');
 var history = require('connect-history-api-fallback');
 var cookieParser = require("cookie-parser");
-var session = require("express-session");
-var MongoStore = require("connect-mongo");
 var userRoutes = require("./controllers/users");
 var subjectRoutes = require('./controllers/subjects.js');
 var noteCommitRoutes = require("./controllers/noteCommits.js");
@@ -36,20 +34,6 @@ var app = express();
 mongoose.Promise = global.Promise;
 
 app.use(cookieParser());
-app.use(session({
-    secret: "my-secret",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-        mongoUrl: mongoURI,
-        collectionName: "sessions",
-    }),
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-        secure: app.get("env") === "production"
-    }
-}));
 
 // Parse requests of content-type 'application/json'
 app.use(express.urlencoded({ extended: true }));
@@ -57,8 +41,15 @@ app.use(express.json());
 // HTTP request logger
 app.use(morgan('dev'));
 // Enable cross-origin resource sharing for frontend must be registered before api
-app.options('*', cors());
-app.use(cors());
+const FRONTEND_ORIGIN = 'http://localhost:5173';
+
+const corsOptions = {
+    origin: FRONTEND_ORIGIN,
+    credentials: true,
+    methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'HEAD']
+}
+
+app.use(cors(corsOptions));
 
 // Import routes
 app.get('/api/v1', function(req, res) {

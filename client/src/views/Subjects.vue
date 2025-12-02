@@ -42,6 +42,7 @@ export default {
       try {
         const res = await fetch('http://localhost:3000/api/v1/subjects', {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ title: this.subjectTitle, createdBy: '65abcdef1234567890abcdef' }) // temp user
         })
