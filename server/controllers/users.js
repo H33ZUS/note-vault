@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
 const { isAuthenticated, isAuthorized } = require("../middleware/auth");
 const User = require("../models/user");
 const compareArrays = require("../utils/misc");
@@ -8,7 +9,15 @@ const router = express.Router();
 // CREATE A USER
 router.post("/", async(req, res) => {
     try {
-        const user = new User(req.body);
+        const { password, ...userData } = req.body;
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const user = new User({
+            ...userData,
+            password: hashedPassword
+        });
         await user.save();
 
         const userObj = user.toObject();
@@ -46,27 +55,32 @@ router.post("/login", async(req, res) => {
         return res.status(400).json({error: "Missing required fields: username and password are required for login."});
     }
     try {
-        const user = await User.findOne({ // Checks if user is existent
-            username: username,
-            password: password,
-        });   
-
+        const user = await User.findOne({ username: username });   
+        
         if (user) {
-            const userId = user._id;
+            const isMatch = await bcrypt.compare(password, user.password);
 
-            res.cookie("auth_token", userId.toString(), {
-                maxAge: 1000 * 60 * 60 * 24,
-                httpOnly: true,
-                secure: req.app.get("env") === "production",
-                sameSite: "Lax"
-            })
+            if (isMatch) {
+                const userId = user._id;
 
-            return res.status(200).json({
-                message: "Login successful",
-                user: user
-            });
-        } else {
-            res.status(401).json({error: "Invalid username or password"});
+                res.cookie("auth_token", userId.toString(), {
+                    maxAge: 1000 * 60 * 60 * 24,
+                    httpOnly: true,
+                    secure: req.app.get("env") === "production",
+                    sameSite: "Lax"
+                })
+
+                return res.status(200).json({
+                    message: "Login successful",
+                    user: {
+                        _id: user._id,
+                        username: user.username,
+                        roles: user.roles
+                    }
+                });
+            } else {
+                return res.status(401).json({error: "Invalid username or password"});
+            }
         }
     } catch (err) {
         res.status(400).json({error: err.message});

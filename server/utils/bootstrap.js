@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 
 async function bootstrapAdmin() {
     try {
@@ -14,11 +15,13 @@ async function bootstrapAdmin() {
         const email = "admin@example.com";
 
         const rawPassword = crypto.randomBytes(12).toString("hex");
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(rawPassword, saltRounds);  
 
         const adminUser = new User({
             username: username,
             email: email,
-            password: rawPassword,
+            password: hashedPassword,
             roles: ["admin", "teacher"]
         });
 
