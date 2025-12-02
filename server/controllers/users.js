@@ -14,11 +14,11 @@ router.post("/", async(req, res) => {
         const userObj = user.toObject();
 
         userObj.links = [
-            {rel : "self", method : "GET", href : `/api/users/${user._id}`},
-            {rel : "update", method : "PUT", href : `/api/users/${user._id}`},
-            {rel : "partial-update", method : "PATCH", href : `/api/users/${user._id}`},
-            {rel : "delete", method : "DELETE", href : `/api/users/${user._id}`},
-            {rel : "all-users", method : "GET", href : "/api/users"},
+            {rel : "self", method : "GET", href : `/api/users/`},
+            {rel : "update", method : "PUT", href : `/api/users/`},
+            {rel : "partial-update", method : "PATCH", href : `/api/users/`},
+            {rel : "delete", method : "DELETE", href : `/api/users/`},
+            {rel : "all-users", method : "GET", href : "/api/users/ids"},
         ]
 
         res.status(201).json(userObj);
@@ -80,15 +80,16 @@ router.post("/logout", isAuthenticated, (req, res) => {
 });
 
 // CHANGE ROLE OF A USER (FOR ADMINS ONLY)
-router.patch("/:id/role", isAuthenticated, isAuthorized("admin"), async (req, res) => {
+router.patch("/role", isAuthenticated, isAuthorized("admin"), async (req, res) => {
     const { roles: newRoles } = req.body;
+    const user = req.user._id
 
     if (!Array.isArray(newRoles) || newRoles.some(r => !["student", "teacher", "admin"].includes(r))) {
         return res.status(400).json({ message: "Invalid role array provided. Rules must be 'student', 'admin' or 'teacher'."})
     }
 
     try {
-        const targetUser = await User.findById(req.params.id);
+        const targetUser = await User.findById(user);
 
         if (!targetUser) {
             return res.status(404).json({ message: "Target user not found"});
@@ -104,11 +105,11 @@ router.patch("/:id/role", isAuthenticated, isAuthorized("admin"), async (req, re
             }
         }
 
-        if (targetUser.roles.includes("admin") && req.user._id.toString() !== req.params.id.toString()) {
+        if (targetUser.roles.includes("admin")) {
             return res.status(403).json({ message: "Cannot change the role of another admin user"});
         }
 
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, { $set: { roles: newRoles } }, { new: true, runValidators: true, select: "username roles email"});
+        const updatedUser = await User.findByIdAndUpdate(req.user._id, { $set: { roles: newRoles } }, { new: true, runValidators: true, select: "username roles email"});
 
         res.status(200).json({ message: `User ${updatedUser.username} roles updated.`, roles: updatedUser.roles });
     } catch (err) {
@@ -117,7 +118,7 @@ router.patch("/:id/role", isAuthenticated, isAuthorized("admin"), async (req, re
 });
 
 // DELETE ALL USERS
-router.delete("/", isAuthenticated, isAuthorized("admin"), async(req, res) => {
+router.delete("/ids", isAuthenticated, isAuthorized("admin"), async(req, res) => {
     try {
         const users = await User.find({});
 
@@ -139,13 +140,11 @@ router.delete("/", isAuthenticated, isAuthorized("admin"), async(req, res) => {
 });
 
 // DELETE ONE USER
-router.delete("/:id/", isAuthenticated, async(req, res) => {
-    if (req.user._id.toString() !== req.params.id.toString()) {
-        return res.status(403).json({ message: "You are not authorized to delete another user's account." });
-    }
+router.delete("/", isAuthenticated, async(req, res) => {
+    const user = req.user._id
 
     try {
-        const result = await User.deleteOne({ _id: req.params.id });
+        const result = await User.deleteOne({ _id: user });
 
         if (result.deletedCount === 0) {
             return res.status(404).json("User not found");
@@ -160,15 +159,12 @@ router.delete("/:id/", isAuthenticated, async(req, res) => {
 });
 
 // UPDATE ONE VARIABLE OF A USER
-router.patch("/:id", isAuthenticated, async(req, res) => {
+router.patch("/", isAuthenticated, async(req, res) => {
     const { roles, ...updateData } = req.body;
-
-    if (req.user._id.toString() !== req.params.id.toString()) {
-        return res.status(403).json({message: "You are not authorized to update another user"})
-    }
+    const userId = req.user._id
     
     try {
-        const user = await User.findByIdAndUpdate(req.params.id, updateData, {new: true, runValidators: true, select: "-password"});
+        const user = await User.findByIdAndUpdate(userId, updateData, {new: true, runValidators: true, select: "-password"});
 
         if (!user) {
             return res.status(404).json({message: "User not found"});
