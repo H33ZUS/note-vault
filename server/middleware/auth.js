@@ -19,7 +19,7 @@ const isAuthenticated = async (req, res, next) => {
         
         next();
     } catch (err) {
-        console.error("Auth error:", error);
+        console.error("Auth error:", err);
         res.clearCookie('auth_token');
         return res.status(401).json({ error: "Invalid token format." });
     }

@@ -80,7 +80,7 @@ router.post("/logout", isAuthenticated, (req, res) => {
 });
 
 // CHANGE ROLE OF A USER (FOR ADMINS ONLY)
-router.patch("/:id/role", isAuthenticated, isAuthorized("admin"), async (req, res) => {
+router.patch("/:id/roles", isAuthenticated, isAuthorized("admin"), async (req, res) => {
     const { roles: newRoles } = req.body;
 
     if (!Array.isArray(newRoles) || newRoles.some(r => !["student", "teacher", "admin"].includes(r))) {
