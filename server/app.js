@@ -47,7 +47,7 @@ const corsOptions = {
     origin: FRONTEND_ORIGIN,
     credentials: true,
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'HEAD']
-}
+};
 
 app.use(cors(corsOptions));
 
@@ -62,14 +62,14 @@ app.use("/api/v1/enrollments", enrollmentRoutes);
 // routing for users
 app.use("/api/v1/users", userRoutes);
 
+// routing for subjects
+app.use('/api/v1/subjects', subjectRoutes);
+
 // routing for noteFiles
 subjectRoutes.use("/:subjectId/noteFiles", noteFileRoutes);
 
 // routing for noteCommits
 noteFileRoutes.use("/:noteFileId", noteCommitRoutes)
-
-// routing for subjects
-app.use('/api/v1/subjects', subjectRoutes);
 
 //routing for comments
 noteCommitRoutes.use("/:noteCommitId/comments", commentRoutes);

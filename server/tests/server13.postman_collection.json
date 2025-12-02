@@ -4,8 +4,8 @@
 		"name": "Note Sharing Tests",
 		"description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "50009984",
-		"_collection_link": "https://willyrys-5117182.postman.co/workspace/Notes-Sharing~06220ac2-ab0a-4330-8d8a-2bc0af835941/collection/49950854-14ba522e-defc-48e7-8df9-dd571b159448?action=share&source=collection_link&creator=50009984"
+		"_exporter_id": "50196468",
+		"_collection_link": "https://willyrys-5117182.postman.co/workspace/Notes-Sharing~06220ac2-ab0a-4330-8d8a-2bc0af835941/collection/49950854-14ba522e-defc-48e7-8df9-dd571b159448?action=share&source=collection_link&creator=50196468"
 	},
 	"item": [
 		{
@@ -1779,7 +1779,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"{{title}}\"\n}",
+							"raw": "{\n\n}",
 							"options": {
 								"raw": {
 									"language": "json"

@@ -1,15 +1,19 @@
-const express = require("express");
+const express = require("express"); 
 const Subject = require("../models/subject.js");
 const NoteFile = require("../models/noteFile.js");
-
+const User = require("../models/user.js");
+const Enrollment = require("../models/enrollment.js");
 const { isAuthenticated, isAuthorized } = require("../middleware/auth.js");
 const router = express.Router();
 
 router.post("/", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
 
     try {
-        const subject = new Subject(req.body);
-        await subject.save();
+        const userId = req.user._id;
+        const subject = await Subject.create({
+            title: req.body.title,
+            createdBy: userId
+        });
 
         const defaultNoteFile = new NoteFile({ // noteFile created when subject is created
             title: `Untitled Note for ${subject.name || subject._id}`,
@@ -32,6 +36,50 @@ router.get("/", async(req, res) => {
     }
 });
 
+// get subjects user is not enrolled in
+router.get("/available", isAuthenticated, async(req, res) => {
+
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    try {
+        const userId = req.user._id;
+
+        const userCheck = await User.findById(userId);
+        if (!userCheck) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const enrollments = await Enrollment.find({ userId: userId }).select("subjectId");
+        const enrolledIds = enrollments.map(e => e.subjectId);
+
+        const available = await Subject.find({ _id: { $nin: enrolledIds }});
+
+        res.json(available);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// get subjects user is enrolled in
+router.get("/enrolled", isAuthenticated, async(req, res) => {
+
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    try {
+        const userId = req.user._id
+
+        const enrollments = await Enrollment.find({ userId}).select("subjectId");
+        const enrolledIds = enrollments.map(e => e.subjectId);
+
+        const subjects = await Subject.find({ _id: { $in: enrolledIds } });
+        res.json(subjects);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
 // get one
 router.get("/:id", async(req, res) => {
     try {
@@ -43,6 +91,7 @@ router.get("/:id", async(req, res) => {
 });
 
 router.patch("/:id", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
+
     try {
         const subjects = await Subject.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true, runValidators: true});
         res.json(subjects);  
