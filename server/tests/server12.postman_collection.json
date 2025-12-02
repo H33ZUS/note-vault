@@ -3,14 +3,221 @@
 		"_postman_id": "14ba522e-defc-48e7-8df9-dd571b159448",
 		"name": "Note Sharing Tests",
 		"description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "49950854",
-		"_collection_link": "https://willyrys-5117182.postman.co/workspace/Notes-Sharing~06220ac2-ab0a-4330-8d8a-2bc0af835941/collection/49950854-14ba522e-defc-48e7-8df9-dd571b159448?action=share&source=collection_link&creator=49950854"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50009984",
+		"_collection_link": "https://willyrys-5117182.postman.co/workspace/Notes-Sharing~06220ac2-ab0a-4330-8d8a-2bc0af835941/collection/49950854-14ba522e-defc-48e7-8df9-dd571b159448?action=share&source=collection_link&creator=50009984"
 	},
 	"item": [
 		{
 			"name": "user tests",
 			"item": [
+				{
+					"name": "401 - Get one user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful GET request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([401]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "401 - Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([401]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate random values using Postman's dynamic variables",
+									"const newRandomUsername = pm.variables.replaceIn('{{$randomUserName}}');",
+									"const newRandomPassword = pm.variables.replaceIn('{{$randomPassword}}');",
+									"const newRandomEmail = pm.variables.replaceIn('{{$randomEmail}}');",
+									"",
+									"// Set these as variables so they can be used in the request body",
+									"pm.variables.set('newUsername', newRandomUsername);",
+									"pm.variables.set('newPassword', newRandomPassword);",
+									"pm.variables.set('newEmail', newRandomEmail);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{newUsername}}\", \r\n    \"password\": \"{{newPassword}}\",\r\n    \"email\": \"{{newEmail}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "401 - Update User (one variable)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([401]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"username\": \"{{newUsername}}\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "401 - Delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([401]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "400  - Create user",
 					"event": [
@@ -51,7 +258,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -107,7 +324,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -152,7 +379,18 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users/login",
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"login"
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -198,7 +436,18 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users/login",
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"login"
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -244,7 +493,18 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users/login",
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"login"
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -269,7 +529,18 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseURL}}/api/v1/users",
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/ids",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"ids"
+							]
+						},
 						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
 					},
 					"response": []
@@ -306,74 +577,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "404 - Get one user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful GET request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "this_user_does_not_exists"
-								}
+								"users"
 							]
 						}
 					},
@@ -432,90 +643,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "403 - Update user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful PUT request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([403]);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"// Generate random values using Postman's dynamic variables",
-									"const newRandomUsername = pm.variables.replaceIn('{{$randomUserName}}');",
-									"const newRandomPassword = pm.variables.replaceIn('{{$randomPassword}}');",
-									"const newRandomEmail = pm.variables.replaceIn('{{$randomEmail}}');",
-									"",
-									"// Set these as variables so they can be used in the request body",
-									"pm.variables.set('newUsername', newRandomUsername);",
-									"pm.variables.set('newPassword', newRandomPassword);",
-									"pm.variables.set('newEmail', newRandomEmail);"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"{{newUsername}}\", \r\n    \"password\": \"{{newPassword}}\",\r\n    \"email\": \"{{newEmail}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "this_user_id_does_not_exist"
-								}
+								"users"
 							]
 						}
 					},
@@ -568,82 +703,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "403 - Update User (one variable)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful PUT request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([403]);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\"username\": \"{{newUsername}}\" \r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "this_user_does_not_exist"
-								}
+								"users"
 							]
 						}
 					},
@@ -684,7 +751,18 @@
 							"mode": "raw",
 							"raw": "{\n\t\"name\": \"Add your name in the body\"\n}"
 						},
-						"url": "{{baseURL}}/api/v1/users/logout"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/logout",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"logout"
+							]
+						}
 					},
 					"response": []
 				},
@@ -740,7 +818,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -784,7 +872,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -829,21 +927,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
+								"users"
 							]
 						}
 					},
@@ -890,21 +981,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "this_user_does_not_exist"
-								}
+								"users"
 							]
 						}
 					},
@@ -945,7 +1029,18 @@
 							"mode": "raw",
 							"raw": "{\n\t\"name\": \"Add your name in the body\"\n}"
 						},
-						"url": "{{baseURL}}/api/v1/users/logout"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/logout",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"logout"
+							]
+						}
 					},
 					"response": []
 				},
@@ -990,44 +1085,8 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users/login",
-						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-					},
-					"response": []
-				},
-				{
-					"name": "403 - Delete user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful DELETE request\", function () {\r",
-									"    pm.expect(pm.response.code).to.be.oneOf([403]);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users/login",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -1035,15 +1094,10 @@
 								"api",
 								"v1",
 								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "this_user_does_not_exist"
-								}
+								"login"
 							]
-						}
+						},
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
 				},
@@ -1079,21 +1133,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/users/:id",
+							"raw": "{{baseURL}}/api/v1/users",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "{{userId}}"
-								}
+								"users"
 							]
 						}
 					},
@@ -1151,7 +1198,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1196,7 +1253,18 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users/login",
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"login"
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -1253,7 +1321,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1420,7 +1498,18 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{baseURL}}/api/v1/users"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/ids",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"ids"
+							]
+						}
 					},
 					"response": []
 				}
@@ -1481,7 +1570,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1526,7 +1625,18 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users/login",
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"login"
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -1562,7 +1672,17 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{baseURL}}/api/v1/subjects"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1612,7 +1732,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1656,7 +1786,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1691,7 +1831,17 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseURL}}/api/v1/subjects"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
 					},
 					"response": []
 				},
@@ -2201,7 +2351,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
 					},
 					"response": []
 				},
@@ -2236,7 +2396,17 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{baseURL}}/api/v1/subjects"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
 					},
 					"response": []
 				}
@@ -2297,7 +2467,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -2342,7 +2522,18 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users/login",
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"login"
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -2417,7 +2608,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
 					},
 					"response": []
 				},
@@ -2719,7 +2920,18 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseURL}}/api/v1/enrollments/"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/enrollments/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"enrollments",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -2780,7 +2992,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -2825,7 +3047,18 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users/login",
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"login"
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -2900,7 +3133,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
 					},
 					"response": []
 				},
@@ -2994,7 +3237,19 @@
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": "{{baseURL}}/api/v1/subjects/6924a95b89f0af6a98ab2ca3/noteFiles"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/6924a95b89f0af6a98ab2ca3/noteFiles",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"6924a95b89f0af6a98ab2ca3",
+								"noteFiles"
+							]
+						}
 					},
 					"response": []
 				},
@@ -3029,7 +3284,19 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles"
+							]
+						}
 					},
 					"response": []
 				},
@@ -3071,7 +3338,19 @@
 							"mode": "raw",
 							"raw": ""
 						},
-						"url": "{{baseURL}}/api/v1/subjects/69246d597c232d714c4bea78/noteFiles"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/69246d597c232d714c4bea78/noteFiles",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"69246d597c232d714c4bea78",
+								"noteFiles"
+							]
+						}
 					},
 					"response": []
 				},
@@ -3106,7 +3385,20 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}"
+							]
+						}
 					},
 					"response": []
 				},
@@ -3141,7 +3433,20 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/6924b72d89f0af6a98ab2d01"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/6924b72d89f0af6a98ab2d01",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"6924b72d89f0af6a98ab2d01"
+							]
+						}
 					},
 					"response": []
 				},
@@ -3238,7 +3543,20 @@
 							"mode": "raw",
 							"raw": "{\n    \"updatedAt\": \"22:56\",\n    \"notes\": \"hello\"\n}"
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}"
+							]
+						}
 					},
 					"response": []
 				},
@@ -3407,7 +3725,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -3452,7 +3780,18 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users/login",
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"login"
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -3531,7 +3870,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
 					},
 					"response": []
 				},
@@ -3588,7 +3937,21 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/noteCommits"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/noteCommits",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"noteCommits"
+							]
+						}
 					},
 					"response": []
 				},
@@ -3635,7 +3998,21 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/noteCommits"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/noteCommits",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"noteCommits"
+							]
+						}
 					},
 					"response": []
 				},
@@ -3673,7 +4050,21 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/noteCommits"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/noteCommits",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"noteCommits"
+							]
+						}
 					},
 					"response": []
 				},
@@ -4090,7 +4481,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -4135,7 +4536,18 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/users/login",
+						"url": {
+							"raw": "{{baseURL}}/api/v1/users/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"login"
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -4214,7 +4626,17 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
 					},
 					"response": []
 				},
@@ -4271,7 +4693,21 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/noteCommits"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/noteCommits",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"noteCommits"
+							]
+						}
 					},
 					"response": []
 				},
@@ -4475,7 +4911,23 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -4519,7 +4971,23 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -4554,7 +5022,23 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -4659,7 +5143,24 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								"{{commentId}}",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -4770,7 +5271,24 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								"{{commentId}}",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -4814,7 +5332,24 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								"{{commentId}}",
+								"likes"
+							]
+						}
 					},
 					"response": []
 				},
@@ -4858,7 +5393,24 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								"{{commentId}}",
+								"likes"
+							]
+						}
 					},
 					"response": []
 				},
@@ -4902,7 +5454,24 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								"{{commentId}}",
+								"likes"
+							]
+						}
 					},
 					"response": []
 				},
@@ -4946,7 +5515,24 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								"{{commentId}}",
+								"likes"
+							]
+						}
 					},
 					"response": []
 				},
@@ -4990,7 +5576,24 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								"{{commentId}}",
+								"likes"
+							]
+						}
 					},
 					"response": []
 				},
@@ -5034,7 +5637,24 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/likes",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								"{{commentId}}",
+								"likes"
+							]
+						}
 					},
 					"response": []
 				},
@@ -5078,7 +5698,24 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								"{{commentId}}",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -5122,7 +5759,69 @@
 								}
 							}
 						},
-						"url": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/"
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/{{noteCommitId}}/comments/{{commentId}}/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects",
+								"{{subjectId}}",
+								"noteFiles",
+								"{{noteFileId}}",
+								"{{noteCommitId}}",
+								"comments",
+								"{{commentId}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "200 - Delete all subjects Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/v1/subjects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subjects"
+							]
+						}
 					},
 					"response": []
 				}
