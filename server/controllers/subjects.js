@@ -42,6 +42,8 @@ router.get("/available", isAuthenticated, async(req, res) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
+
+    const {sort} = req.query;
     try {
         const userId = req.user._id;
 
@@ -53,7 +55,9 @@ router.get("/available", isAuthenticated, async(req, res) => {
         const enrollments = await Enrollment.find({ userId: userId }).select("subjectId");
         const enrolledIds = enrollments.map(e => e.subjectId);
 
-        const available = await Subject.find({ _id: { $nin: enrolledIds }});
+        const available = await Subject.find(
+            { _id: { $nin: enrolledIds }}, 
+            null, { collation: { locale: "en", strength: 1 }}).sort({ title: 1 }); // sort alphabetically
 
         res.json(available);
     } catch (err) {
