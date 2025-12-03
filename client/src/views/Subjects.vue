@@ -57,8 +57,34 @@
       </div>
 
       <div v-for="subject in availableSubjects" :key="subject._id" class="card p-3 mb-3 d-flex flex-row align-items-center justify-content-between">
-        <h4>{{ subject.title }}</h4>
+        <div v-if="editingSubjectId === subject._id">
+          <input
+            type="text"
+            v-model="editedTitle"
+            class="form-control me-2"
+            @keyup.enter="saveSubjectName(subject._id)"
+          />
+        </div>
+        <h4 class="mb-0" v-else>{{ subject.title }}</h4>
         <div class="d-flex">
+          <div v-if="isAdminOrTeacher">
+            <button
+              v-if="editingSubjectId !== subject._id"
+              class="btn btn-sm btn-outline-info me-2"
+              @click="startEditing(subject)"
+              title="Edit Subject"
+            >
+              ✏️
+            </button>
+            <button
+              v-else
+              class="btn btn-sm btn-success me-2"
+              @click="saveSubjectName(subject._id)"
+              title="Save Changes"
+            >
+              💾
+          </button>
+        </div>
           <button
             v-if="isAdminOrTeacher"
             class="btn btn-sm btn-outline-danger me-2"
@@ -113,7 +139,10 @@ export default {
       mySubjects: [],
       loadingMy: false,
       myMessage: '',
-      isAdminOrTeacher: false
+      isAdminOrTeacher: false,
+
+      editingSubjectId: null,
+      editedTitle: ''
     }
   },
   mounted() {
@@ -249,6 +278,38 @@ export default {
         this.availableSubjects = this.availableSubjects.filter(s => s._id !== subjectId)
       } catch (err) {
         this.joinMessage = 'Error deleting subject: ' + err.message
+      }
+    },
+    // iniates editing mode
+    startEditing(subject) {
+      this.editingSubjectId = subject._id
+      this.editedTitle = subject.title
+      this.joinMessage = ''
+    },
+
+    async saveSubjectName(subjectId) {
+      if (!this.editedTitle.trim()) {
+        this.joinMessage = 'Subject title cannot be empty'
+      }
+
+      try {
+        const res = await fetch(`http://localhost:3000/api/v1/subjects/${subjectId}`, {
+          method: 'PATCH',
+          headers: { 'Content-type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ title: this.editedTitle })
+        })
+        if (!res.ok) throw new Error('Failed to update subject title')
+
+        const updatedSubject = await res.json()
+        const index = this.availableSubjects.findIndex(s => s._id === subjectId)
+        if (index !== -1) {
+          this.availableSubjects[index].title = updatedSubject.title
+        }
+        this.joinMessage = `Subject "${updatedSubject.title}" updated successfully`
+        this.editingSubjectId = null
+      } catch (err) {
+        this.joinMessage = 'Error updating subject: ' + err.message
       }
     }
   }
