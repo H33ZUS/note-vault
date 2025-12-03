@@ -56,12 +56,21 @@
         No subjects available to join.
       </div>
 
-      <div v-for="subject in availableSubjects" :key="subject._id" class="card p-3 mb-3">
+      <div v-for="subject in availableSubjects" :key="subject._id" class="card p-3 mb-3 d-flex flex-row align-items-center justify-content-between">
         <h4>{{ subject.title }}</h4>
-        <button class="btn btn-primary" @click="joinSubject(subject._id)">
-          Join
-        </button>
+        <div class="d-flex">
+          <button
+            v-if="isAdminOrTeacher"
+            class="btn btn-sm btn-outline-danger me-2"
+            @click="deleteSubject(subject._id)"
+            title="Delete Subject"
+          >
+            🗑️ </button>
+          <button class="btn btn-primary" @click="joinSubject(subject._id)">
+            Join
+          </button>
       </div>
+    </div>
 
       <div v-if="joinMessage" class="alert alert-info mt-3">
         {{ joinMessage }}
@@ -220,6 +229,26 @@ export default {
       } catch (err) {
         console.error('Failed to fetch user role', err)
         this.isAdminOrTeacher = false
+      }
+    },
+
+    async deleteSubject(subjectId) {
+      if (!confirm('Are you sure you want to delete this subject?')) {
+        return
+      }
+
+      try {
+        const res = await fetch(`http://localhost:3000/api/v1/subjects/${subjectId}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        })
+        if (!res.ok) {
+          throw new Error('Failed to delete subject')
+        }
+        this.joinMessage = 'Subject deleted successfully'
+        this.availableSubjects = this.availableSubjects.filter(s => s._id !== subjectId)
+      } catch (err) {
+        this.joinMessage = 'Error deleting subject: ' + err.message
       }
     }
   }
