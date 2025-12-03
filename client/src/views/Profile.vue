@@ -24,7 +24,7 @@
             <input type="text" v-model="password" class="form-control"/>
         </div>
         <div v-else>
-            <h3>Password: {{password}}</h3>
+            <h3>Password: ********</h3>
         </div>
 
         <!-- EditButton -->
@@ -87,7 +87,7 @@ export default {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include'
-        }) // temp user
+        })
 
         if (!res.ok) throw new Error('Failed to get user')
 
@@ -95,7 +95,6 @@ export default {
 
         this.username = data.username
         this.email = data.email
-        this.password = data.password
 
         for (let i = 0; i < this.password.length; i++) {
           this.passwordHidden += '*'
