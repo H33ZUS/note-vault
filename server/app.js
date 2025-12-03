@@ -69,7 +69,7 @@ app.use('/api/v1/subjects', subjectRoutes);
 subjectRoutes.use("/:subjectId/noteFiles", noteFileRoutes);
 
 // routing for noteCommits
-noteFileRoutes.use("/:noteFileId", noteCommitRoutes)
+noteFileRoutes.use("/:noteFileId/noteCommits", noteCommitRoutes)
 
 //routing for comments
 noteCommitRoutes.use("/:noteCommitId/comments", commentRoutes);

@@ -5,8 +5,7 @@ const { isAuthenticated, isAuthorized } = require("../middleware/auth.js");
 
 const router = express.Router({mergeParams: true}); 
 
-router.post("/noteCommits", async(req, res) => {
-
+router.post("/", isAuthenticated, async(req, res) => {
     const {noteFileId} = req.params;
 
     try {
@@ -14,7 +13,11 @@ router.post("/noteCommits", async(req, res) => {
         if (!noteFile) {
             return res.status(404).json({error: "Parent NoteFile not found"});
         }
-        const noteCommit = new NoteCommit({...req.body, noteFileId: noteFileId});
+        const noteCommit = new NoteCommit({
+            ...req.body, 
+            noteFileId: noteFileId,
+            createdBy: req.user._id
+        });
         await noteCommit.save();
         res.status(201).json(noteCommit);
     } catch (err) {
@@ -22,7 +25,7 @@ router.post("/noteCommits", async(req, res) => {
     }
 });
 
-router.get("/noteCommits", async(req, res) => {
+router.get("/", async(req, res) => {
 
     const {noteFileId} = req.params;
 
@@ -50,7 +53,7 @@ router.get("/noteCommits", async(req, res) => {
 });
 
 // DELETE ONE NOTE FILE
-router.delete("/noteCommits/:id", isAuthenticated, async(req, res) => {
+router.delete("/:id", isAuthenticated, async(req, res) => {
     try {
         const noteCommit = await NoteCommit.findById(req.params.id);
 
@@ -67,7 +70,7 @@ router.delete("/noteCommits/:id", isAuthenticated, async(req, res) => {
 });
 
 // UPDATE ONE VARIABLE OF A NOTE FILE
-router.patch("/noteCommits/:id", isAuthenticated, async(req, res) => {
+router.patch("/:id", isAuthenticated, async(req, res) => {
     userId = req.user._id;
     
     try {

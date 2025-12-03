@@ -1,13 +1,16 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const { isAuthenticated, isAuthorized } = require("../middleware/auth");
+const { validateResponse } = require("../middleware/responseValidator");
+const { validateRequest } = require("../middleware/requestValidator");
+const validation = require("../models/userValidation");
 const User = require("../models/user");
 const compareArrays = require("../utils/misc");
 
 const router = express.Router();
 
 // CREATE A USER
-router.post("/", async(req, res) => {
+router.post("/", validateRequest(validation.userCreateRequestSchema), async(req, res, next) => {
     try {
         const { password, ...userData } = req.body;
 
@@ -29,8 +32,16 @@ router.post("/", async(req, res) => {
             {rel : "delete", method : "DELETE", href : `/api/users/`},
             {rel : "all-users", method : "GET", href : "/api/users/ids"},
         ]
+        
+        delete userObj.password;
+        delete userObj.__v;
 
-        res.status(201).json(userObj);
+        if (userObj._id) {
+            userObj._id = userObj._id.toString();
+        }
+
+        res.locals.data = userObj;
+        next();
     } catch (err) {
         if (err.code === 11000) {
             let field = "Field";
@@ -45,15 +56,14 @@ router.post("/", async(req, res) => {
 
         res.status(400).json({error: err.message});
     }
+}, validateResponse(validation.userCreateResponseSchema), (req, res) => {
+    res.status(201).json(res.locals.data);
 });
 
 // USER LOGIN
-router.post("/login", async(req, res) => {
+router.post("/login", validateRequest(validation.userLoginRequestSchema), async(req, res) => {
     const { username, password } = req.body
 
-    if (!username || !password) {
-        return res.status(400).json({error: "Missing required fields: username and password are required for login."});
-    }
     try {
         const user = await User.findOne({ username: username });   
         
@@ -71,12 +81,7 @@ router.post("/login", async(req, res) => {
                 })
 
                 return res.status(200).json({
-                    message: "Login successful",
-                    user: {
-                        _id: user._id,
-                        username: user.username,
-                        roles: user.roles
-                    }
+                    message: "Login successful"
                 });
             } else {
                 return res.status(401).json({error: "Invalid username or password"});
@@ -94,13 +99,9 @@ router.post("/logout", isAuthenticated, (req, res) => {
 });
 
 // CHANGE ROLE OF A USER (FOR ADMINS ONLY)
-router.patch("/:id/roles", isAuthenticated, isAuthorized("admin"), async (req, res) => {
+router.patch("/:id/roles", isAuthenticated, isAuthorized("admin"), validateRequest(validation.userUpdateRoleRequestSchema) ,async (req, res) => {
     const { roles: newRoles } = req.body;
     const user = req.params.id
-
-    if (!Array.isArray(newRoles) || newRoles.some(r => !["student", "teacher", "admin"].includes(r))) {
-        return res.status(400).json({ message: "Invalid role array provided. Rules must be 'student', 'admin' or 'teacher'."})
-    }
 
     try {
         const targetUser = await User.findById(user);
@@ -173,7 +174,7 @@ router.delete("/", isAuthenticated, async(req, res) => {
 });
 
 // UPDATE ONE VARIABLE OF A USER
-router.patch("/", isAuthenticated, async(req, res) => {
+router.patch("/", isAuthenticated, validateRequest(validation.userPatchRequestSchema), async(req, res, next) => {
     const { roles, ...updateData } = req.body;
     const userId = req.user._id
     
@@ -183,53 +184,104 @@ router.patch("/", isAuthenticated, async(req, res) => {
         if (!user) {
             return res.status(404).json({message: "User not found"});
         }
-        res.json(user);
+
+        const userObj = user.toObject();
+
+        if (userObj._id) {
+            userObj._id = userObj._id.toString();
+        }
+
+        res.locals.data = userObj;
+        next();
     } catch (err) {
         res.status(400).send(err.message);
     }
+}, validateResponse(validation.userResponseSchema), (req, res) => {
+    res.status(200).json(res.locals.data);
 });
 
 // UPDATE EVERYTHING OF A USER
-router.put("/", isAuthenticated, async(req, res) => {
+router.put("/", isAuthenticated, validateRequest(validation.userPutRequestSchema), async(req, res, next) => {
     const { roles, ...updateData } = req.body;
     const userId = req.user._id
 
     try {
-        const user = await User.findOneAndReplace({ _id: userId }, updateData, { new: true, runValidators: true, select: "-password" });
+        const user = await User.findOneAndReplace({ _id: userId }, updateData, { new: true, runValidators: true, select: "-password -__v" });
 
         if (!user) {
             return res.status(404).json({message: "User not found"});
         }
-        res.json(user);
+
+        const userObj = user.toObject();
+
+        if (userObj._id) {
+            userObj._id = userObj._id.toString();
+        }
+
+        res.locals.data = userObj;
+        next();
     } catch (err) {
         res.status(400).json({message: err.message});
     }
+}, validateResponse(validation.userResponseSchema), (req, res) => {
+    res.status(200).json(res.locals.data);
 });
 
 // GET ALL USERS
-router.get("/ids", async(req, res) => {
+router.get("/ids", async(req, res, next) => {
     try {
-        const user = await User.find();
-        res.json(user); 
+        const users = await User.find().select("-password -__v");
+
+        if (!users) {
+            return res.status(404).json({ message: "No users found"});
+        }
+
+        const finalData = users.map(user => {
+            const userObj = user.toObject();
+
+            if (userObj._id) {
+                userObj._id = userObj._id.toString();
+            }
+
+            return userObj
+        });
+
+        res.locals.data = finalData;
+        next();
     } catch (err) {
         res.status(404).json({error: err.message});
     }
+}, validateResponse(validation.userResponseSchema), (req, res) => {
+    res.status(200).json(res.locals.data);
 });
 
 // GET ONE USER
-router.get("/", isAuthenticated, async(req, res) => {
+router.get("/", isAuthenticated, async(req, res, next) => {
     try {
-        const user = await User.findById(req.user._id);
+        const user = await User.findById(req.user._id).select("-password -__v");
 
         if (user == null) {
             return res.status(404).json({message: "User not found"});
         }
-        res.json(user); 
+
+        const finalData = user.toObject();
+
+        if (finalData._id) {
+            finalData._id = finalData._id.toString();
+        }
+
+        res.locals.data = finalData;
+
+        next();
     } catch (err) {
-        console.log(req.user)
-        console.log(req.user._id)
-        res.status(404).json({error: err.message});
+        if (err.kind === 'ObjectId') {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        return res.status(500).json({ error: err.message });
     }
+}, validateResponse(validation.userResponseSchema), (req, res) => {
+    res.status(200).json(res.locals.data);
 });
 
 module.exports = router;

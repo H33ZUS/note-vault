@@ -1,11 +1,13 @@
 const express = require("express");
 var Comment = require("../models/comment.js");
+const { isAuthenticated, isAuthorized } = require("../middleware/auth");
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/", async(req, res) => {
+router.post("/", isAuthenticated, async(req, res) => {
+    console.log(req.body);
     try{
-        const {comment, createdBy, commentedOnNote, commentedOnComment} = req.body;
+        const {comment, commentedOnNote, commentedOnComment} = req.body;
 
         if (commentedOnComment && commentedOnNote) {
             return res.status(400).json({error: "a comment can only be commented on a comment or a note not both"});
@@ -13,15 +15,17 @@ router.post("/", async(req, res) => {
         if (!commentedOnComment && !commentedOnNote) {
             return res.status(400).json({error: "a comment needs either a comment or a note to be commented on"})
         }
+        
+        const createdBy = req.user._id;
 
-    const newComment = await Comment.create({
-        comment,
-        createdBy,
-        commentedOnNote,
-        commentedOnComment
-    });
+        const newComment = await Comment.create({
+            comment,
+            createdBy,
+            commentedOnNote,
+            commentedOnComment
+        });
 
-    return res.status(201).json(newComment);
+        return res.status(201).json(newComment);
 
     } catch(err){
         return res.status(400).json({error: err.message});
