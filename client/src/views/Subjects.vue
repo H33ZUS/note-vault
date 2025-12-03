@@ -3,7 +3,7 @@
         <h2>Subject Management</h2>
 
         <ul class="nav nav-tabs mb-4">
-          <li class="nav-item">
+          <li class="nav-item" v-if="isAdminOrTeacher">
             <a
               class="nav-link"
               :class="{ active: currentTab === 'create' }"
@@ -27,7 +27,7 @@
         </ul>
 
         <!-- Create subject -->
-        <div v-if="currentTab === 'create'">
+        <div v-if="currentTab === 'create' && isAdminOrTeacher">
           <h2>Create Subject</h2>
           <div class="mb-3">
             <label class="form-label">Subject Title</label>
@@ -103,10 +103,13 @@ export default {
 
       mySubjects: [],
       loadingMy: false,
-      myMessage: ''
+      myMessage: '',
+      isAdminOrTeacher: false
     }
   },
-
+  mounted() {
+    this.checkUserRoles()
+  },
   methods: {
     async createSubject() {
       if (!this.subjectTitle.trim()) {
@@ -142,19 +145,18 @@ export default {
         if (!res.ok) throw new Error('Failed to load subjects')
         this.availableSubjects = await res.json()
       } catch (err) {
-        this.joinMessage = 'Failed to load subjects: ' + err.message 
+        this.joinMessage = 'Failed to load subjects: ' + err.message
       }
       this.loadingJoin = false
     },
-    
+
     async joinSubject(subjectId) {
-      
       try {
         const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}/enroll`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify({ subjectId }),
+          body: JSON.stringify({ subjectId })
         })
         if (!res.ok) throw new Error('Failed to join')
         this.joinMessage = 'Successfully joined'
@@ -165,7 +167,6 @@ export default {
     },
 
     async fetchMySubjects() {
-
       this.loadingMy = true
       this.myMessage = ''
 
@@ -182,17 +183,43 @@ export default {
     },
 
     async leaveSubject(subjectId) {
-
       try {
         const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}/unenroll`, {
-          method: 'DELETE',
+          method: 'POST',
           credentials: 'include'
         })
         if (!res.ok) throw new Error('Failed to leave')
         this.myMessage = 'Left subject successfully'
-        this.mySubjects = this.mySubjects.filter(s => s._id !== subjectId);
+        this.mySubjects = this.mySubjects.filter(s => s._id !== subjectId)
       } catch (err) {
         this.myMessage = 'Error: ' + err.message
+      }
+    },
+
+    async checkUserRoles() {
+      try {
+        const res = await fetch('http://localhost:3000/api/v1/users/', {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-type': 'applications/json' }
+        })
+
+        if (res.ok) {
+          const data = await res.json()
+
+          const roles = data.roles || []
+
+          this.isAdminOrTeacher = roles.includes('admin') || roles.includes('teacher')
+
+          if (!this.isAdminOrTeacher && this.currentTab === 'create') {
+            this.currentTab = 'join'
+          }
+        } else if (res.status === 401) {
+          this.isAdminOrTeacher = false
+        }
+      } catch (err) {
+        console.error('Failed to fetch user role', err)
+        this.isAdminOrTeacher = false
       }
     }
   }
