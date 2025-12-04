@@ -17,11 +17,13 @@ router.post("/", isAuthenticated, validateRequest(val.noteCommitRequestSchema), 
         if (!noteFile) {
             return res.status(404).json({error: "Parent NoteFile not found"});
         }
+
         const noteCommit = new NoteCommit({
             ...req.body, 
             noteFileId: noteFileId,
             createdBy: req.user._id
         });
+
         await noteCommit.save();
 
         const noteCommitObj = noteCommit.toObject();

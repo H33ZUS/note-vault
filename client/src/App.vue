@@ -8,6 +8,8 @@
       <router-link to="/profile/view">Profile</router-link>
       |
       <router-link to="/login">Login</router-link>
+      |
+      <router-link to="/signup">Register</router-link>
     </div>
     <!-- Render the content of the current page view -->
     <router-view/>

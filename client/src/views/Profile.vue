@@ -76,7 +76,7 @@ export default {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include'
-        }) // temp user
+        })
 
         if (!res.ok) throw new Error('Failed to get user')
 

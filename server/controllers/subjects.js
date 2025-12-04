@@ -86,6 +86,8 @@ router.get("/available", isAuthenticated, async(req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
+
+    const {sort} = req.query;
     try {
         const userId = req.user._id;
 
@@ -97,7 +99,9 @@ router.get("/available", isAuthenticated, async(req, res, next) => {
         const enrollments = await Enrollment.find({ userId: userId }).select("subjectId");
         const enrolledIds = enrollments.map(e => e.subjectId);
 
-        const available = await Subject.find({ _id: { $nin: enrolledIds }}).select("-__v");
+        const available = await Subject.find(
+            { _id: { $nin: enrolledIds }}, 
+            null, { collation: { locale: "en", strength: 1 }}).sort({ title: 1 }).select("-__v"); // sort alphabetically
 
         const finalData = available.map(subject => {
             const subjectObj = subject.toObject();
@@ -219,8 +223,6 @@ router.put("/:id", isAuthenticated, isAuthorized("teacher"), validateRequest(val
     res.status(200).json(res.locals.data);
 });
     
-
-// WE ALSO NEED TO DELETE THE NOTE FILE WHEN DELETING A SUBJECT
 router.delete("/:id", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
     try {
         const subject = await Subject.findById(req.params.id);

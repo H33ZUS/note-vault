@@ -8,7 +8,6 @@ const val = require("../validations/commentValidation");
 const router = express.Router({ mergeParams: true });
 
 router.post("/", isAuthenticated, validateRequest(val.commentRequestSchema), async(req, res, next) => {
-    console.log(req.body);
     try{
         const {comment, commentedOnNote, commentedOnComment} = req.body;
 
@@ -141,17 +140,15 @@ router.get("/", async(req, res, next) => {
     res.status(200).json(res.locals.data);
 })
 
-router.put("/:id/", async(req, res) => {
+router.put("/:id/",isAuthenticated, async(req, res) => {
     try{
         const commentId = req.params.id
-        const {comment, userId} = req.body
+        const userId = req.user._id
+        const {comment} = req.body
 
         const oldComment = await Comment.findById(commentId);
         const createdBy = oldComment.createdBy;
-
-        if (userId != createdBy) {
-            return res.status(403).json({"error" : "different editor from auther"});
-        }
+        
         const updatedComment = await Comment.findByIdAndUpdate(commentId, {comment}, {new : true, runValidators : true});
 
         if (!updatedComment){
@@ -164,18 +161,13 @@ router.put("/:id/", async(req, res) => {
     }
 })
 
-router.delete("/:id/", async(req, res) => {
+router.delete("/:id/",isAuthenticated, async(req, res) => {
     try{
         const commentId = req.params.id;
-        const {userId} = req.body;
+        const userId = req.user._id;
 
         const oldComment = await Comment.findById(commentId);
         const createdBy = oldComment.createdBy;
-
-
-        if(userId != createdBy) {
-            return res.status(403).json({"error": "non-auther cant delete comment"})
-        }
 
         const deletedComment = await Comment.findById(commentId)
 
