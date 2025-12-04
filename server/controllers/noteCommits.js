@@ -5,16 +5,17 @@ const { isAuthenticated, isAuthorized } = require("../middleware/auth.js");
 
 const router = express.Router({mergeParams: true}); 
 
-router.post("/noteCommits", async(req, res) => {
+router.post("/noteCommits",isAuthenticated, async(req, res) => {
 
     const {noteFileId} = req.params;
+    const user = req.user.id
 
     try {
         const noteFile = await NoteFile.findById(noteFileId);
         if (!noteFile) {
             return res.status(404).json({error: "Parent NoteFile not found"});
         }
-        const noteCommit = new NoteCommit({...req.body, noteFileId: noteFileId});
+        const noteCommit = new NoteCommit({createdBy: user, ...req.body, noteFileId: noteFileId});
         await noteCommit.save();
         res.status(201).json(noteCommit);
     } catch (err) {

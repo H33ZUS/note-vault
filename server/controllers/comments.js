@@ -1,11 +1,13 @@
 const express = require("express");
 var Comment = require("../models/comment.js");
+const { isAuthenticated, isAuthorized } = require("../middleware/auth");
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/", async(req, res) => {
+router.post("/",isAuthenticated, async(req, res) => {
     try{
-        const {comment, createdBy, commentedOnNote, commentedOnComment} = req.body;
+        const createdBy = req.user._id
+        const {comment, commentedOnNote, commentedOnComment} = req.body;
 
         if (commentedOnComment && commentedOnNote) {
             return res.status(400).json({error: "a comment can only be commented on a comment or a note not both"});
@@ -81,17 +83,15 @@ router.get("/", async(req, res) => {
     }
 })
 
-router.put("/:id/", async(req, res) => {
+router.put("/:id/",isAuthenticated, async(req, res) => {
     try{
         const commentId = req.params.id
-        const {comment, userId} = req.body
+        const userId = req.user._id
+        const {comment} = req.body
 
         const oldComment = await Comment.findById(commentId);
         const createdBy = oldComment.createdBy;
-
-        if (userId != createdBy) {
-            return res.status(403).json({"error" : "different editor from auther"});
-        }
+        
         const updatedComment = await Comment.findByIdAndUpdate(commentId, {comment}, {new : true, runValidators : true});
 
         if (!updatedComment){
@@ -104,18 +104,13 @@ router.put("/:id/", async(req, res) => {
     }
 })
 
-router.delete("/:id/", async(req, res) => {
+router.delete("/:id/",isAuthenticated, async(req, res) => {
     try{
         const commentId = req.params.id;
-        const {userId} = req.body;
+        const userId = req.user._id;
 
         const oldComment = await Comment.findById(commentId);
         const createdBy = oldComment.createdBy;
-
-
-        if(userId != createdBy) {
-            return res.status(403).json({"error": "non-auther cant delete comment"})
-        }
 
         const deletedComment = await Comment.findById(commentId)
 

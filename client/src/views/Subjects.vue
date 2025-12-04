@@ -48,6 +48,7 @@
         </div>
     </div>
 
+    <!--Join subject-->
     <div v-else-if="currentTab === 'join'">
       <h2>Join Subject</h2>
       <div v-if="loadingJoin">Loading...</div>
@@ -68,6 +69,7 @@
       </div>
     </div>
 
+    <!--Enrolled subjects-->
     <div v-else-if="currentTab === 'my'">
       <h2>My Subjects</h2>
 
@@ -78,7 +80,7 @@
       </div>
 
       <div v-for="subject in mySubjects" :key="subject._id" class="card p3 mb-3">
-        <h4>{{ subject.title }}</h4>
+        <h4><router-link :to="`/notefile/${subject._id}`">{{subject.title}}</router-link></h4>
         <button class="btn btn-prmary" @click="leaveSubject(subject._id)">
           Leave
         </button>
@@ -143,19 +145,18 @@ export default {
         if (!res.ok) throw new Error('Failed to load subjects')
         this.availableSubjects = await res.json()
       } catch (err) {
-        this.joinMessage = 'Failed to load subjects: ' + err.message 
+        this.joinMessage = 'Failed to load subjects: ' + err.message
       }
       this.loadingJoin = false
     },
-    
+
     async joinSubject(subjectId) {
-      
       try {
         const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}/enroll`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify({ subjectId }),
+          body: JSON.stringify({ subjectId })
         })
         if (!res.ok) throw new Error('Failed to join')
         this.joinMessage = 'Successfully joined'
@@ -166,7 +167,6 @@ export default {
     },
 
     async fetchMySubjects() {
-
       this.loadingMy = true
       this.myMessage = ''
 
@@ -183,7 +183,6 @@ export default {
     },
 
     async leaveSubject(subjectId) {
-
       try {
         const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}/enroll`, {
           method: 'DELETE',
@@ -191,7 +190,7 @@ export default {
         })
         if (!res.ok) throw new Error('Failed to leave')
         this.myMessage = 'Left subject successfully'
-        this.mySubjects = this.mySubjects.filter(s => s._id !== subjectId);
+        this.mySubjects = this.mySubjects.filter(s => s._id !== subjectId)
       } catch (err) {
         this.myMessage = 'Error: ' + err.message
       }
