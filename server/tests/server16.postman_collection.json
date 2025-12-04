@@ -4629,7 +4629,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"createdBy\" : \"{{userId}}\",\n    \"note\" : \"{{text}}\",\n    \"topic\" : \"{{topic}}\"\n}",
+							"raw": "{\n    \"note\" : \"{{text}}\",\n    \"topic\" : \"{{topic}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
