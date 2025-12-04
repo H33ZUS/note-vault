@@ -5,8 +5,7 @@ const noteFileResponseSchema = Joi.object({
     _id: Joi.string().hex().length(24).required(),
     subjectId: Joi.string().hex().length(24).required(),
     createdAt: Joi.date().required(),
-    updatedAt: Joi.date().required(),
-    notes: Joi.array().items(Joi.string().hex().length(24)).required()
+    updatedAt: Joi.date().required()
 }).unknown(false);
 
 module.exports = {

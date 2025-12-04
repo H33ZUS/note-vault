@@ -11,9 +11,7 @@ const subjectResponse = Joi.object({
     title: Joi.string().required(),
     createdBy: Joi.string().hex().length(24).required(),
     _id: Joi.string().hex().length(24).required(),
-    createdAt: Joi.date().required(),
-    noteFile: Joi.array().items(Joi.string().hex().length(24)).required(),
-    quizFile: Joi.array().items(Joi.string().hex().length(24)).required()
+    createdAt: Joi.date().required()
 }).unknown(false);
 
 const subjectCreateResponse = Joi.object({

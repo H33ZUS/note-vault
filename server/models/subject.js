@@ -14,18 +14,6 @@ const subjectSchema = new Schema({
         required: true,
         immutable: true,
     },
-    noteFile: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "NoteFile",
-        }
-    ],
-    quizFile: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "QuizFile",
-        }
-    ],
     createdAt: {
         type: Date,
         default: Date.now,

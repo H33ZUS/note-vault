@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const NoteCommit = require("./noteCommit");
 
 const Schema = mongoose.Schema;
 
@@ -20,13 +19,7 @@ const noteFileSchema = new Schema ({
         type: Date,
         default: Date.now,
         required: true,
-    },
-    notes: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "NoteCommit",
-        }
-    ]
+    }
 });
 
 noteFileSchema.pre("deleteOne", { document: true, query: false }, async function(next) {
