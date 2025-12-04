@@ -2,11 +2,13 @@ const express = require("express");
 var Subject = require("../models/subject.js");
 var Enrollment = require("../models/enrollment.js");
 const { isAuthenticated, isAuthorized } = require("../middleware/auth.js");
+const { validateResponse } = require("../middleware/responseValidator.js");
+const val = require("../validations/enrollmentValidation.js");
 
 const router = express.Router();
 
 // ENROLL IN SUBJECT
-router.post("/:id/enroll", isAuthenticated, async(req, res) => {
+router.post("/:id/enroll", isAuthenticated, async(req, res, next) => {
     const subjectId = req.params.id;
     const userId = req.user._id;
 
@@ -23,16 +25,25 @@ router.post("/:id/enroll", isAuthenticated, async(req, res) => {
 
         await newEnrollment.save();
 
-        res.status(201).json({
-            message: "Successfully enrolled",
-            enrollment: newEnrollment
-        }); 
+        const enrollmentObj = newEnrollment.toObject();
+        delete enrollmentObj.__v;
+
+        if (enrollmentObj._id) {
+            enrollmentObj.userId = enrollmentObj.userId.toString();
+            enrollmentObj.subjectId = enrollmentObj.subjectId.toString();
+            enrollmentObj._id = enrollmentObj._id.toString();
+        }
+
+        res.locals.data = enrollmentObj;
+        next();
     } catch (err) {
         if (err.code === 11000) {
             return res.status(409).json({message: "You are already enrolled in this subject"});
         }
         res.status(400).json({message: err.message});
     }
+}, validateResponse(val.enrollmentResponseSchema), (req, res) => {
+    res.status(201).json(res.locals.data);
 });
 
 // DROP OUT OF SUBJECT
@@ -57,13 +68,29 @@ router.post("/:id/unenroll", isAuthenticated, async(req, res) => {
 });
 
 // GET ALL ENROLLMENTS
-router.get("/", async(req, res) => {
+router.get("/", async(req, res, next) => {
     try {
-        const enrollment = await Enrollment.find();
-        res.json(enrollment); 
+        const enrollments = await Enrollment.find().select("-__v");
+
+        const finalData = enrollments.map(enrollment => {
+            const enrollmentObj = enrollment.toObject();
+
+            if (enrollmentObj._id) {
+                enrollmentObj._id = enrollmentObj._id.toString();
+                enrollmentObj.userId = enrollmentObj.userId.toString();
+                enrollmentObj.subjectId = enrollmentObj.subjectId.toString();
+            }
+
+            return enrollmentObj;
+        });
+
+        res.locals.data = finalData;
+        next();
     } catch (err) {
         res.status(404).json({error: err.message});
     }
+}, validateResponse(val.enrollmentArrayResponseSchema), (req, res) => {
+    res.status(200).json(res.locals.data);
 });
 
 module.exports = router;
