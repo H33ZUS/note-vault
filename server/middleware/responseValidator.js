@@ -2,7 +2,6 @@ const Joi = require('joi');
 
 const validateResponse = (schema) => (req, res, next) => {
     const dataToValidate = res.locals.data;
-    console.log("response called");
 
     if (!dataToValidate) {
         console.warn("Response Validator: No data found in res.locals.data");

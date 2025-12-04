@@ -2,7 +2,6 @@ const Joi = require('joi');
 
 const validateRequest = (schema, source = 'body') => (req, res, next) => {
     const dataToValidate = req[source];
-    console.log("request run")
 
     const { error, value } = schema.validate(dataToValidate, {
         abortEarly: false,

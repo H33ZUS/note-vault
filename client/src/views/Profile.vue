@@ -19,14 +19,6 @@
             <h3>Email: {{email}}</h3>
         </div>
 
-        <div v-if="edit">
-            <label>Password</label>
-            <input type="text" v-model="password" class="form-control"/>
-        </div>
-        <div v-else>
-            <h3>Password: {{password}}</h3>
-        </div>
-
         <!-- EditButton -->
         <button class="btn btn-primary mt-3" @click="toggleEdit">
             {{ edit ? 'Save update' : 'update info' }}
@@ -48,8 +40,6 @@ export default {
     return {
       username: '',
       email: '',
-      password: '',
-      passwordHidden: '',
       message: '',
       edit: false
     }
@@ -63,12 +53,11 @@ export default {
       try {
         if (this.edit) {
           const res = await fetch('http://localhost:3000/api/v1/users/', {
-            method: 'PUT',
+            method: 'PATCH',
             headers: { 'Content-type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify({
               username: this.username,
-              password: this.password,
               email: this.email
             })
           })
@@ -95,11 +84,6 @@ export default {
 
         this.username = data.username
         this.email = data.email
-        this.password = data.password
-
-        for (let i = 0; i < this.password.length; i++) {
-          this.passwordHidden += '*'
-        }
       } catch (err) {
         this.message = 'Error: ' + err.message
       }

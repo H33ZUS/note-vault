@@ -179,7 +179,7 @@ router.patch("/", isAuthenticated, validateRequest(val.userPatchRequestSchema), 
     const userId = req.user._id
     
     try {
-        const user = await User.findByIdAndUpdate(userId, updateData, {new: true, runValidators: true, select: "-password"});
+        const user = await User.findByIdAndUpdate(userId, updateData, {new: true, runValidators: true, select: "-password -__v"});
 
         if (!user) {
             return res.status(404).json({message: "User not found"});
