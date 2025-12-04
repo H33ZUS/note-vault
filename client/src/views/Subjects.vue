@@ -251,6 +251,7 @@ export default {
 
           if (!this.isAdminOrTeacher && this.currentTab === 'create') {
             this.currentTab = 'join'
+            this.fetchAvailableSubjects()
           }
         } else if (res.status === 401) {
           this.isAdminOrTeacher = false
