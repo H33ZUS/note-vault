@@ -80,7 +80,7 @@ async function editComment() {
       if (!newContent.value) {
         newContent.value = ' '
       }
-      const res = await fetch(`http://localhost:3000/api/v1/subjects/${props.subjectId}/noteFiles/${props.noteFileId}/${props.id}/comments/${props.id}`, {
+      const res = await fetch(`http://localhost:3000/api/v1/subjects/${props.subjectId}/noteFiles/${props.noteFileId}/noteCommits/${props.id}/comments/${props.id}`, {
         method: 'PUT',
         headers: { 'Content-type': 'application/json' },
         credentials: 'include',
@@ -98,7 +98,7 @@ async function editComment() {
 }
 async function uploadComment() {
   try {
-    const res = await fetch(`http://localhost:3000/api/v1/subjects/${props.subjectId}/noteFiles/${props.noteFileId}/${props.noteCommitId}/comments/`, {
+    const res = await fetch(`http://localhost:3000/api/v1/subjects/${props.subjectId}/noteFiles/${props.noteFileId}/noteCommits/${props.noteCommitId}/comments/`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       credentials: 'include',
@@ -118,7 +118,7 @@ async function uploadComment() {
 }
 async function deleteComment(id) {
   try {
-    const res = await fetch(`http://localhost:3000/api/v1/subjects/${props.subjectId}/noteFiles/${props.noteFileId}/${props.noteCommitId}/comments/${props.id}`, {
+    const res = await fetch(`http://localhost:3000/api/v1/subjects/${props.subjectId}/noteFiles/${props.noteFileId}/noteCommits/${props.noteCommitId}/comments/${props.id}`, {
       method: 'DELETE',
       headers: { 'Content-type': 'application/json' },
       credentials: 'include'
@@ -136,7 +136,7 @@ async function likeComment(state) {
   try {
     const likeBool = state
     const dislikeBool = !state
-    const res = await fetch(`http://localhost:3000/api/v1/subjects/${props.subjectId}/noteFiles/${props.noteFileId}/${props.id}/comments/${props.id}/likes`, {
+    const res = await fetch(`http://localhost:3000/api/v1/subjects/${props.subjectId}/noteFiles/${props.noteFileId}/noteCommits/${props.id}/comments/${props.id}/likes`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       credentials: 'include',

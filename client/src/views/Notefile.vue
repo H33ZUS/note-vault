@@ -120,7 +120,7 @@ export default {
 
     async uploadCommentOnComment(id) {
       try {
-        const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}/noteFiles/${this.noteFileId}/${id}/comments/`, {
+        const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}/noteFiles/${this.noteFileId}/noteCommits/${id}/comments/`, {
           method: 'POST',
           headers: { 'Content-type': 'application/json' },
           credentials: 'include',
@@ -189,7 +189,7 @@ export default {
 
     async getComments(noteCommitId) {
       try {
-        const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}/noteFiles/${this.noteFileId}/${noteCommitId}/comments/`, {
+        const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}/noteFiles/${this.noteFileId}/noteCommits/${noteCommitId}/comments/`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include'

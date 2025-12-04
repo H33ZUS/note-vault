@@ -54,7 +54,7 @@ async function uploadComment() {
     if (!newComment.value) {
       return
     }
-    const res = await fetch(`http://localhost:3000/api/v1/subjects/${props.subjectId}/noteFiles/${props.noteFileId}/${props.id}/comments/`, {
+    const res = await fetch(`http://localhost:3000/api/v1/subjects/${props.subjectId}/noteFiles/${props.noteFileId}/noteCommits/${props.id}/comments/`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       credentials: 'include',
@@ -106,7 +106,7 @@ async function deleteNote() {
     })
     console.log(await res.json())
 
-    if (!res.ok) throw new Error('Failed to DElete')
+    if (!res.ok) throw new Error('Failed to Delete')
     emit('refreshNotes')
   } catch (err) {
 
