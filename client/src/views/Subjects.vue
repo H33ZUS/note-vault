@@ -48,6 +48,7 @@
         </div>
     </div>
 
+    <!--Join subject-->
     <div v-else-if="currentTab === 'join'">
       <h2>Join Subject</h2>
       <div v-if="loadingJoin">Loading...</div>
@@ -103,6 +104,7 @@
       </div>
     </div>
 
+    <!--Enrolled subjects-->
     <div v-else-if="currentTab === 'my'">
       <h2>My Subjects</h2>
 
@@ -113,7 +115,7 @@
       </div>
 
       <div v-for="subject in mySubjects" :key="subject._id" class="card p3 mb-3">
-        <h4>{{ subject.title }}</h4>
+        <h4><router-link :to="`/notefile/${subject._id}`">{{subject.title}}</router-link></h4>
         <button class="btn btn-prmary" @click="leaveSubject(subject._id)">
           Leave
         </button>
