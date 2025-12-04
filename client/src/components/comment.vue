@@ -12,7 +12,7 @@
         <h4>Likes: {{likes}} Dislikes: {{dislikes}}</h4>
         <div>
             <button v-if="user === username" class="btn btn-primary mt-3" @click="editComment(id)">
-                Edit comment
+            Edit comment
             </button>
         </div>
         <button class="btn btn-primary mt-3" @click="likeComment(true, id)">

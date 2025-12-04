@@ -1,9 +1,9 @@
 <template>
     <div class="container mt-4">
-        <h2>Profile overview</h2>
+        <h2>Notes for: {{subjectId}}</h2>
 
-        <!-- Username -->
-         <div>
+        <!-- Create Note -->
+        <div>
             <label>Topic</label>
             <input type="text" v-model="topic" class="form-control"/>
         </div>
@@ -12,24 +12,22 @@
             <input type="text" v-model="note" class="form-control"/>
         </div>
 
-        <!-- EditButton -->
+        <!-- upload note -->
         <button class="btn btn-primary mt-3" @click="uploadNote">
             Post note
         </button>
 
         <div v-for="notecommit in notes" :key="notecommit._id" class="card p3 mb-3">
-          <h1>{{notecommit.topic}}</h1>
-          <h3>{{notecommit.note}}</h3>
-
-          <h2>Comments</h2>
-          <div>
-            <label>Comment</label>
-            <input type="text" v-model="newComment[notecommit._id]" class="form-control"/>
-          </div>
-          <button class="btn btn-primary mt-3" @click="uploadComment(notecommit._id)">
-            Post comment
-          </button>
-
+          <noteCommit
+          :topic="notecommit.topic"
+          :note="notecommit.note"
+          :id="notecommit._id"
+          :subjectId="this.subjectId"
+          :noteFileId="this.noteFileId"
+          :user="this.userId"
+          :username="notecommit.createdBy"
+          @refreshNotes="getNotes()"
+          />
           <!--Comments-->
           <div v-for="comment in notecommit.comments" :key="comment._id" class="card p3 mb-3">
             <comment
@@ -47,8 +45,8 @@
             :user="this.user"
             />
           </div>
+          </div>
         </div>
-    </div>
 </template>
 
 <script>
@@ -65,7 +63,8 @@ export default {
       noteFileId: '',
       commentedOnId: '',
       commentDepth: 123,
-      user: ''
+      user: '',
+      userId: ''
     }
   },
   mounted() {
@@ -112,32 +111,9 @@ export default {
         const data = await res.json()
 
         this.user = data.username
+        this.userId = data._id
       } catch (err) {
         this.message = 'Error: ' + err.message
-      }
-    },
-
-    async uploadComment(id) {
-      try {
-        const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}/noteFiles/${this.noteFileId}/${id}/comments/`, {
-          method: 'POST',
-          headers: { 'Content-type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            comment: this.newComment[id],
-            commentedOnNote: id
-          })
-        })
-
-        if (!res.ok) throw new Error('Failed to update')
-
-        this.edit = !this.edit
-        this.message = 'Comment posted'
-        this.newComment[id] = ''
-
-        await this.getNotes()
-      } catch (err) {
-        this.message = 'Error' + err.message
       }
     },
 
@@ -187,22 +163,27 @@ export default {
       }
     },
     async getNotes() {
-      const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}/noteFiles/${this.noteFileId}/noteCommits`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
-      })
+      try {
+        const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}/noteFiles/${this.noteFileId}/noteCommits`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        })
 
-      if (!res.ok) throw new Error('Failed to get notes')
-      const data = await res.json()
+        if (!res.ok) throw new Error('Failed to get notes')
 
-      for (const note of data) {
-        const id = note._id
-        const comments = await this.getComments(id)
-        note.comments = comments
+        const data = await res.json()
+
+        for (const note of data) {
+          const id = note._id
+          const comments = await this.getComments(id)
+          note.comments = comments
+        }
+
+        this.notes = data
+      } catch (err) {
+        this.notes = []
       }
-
-      this.notes = data
     },
 
     async getComments(noteCommitId) {
