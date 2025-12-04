@@ -3,14 +3,14 @@ const bcrypt = require("bcrypt");
 const { isAuthenticated, isAuthorized } = require("../middleware/auth");
 const { validateResponse } = require("../middleware/responseValidator");
 const { validateRequest } = require("../middleware/requestValidator");
-const validation = require("../models/userValidation");
+const val = require("../validations/userValidation");
 const User = require("../models/user");
 const compareArrays = require("../utils/misc");
 
 const router = express.Router();
 
 // CREATE A USER
-router.post("/", validateRequest(validation.userCreateRequestSchema), async(req, res, next) => {
+router.post("/", validateRequest(val.userCreateRequestSchema), async(req, res, next) => {
     try {
         const { password, ...userData } = req.body;
 
@@ -56,12 +56,12 @@ router.post("/", validateRequest(validation.userCreateRequestSchema), async(req,
 
         res.status(400).json({error: err.message});
     }
-}, validateResponse(validation.userCreateResponseSchema), (req, res) => {
+}, validateResponse(val.userCreateResponseSchema), (req, res) => {
     res.status(201).json(res.locals.data);
 });
 
 // USER LOGIN
-router.post("/login", validateRequest(validation.userLoginRequestSchema), async(req, res) => {
+router.post("/login", validateRequest(val.userLoginRequestSchema), async(req, res) => {
     const { username, password } = req.body
 
     try {
@@ -99,7 +99,7 @@ router.post("/logout", isAuthenticated, (req, res) => {
 });
 
 // CHANGE ROLE OF A USER (FOR ADMINS ONLY)
-router.patch("/:id/roles", isAuthenticated, isAuthorized("admin"), validateRequest(validation.userUpdateRoleRequestSchema) ,async (req, res) => {
+router.patch("/:id/roles", isAuthenticated, isAuthorized("admin"), validateRequest(val.userUpdateRoleRequestSchema) ,async (req, res) => {
     const { roles: newRoles } = req.body;
     const user = req.params.id
 
@@ -174,7 +174,7 @@ router.delete("/", isAuthenticated, async(req, res) => {
 });
 
 // UPDATE ONE VARIABLE OF A USER
-router.patch("/", isAuthenticated, validateRequest(validation.userPatchRequestSchema), async(req, res, next) => {
+router.patch("/", isAuthenticated, validateRequest(val.userPatchRequestSchema), async(req, res, next) => {
     const { roles, ...updateData } = req.body;
     const userId = req.user._id
     
@@ -196,12 +196,12 @@ router.patch("/", isAuthenticated, validateRequest(validation.userPatchRequestSc
     } catch (err) {
         res.status(400).send(err.message);
     }
-}, validateResponse(validation.userResponseSchema), (req, res) => {
+}, validateResponse(val.userResponseSchema), (req, res) => {
     res.status(200).json(res.locals.data);
 });
 
 // UPDATE EVERYTHING OF A USER
-router.put("/", isAuthenticated, validateRequest(validation.userPutRequestSchema), async(req, res, next) => {
+router.put("/", isAuthenticated, validateRequest(val.userPutRequestSchema), async(req, res, next) => {
     const { roles, ...updateData } = req.body;
     const userId = req.user._id
 
@@ -223,7 +223,7 @@ router.put("/", isAuthenticated, validateRequest(validation.userPutRequestSchema
     } catch (err) {
         res.status(400).json({message: err.message});
     }
-}, validateResponse(validation.userResponseSchema), (req, res) => {
+}, validateResponse(val.userResponseSchema), (req, res) => {
     res.status(200).json(res.locals.data);
 });
 
@@ -251,7 +251,7 @@ router.get("/ids", async(req, res, next) => {
     } catch (err) {
         res.status(404).json({error: err.message});
     }
-}, validateResponse(validation.userResponseSchema), (req, res) => {
+}, validateResponse(val.userResponseSchema), (req, res) => {
     res.status(200).json(res.locals.data);
 });
 
@@ -280,7 +280,7 @@ router.get("/", isAuthenticated, async(req, res, next) => {
 
         return res.status(500).json({ error: err.message });
     }
-}, validateResponse(validation.userResponseSchema), (req, res) => {
+}, validateResponse(val.userResponseSchema), (req, res) => {
     res.status(200).json(res.locals.data);
 });
 

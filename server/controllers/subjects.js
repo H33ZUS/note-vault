@@ -4,9 +4,12 @@ const NoteFile = require("../models/noteFile.js");
 const User = require("../models/user.js");
 const Enrollment = require("../models/enrollment.js");
 const { isAuthenticated, isAuthorized } = require("../middleware/auth.js");
+const { validateRequest } = require("../middleware/requestValidator.js");
+const { validateResponse } = require("../middleware/responseValidator.js");
+const val = require("../validations/subjectValidation.js");
 const router = express.Router();
 
-router.post("/", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
+router.post("/", isAuthenticated, isAuthorized("teacher"), validateRequest(val.subjectRequest), async(req, res, next) => {
 
     try {
         const userId = req.user._id;
@@ -20,24 +23,65 @@ router.post("/", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
             subjectId: subject._id
         });
         await defaultNoteFile.save();
-        res.status(201).json({subject: subject, defaultNoteFile: defaultNoteFile}); // created
+
+        const subjectData = subject.toObject();
+        delete subjectData.__v;
+
+        if (subjectData.createdBy && subjectData._id) {
+            subjectData.createdBy = subjectData.createdBy.toString();
+            subjectData._id = subjectData._id.toString();
+        }
+
+        const noteFileData = defaultNoteFile.toObject();
+        delete noteFileData.__v;
+
+        if (noteFileData._id && noteFileData.subjectId) {
+            noteFileData._id = noteFileData._id.toString();
+            noteFileData.subjectId = noteFileData.subjectId.toString();
+        }
+
+        finalData = {
+            subject: subjectData,
+            defaultNoteFile: noteFileData
+        }
+
+        res.locals.data = finalData;
+
+        next();
     } catch (err) {
         res.status(400).json({error: err.message}); // bad request
     }
+}, validateResponse(val.subjectCreateResponse), (req, res) => {
+    res.status(201).json(res.locals.data);
 });
 
 // get all
-router.get("/", async(req, res) => {
+router.get("/", async(req, res, next) => {
     try {
-        const subjects = await Subject.find();
-        res.json(subjects); 
+        const subjects = await Subject.find().select("-__v");
+
+        const finalData = subjects.map(subject => {
+            const subjectObj = subject.toObject();
+
+            if (subjectObj._id && subjectObj.createdBy) {
+                subjectObj._id = subjectObj._id.toString();
+                subjectObj.createdBy = subjectObj.createdBy.toString();
+            }
+
+            return subjectObj;
+        });
+
+        res.locals.data = finalData;
+        next();
     } catch (err) {
         res.status(404).json({error: err.message});
     }
+}, validateResponse(val.subjectResponse), (req, res) => {
+    res.status(200).json(res.locals.data);
 });
 
 // get subjects user is not enrolled in
-router.get("/available", isAuthenticated, async(req, res) => {
+router.get("/available", isAuthenticated, async(req, res, next) => {
 
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.set('Pragma', 'no-cache');
@@ -53,16 +97,30 @@ router.get("/available", isAuthenticated, async(req, res) => {
         const enrollments = await Enrollment.find({ userId: userId }).select("subjectId");
         const enrolledIds = enrollments.map(e => e.subjectId);
 
-        const available = await Subject.find({ _id: { $nin: enrolledIds }});
+        const available = await Subject.find({ _id: { $nin: enrolledIds }}).select("-__v");
 
-        res.json(available);
+        const finalData = available.map(subject => {
+            const subjectObj = subject.toObject();
+
+            if (subjectObj._id && subjectObj.createdBy) {
+                subjectObj._id = subjectObj._id.toString();
+                subjectObj.createdBy = subjectObj.createdBy.toString();
+            }
+
+            return subjectObj;
+        });
+
+        res.locals.data = finalData;
+        next();
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
+}, validateResponse(val.subjectResponse), (req, res) => {
+    res.status(200).json(res.locals.data);
 });
 
 // get subjects user is enrolled in
-router.get("/enrolled", isAuthenticated, async(req, res) => {
+router.get("/enrolled", isAuthenticated, async(req, res, next) => {
 
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.set('Pragma', 'no-cache');
@@ -73,51 +131,92 @@ router.get("/enrolled", isAuthenticated, async(req, res) => {
         const enrollments = await Enrollment.find({ userId}).select("subjectId");
         const enrolledIds = enrollments.map(e => e.subjectId);
 
-        const subjects = await Subject.find({ _id: { $in: enrolledIds } });
-        res.json(subjects);
+        const subjects = await Subject.find({ _id: { $in: enrolledIds } }).select("-__v");
+
+        const finalData = subjects.map(subject => {
+            const subjectObj = subject.toObject();
+
+            if (subjectObj._id && subjectObj.createdBy) {
+                subjectObj._id = subjectObj._id.toString();
+                subjectObj.createdBy = subjectObj.createdBy.toString();
+            }
+
+            return subjectObj;
+        });
+
+        res.locals.data = finalData;
+        next();
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
+}, validateResponse(val.subjectResponse), (req, res) => {
+    res.status(200).json(res.locals.data);
 });
 
 // get one
-router.get("/:id", async(req, res) => {
+router.get("/:id", async(req, res, next) => {
     try {
-        const subjects = await Subject.findById(req.params.id);
-        res.json(subjects);
-    } catch (err) {
-        res.status(404).json({error: err.message});
-    }
-});
+        const subject = await Subject.findById(req.params.id).select("-__v");
 
-router.patch("/:id", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
+        const subjectObj = subject.toObject();
 
-    try {
-        const subjects = await Subject.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true, runValidators: true});
-        res.json(subjects);  
-    } catch (err) {
-        res.status(404).json({error: err.message});
-    }
-});
-
-router.put("/:id", isAuthenticated, isAuthorized("teacher"), async(req, res) => {
-    try {
-        const requiredFields = ["title", "noteFile", "quizFile"];
-        const missing = requiredFields.filter(f => !(f in req.body)); // checks for missing fields in requiredFields
-
-        if (missing.length > 0) {
-            return res.status(400).json({error: `PUT requires all fields: Missing: ${missing.join(", ")}`});
+        if (subjectObj._id && subjectObj.createdBy) {
+            subjectObj._id = subjectObj._id.toString();
+            subjectObj.createdBy = subjectObj.createdBy.toString();
         }
-        const updated = await Subject.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true, runValidators: true});
+        
+        res.locals.data = subjectObj;
+        next();
+    } catch (err) {
+        res.status(404).json({error: err.message});
+    }
+}, validateResponse(val.subjectResponse), (req, res) => {
+    res.status(200).json(res.locals.data);
+});
+
+router.patch("/:id", isAuthenticated, isAuthorized("teacher"), validateRequest(val.subjectRequest), async(req, res, next) => {
+
+    try {
+        const subject = await Subject.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true, runValidators: true}).select("-__v");
+
+        subjectObj = subject.toObject();
+
+        if (subjectObj._id && subjectObj.createdBy) {
+            subjectObj._id = subjectObj._id.toString();
+            subjectObj.createdBy = subjectObj.createdBy.toString();
+        }
+
+        res.locals.data = subjectObj;
+        next(); 
+    } catch (err) {
+        res.status(404).json({error: err.message});
+    }
+}, validateResponse(val.subjectResponse), (req, res) => {
+    res.status(200).json(res.locals.data);
+});
+
+router.put("/:id", isAuthenticated, isAuthorized("teacher"), validateRequest(val.subjectRequest), async(req, res, next) => {
+    try {
+        const updated = await Subject.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true, runValidators: true}).select("-__v");
 
         if (!updated) {
             return res.status(404).json({error: "Subject not found"});
         }
 
-        res.json(updated);
+        subjectObj = updated.toObject();
+
+        if (subjectObj._id && subjectObj.createdBy) {
+            subjectObj._id = subjectObj._id.toString();
+            subjectObj.createdBy = subjectObj.createdBy.toString();
+        }
+
+        res.locals.data = subjectObj;
+        next();
     } catch (err) {
         res.status(500).json({error: err.message});
     }
+}, validateResponse(val.subjectResponse), (req, res) => {
+    res.status(200).json(res.locals.data);
 });
     
 

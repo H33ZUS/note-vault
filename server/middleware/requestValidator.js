@@ -19,7 +19,7 @@ const validateRequest = (schema, source = 'body') => (req, res, next) => {
         });
 
         return res.status(400).json({
-            message: `Validation failed in ${source} `,
+            message: `Request validation failed in ${source} `,
             details: details
         })
     }
