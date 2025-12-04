@@ -251,7 +251,7 @@ router.get("/ids", async(req, res, next) => {
     } catch (err) {
         res.status(404).json({error: err.message});
     }
-}, validateResponse(val.userResponseSchema), (req, res) => {
+}, validateResponse(val.userArrayResponseSchema), (req, res) => {
     res.status(200).json(res.locals.data);
 });
 

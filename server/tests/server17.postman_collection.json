@@ -4693,7 +4693,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"comment\" : \"{{text}}\",\n    \"createdBy\" : \"{{userId}}\",\n    \"commentedOnNote\" : \"{{noteCommitId}}\"\n}",
+							"raw": "{\n    \"comment\" : \"{{text}}\",\n    \"commentedOnNote\" : \"{{noteCommitId}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -5459,7 +5459,7 @@
 						}
 					],
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -5521,7 +5521,7 @@
 						}
 					],
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -5583,7 +5583,7 @@
 						}
 					],
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",

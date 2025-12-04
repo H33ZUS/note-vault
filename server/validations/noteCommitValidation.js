@@ -22,8 +22,11 @@ const noteCommitResponseSchema = Joi.object({
     createdAt: Joi.date().required()
 }).unknown(false);
 
+const noteCommitArrayResponseSchema = Joi.array().items(noteCommitResponseSchema).required();
+
 module.exports = {
     noteCommitRequestSchema,
     noteCommitPatchRequestSchema,
-    noteCommitResponseSchema
+    noteCommitResponseSchema,
+    noteCommitArrayResponseSchema
 }

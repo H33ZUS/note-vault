@@ -76,7 +76,7 @@ router.get("/", async(req, res, next) => {
     } catch (err) {
         res.status(404).json({error: err.message});
     }
-}, validateResponse(val.subjectResponse), (req, res) => {
+}, validateResponse(val.subjectArrayResponseSchema), (req, res) => {
     res.status(200).json(res.locals.data);
 });
 
@@ -115,7 +115,7 @@ router.get("/available", isAuthenticated, async(req, res, next) => {
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
-}, validateResponse(val.subjectResponse), (req, res) => {
+}, validateResponse(val.subjectArrayResponseSchema), (req, res) => {
     res.status(200).json(res.locals.data);
 });
 
@@ -149,7 +149,7 @@ router.get("/enrolled", isAuthenticated, async(req, res, next) => {
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
-}, validateResponse(val.subjectResponse), (req, res) => {
+}, validateResponse(val.subjectArrayResponseSchema), (req, res) => {
     res.status(200).json(res.locals.data);
 });
 

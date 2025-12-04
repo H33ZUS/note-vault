@@ -1,10 +1,13 @@
 const express = require("express");
 var Comment = require("../models/comment.js");
 const { isAuthenticated, isAuthorized } = require("../middleware/auth");
+const { validateRequest } = require("../middleware/requestValidator.js");
+const { validateResponse } = require("../middleware/responseValidator.js");
+const val = require("../validations/commentValidation");
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/", isAuthenticated, async(req, res) => {
+router.post("/", isAuthenticated, validateRequest(val.commentRequestSchema), async(req, res, next) => {
     console.log(req.body);
     try{
         const {comment, commentedOnNote, commentedOnComment} = req.body;
@@ -25,11 +28,27 @@ router.post("/", isAuthenticated, async(req, res) => {
             commentedOnComment
         });
 
-        return res.status(201).json(newComment);
+        const commentObj = newComment.toObject();
+        delete commentObj.__v;
 
+        if (commentObj._id) {
+            commentObj._id = commentObj._id.toString();
+            commentObj.createdBy = commentObj.createdBy.toString();
+
+            if (commentObj.commentedOnComment) {
+                commentObj.commentedOnComment = commentObj.commentedOnComment.toString();
+            } else {
+                commentObj.commentedOnNote = commentObj.commentedOnNote.toString();
+            }
+        }
+
+        res.locals.data = commentObj;
+        next();
     } catch(err){
         return res.status(400).json({error: err.message});
     }
+}, validateResponse(val.commentResponseSchema), (req, res) => {
+    res.status(201).json(res.locals.data);
 });
 
 async function getCommentsOnComments(commentId) {
@@ -76,13 +95,50 @@ async function getCommentTree(noteFileId) {
     return tree;
 }
 
-router.get("/", async(req, res) => {
+function convertIdsToStringsRecursive(node) {
+    if (!node) return node;
+
+    if (Array.isArray(node)) {
+        return node.map(convertIdsToStringsRecursive);
+    }
+
+    if (typeof node === 'object' && node !== null) {
+        for (const key of ['_id', 'commentedOnNote', 'commentedOnComment']) {
+            if (node[key] && typeof node[key].toString === 'function' && node[key].toString().length === 24) {
+                node[key] = node[key].toString();
+            } else if (node[key] === undefined) {
+                node[key] = null;
+            }
+        }
+
+        if (node.createdBy && node.createdBy._id && typeof node.createdBy._id.toString === 'function') {
+            node.createdBy._id = node.createdBy._id.toString();
+        }
+        
+        if (node.replies) {
+            node.replies = convertIdsToStringsRecursive(node.replies);
+        }
+        if (node.comments) {
+            node.comments = convertIdsToStringsRecursive(node.comments);
+        }
+    }
+
+    return node;
+}
+
+router.get("/", async(req, res, next) => {
     try {
         const tree = await getCommentTree(req.params.noteCommitId);
-        return res.status(200).json(tree);
+
+        const convertedTree = convertIdsToStringsRecursive(tree)
+
+        res.locals.data = convertedTree;
+        next();
     }catch(err){
         return res.status(400).json({"error" : err.message});
     }
+}, validateResponse(val.commentTreeResponseSchema), (req, res) => {
+    res.status(200).json(res.locals.data);
 })
 
 router.put("/:id/", async(req, res) => {
@@ -136,7 +192,7 @@ router.delete("/:id/", async(req, res) => {
     }
 })
 
-router.post("/:id/likes", async(req, res) => {
+router.post("/:id/likes", validateRequest(val.commentLikesRequestSchema), async(req, res, next) => {
     try{
         const commentId = req.params.id
         const {like, dislike} = req.body
@@ -152,23 +208,55 @@ router.post("/:id/likes", async(req, res) => {
             const updateLike = await Comment.findByIdAndUpdate(commentId, 
                 {$inc: {"likes": 1}},
                 {new : true}
-            )
-            return res.status(200).json(updateLike)
+            ).select("-__v");
+
+            const commentObj = updateLike.toObject();
+
+            if (commentObj._id) {
+                commentObj._id = commentObj._id.toString();
+                commentObj.createdBy = commentObj.createdBy.toString();
+
+                if (commentObj.commentedOnComment) {
+                    commentObj.commentedOnComment = commentObj.commentedOnComment.toString();
+                } else {
+                    commentObj.commentedOnNote = commentObj.commentedOnNote.toString();
+                }
+            }
+
+            res.locals.data = commentObj;
+            next();
         }else {
             const updateLike = await Comment.findByIdAndUpdate(commentId, 
                 {$inc: {"dislikes": 1}},
                 {new : true}
                 
-            )
-            return res.status(200).json(updateLike)
+            ).select("-__v");
+
+            const commentObj = updateLike.toObject();
+
+            if (commentObj._id) {
+                commentObj._id = commentObj._id.toString();
+                commentObj.createdBy = commentObj.createdBy.toString();
+
+                if (commentObj.commentedOnComment) {
+                    commentObj.commentedOnComment = commentObj.commentedOnComment.toString();
+                } else {
+                    commentObj.commentedOnNote = commentObj.commentedOnNote.toString();
+                }
+            }
+
+            res.locals.data = commentObj;
+            next();
         }
 
     }catch(err){
         return res.status(400).json({"error" : err.message});
     }
-})
+}, validateResponse(val.commentResponseSchema), (req, res) => {
+    res.status(200).json(res.locals.data);
+});
 
-router.post("/:id/likes", async(req, res) => {
+router.delete("/:id/likes", validateRequest(val.commentLikesRequestSchema), async(req, res, next) => {
     try{
         const commentId = req.params.id
         const {like, dislike} = req.body
@@ -190,19 +278,51 @@ router.post("/:id/likes", async(req, res) => {
             const updateLike = await Comment.findByIdAndUpdate(commentId, 
                 {$inc: {"likes": -1}},
                 {new : true}
-            )
-            return res.status(200).json(updateLike)
+            ).select("-__v");
+
+            const commentObj = updateLike.toObject();
+
+            if (commentObj._id) {
+                commentObj._id = commentObj._id.toString();
+                commentObj.createdBy = commentObj.createdBy.toString();
+
+                if (commentObj.commentedOnComment) {
+                    commentObj.commentedOnComment = commentObj.commentedOnComment.toString();
+                } else {
+                    commentObj.commentedOnNote = commentObj.commentedOnNote.toString();
+                }
+            }
+
+            res.locals.data = commentObj;
+            next();
         }else {
             const updateLike = await Comment.findByIdAndUpdate(commentId, 
                 {$inc: {"dislikes": -1}},
                 {new : true}
                 
-            )
-            return res.status(200).json(updateLike)
+            ).select("-__v");
+
+            const commentObj = updateLike.toObject();
+
+            if (commentObj._id) {
+                commentObj._id = commentObj._id.toString();
+                commentObj.createdBy = commentObj.createdBy.toString();
+
+                if (commentObj.commentedOnComment) {
+                    commentObj.commentedOnComment = commentObj.commentedOnComment.toString();
+                } else {
+                    commentObj.commentedOnNote = commentObj.commentedOnNote.toString();
+                }
+            }
+
+            res.locals.data = commentObj;
+            next();
         }
     }catch(err){
         return res.status(400).json({"error" : err.message})
     }
-})
+}, validateResponse(val.commentResponseSchema), (req, res) => {
+    res.status(200).json(res.locals.data);
+});
 
 module.exports = router;

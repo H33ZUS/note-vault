@@ -19,8 +19,11 @@ const subjectCreateResponse = Joi.object({
     defaultNoteFile: noteFileResponseSchema
 }).unknown(false);
 
+const subjectArrayResponseSchema = Joi.array().items(subjectResponse).required();
+
 module.exports = {
     subjectRequest,
     subjectResponse,
-    subjectCreateResponse
+    subjectCreateResponse,
+    subjectArrayResponseSchema
 };

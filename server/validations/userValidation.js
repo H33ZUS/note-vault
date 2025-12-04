@@ -49,6 +49,8 @@ const userCreateResponseSchema = userResponseSchema.keys({
     links: Joi.array().items(linkSchema).required()
 }).unknown(false);
 
+const userArrayResponseSchema = Joi.array().items(userResponseSchema).required();
+
 module.exports = { 
     userCreateRequestSchema,
     userLoginRequestSchema,
@@ -56,5 +58,6 @@ module.exports = {
     userPatchRequestSchema,
     userPutRequestSchema,
     userResponseSchema,
-    userCreateResponseSchema
+    userCreateResponseSchema,
+    userArrayResponseSchema
  };

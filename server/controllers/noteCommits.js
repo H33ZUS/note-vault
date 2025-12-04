@@ -81,7 +81,7 @@ router.get("/", async(req, res, next) => {
     } catch (err) {
         res.status(404).json({error: err.message});
     }
-}, validateResponse(val.noteCommitResponseSchema), (req, res) => {
+}, validateResponse(val.noteCommitArrayResponseSchema), (req, res) => {
     res.status(200).json(res.locals.data);
 });
 

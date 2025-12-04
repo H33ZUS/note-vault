@@ -22,11 +22,13 @@ const commentSchema = new Schema ({
     },
     commentedOnNote: {
         type: Schema.Types.ObjectId,
-        ref: "NoteCommit"
+        ref: "NoteCommit",
+        default: null
     },
     commentedOnComment: {
         type: Schema.Types.ObjectId,
-        ref: "Comment"
+        ref: "Comment",
+        default: null
     },
     deleted: {
         type: Boolean,

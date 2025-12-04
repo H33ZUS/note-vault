@@ -9,11 +9,9 @@ const validateResponse = (schema) => (req, res, next) => {
         return next();
     }
 
-    const validationSchema = Array.isArray(dataToValidate)
-        ? Joi.array().items(schema)
-        : schema;
+    const validationSchema = schema;
 
-    const { error, value } = validationSchema.validate(dataToValidate);
+    const { error, value } = validationSchema.validate(dataToValidate, { abortEarly: false, stripUnknown: false });
 
     if (error) {
         console.error("Response Validation Failed:", error.details);

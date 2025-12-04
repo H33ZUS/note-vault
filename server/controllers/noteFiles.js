@@ -64,7 +64,7 @@ router.get("/", async(req, res, next) => {
     } catch (err) {
         res.status(400).json({error: err.message});
     }
-}, validateResponse(val.noteFileResponseSchema), (req, res) => {
+}, validateResponse(val.noteFileArrayResponseSchema), (req, res) => {
     res.status(200).json(res.locals.data);
 });
 

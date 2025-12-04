@@ -8,6 +8,9 @@ const noteFileResponseSchema = Joi.object({
     updatedAt: Joi.date().required()
 }).unknown(false);
 
+const noteFileArrayResponseSchema = Joi.array().items(noteFileResponseSchema).required();
+
 module.exports = {
-    noteFileResponseSchema
+    noteFileResponseSchema,
+    noteFileArrayResponseSchema
 };
