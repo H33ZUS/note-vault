@@ -1,52 +1,53 @@
 <template>
-    <div class="container mt-4">
-        <h2>Notes for: {{subjectId}}</h2>
+  <div class="container mt-4">
+    <h2>Notes for: {{subjectId}}</h2>
 
-        <!-- Create Note -->
-        <div>
-            <label>Topic</label>
-            <input type="text" v-model="topic" class="form-control"/>
-        </div>
-        <div>
-            <label>Note</label>
-            <input type="text" v-model="note" class="form-control"/>
-        </div>
+    <!-- Create Note -->
+    <div>
+        <label>Topic</label>
+        <input type="text" v-model="topic" class="form-control"/>
+    </div>
+    <div>
+        <label>Note</label>
+        <input type="text" v-model="note" class="form-control"/>
+    </div>
 
-        <!-- upload note -->
-        <button class="btn btn-primary mt-3" @click="uploadNote">
-            Post note
-        </button>
+    <!-- upload note -->
+    <button class="btn btn-primary mt-3" @click="uploadNote">
+        Post note
+    </button>
 
-        <div v-for="notecommit in notes" :key="notecommit._id" class="card p3 mb-3">
-          <noteCommit
-          :topic="notecommit.topic"
-          :note="notecommit.note"
-          :id="notecommit._id"
-          :subjectId="this.subjectId"
-          :noteFileId="this.noteFileId"
-          :user="this.userId"
-          :username="notecommit.createdBy"
-          @refreshNotes="getNotes()"
-          />
-          <!--Comments-->
-          <div v-for="comment in notecommit.comments" :key="comment._id" class="card p3 mb-3">
-            <comment
-            :content="comment.comment"
-            :username="comment.createdBy.username"
-            :likes="comment.likes"
-            :dislikes="comment.dislikes"
-            :depth=0
-            :comments="comment.comments"
-            :id="comment._id"
-            :noteCommitId="notecommit._id"
-            :subjectId="this.subjectId"
-            :noteFileId="this.noteFileId"
-            @refreshNotes="getNotes()"
-            :user="this.user"
-            />
-          </div>
-          </div>
-        </div>
+    <!--NoteCommits-->
+    <div v-for="notecommit in notes" :key="notecommit._id" class="card p3 mb-3">
+      <noteCommit
+      :topic="notecommit.topic"
+      :note="notecommit.note"
+      :id="notecommit._id"
+      :subjectId="this.subjectId"
+      :noteFileId="this.noteFileId"
+      :user="this.userId"
+      :username="notecommit.createdBy"
+      @refreshNotes="getNotes()"
+      />
+      <!--Comments-->
+      <div v-for="comment in notecommit.comments" :key="comment._id" class="card p3 mb-3">
+        <comment
+        :content="comment.comment"
+        :username="comment.createdBy.username"
+        :likes="comment.likes"
+        :dislikes="comment.dislikes"
+        :depth=0
+        :comments="comment.comments"
+        :id="comment._id"
+        :noteCommitId="notecommit._id"
+        :subjectId="this.subjectId"
+        :noteFileId="this.noteFileId"
+        @refreshNotes="getNotes()"
+        :user="this.user"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -187,13 +188,17 @@ export default {
     },
 
     async getComments(noteCommitId) {
-      const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}/noteFiles/${this.noteFileId}/${noteCommitId}/comments/`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
-      })
+      try {
+        const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}/noteFiles/${this.noteFileId}/${noteCommitId}/comments/`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        })
 
-      return res.json()
+        return res.json()
+      } catch (err) {
+        this.message = err.message
+      }
     }
   }
 }
