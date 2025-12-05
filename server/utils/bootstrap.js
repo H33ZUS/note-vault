@@ -34,7 +34,7 @@ async function bootstrapAdmin() {
         console.log("\n*** This is the password for your temporary admin account. ***");
         console.log("======================================================\n");
     } catch (err) {
-        console.err("ERROR: Failed to bootstrap the initial admin account.", err.message);
+        console.error("ERROR: Failed to bootstrap the initial admin account.", err.message);
     }
 }
 

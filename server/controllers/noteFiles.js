@@ -1,12 +1,13 @@
 const express = require("express");
 const NoteFile = require("../models/noteFile.js");
-const NoteCommit = require("../models/noteCommit.js");
 const Subject = require("../models/subject.js");
+const val = require("../validations/noteFileValidation.js")
+const { validateResponse } = require("../middleware/responseValidator.js");
 
 const router = express.Router({mergeParams: true}); // to access parents parameters
 
 // ensure that noteFiles cannot exist outisde of a subject
-router.post("/", async(req, res) => {
+router.post("/", async(req, res, next) => {
 
     const subjectId = req.params.subjectId;
 
@@ -18,13 +19,25 @@ router.post("/", async(req, res) => {
 
         const noteFile = new NoteFile({...req.body, subjectId: subjectId});
         await noteFile.save();
-        res.status(201).json(noteFile);
+
+        const noteFileObj = noteFile.toObject();
+        delete noteFileObj.__v;
+
+        if (noteFileObj._id && noteFileObj.subjectId) {
+            noteFileObj._id = noteFileObj._id.toString();
+            noteFileObj.subjectId = noteFileObj.subjectId.toString();
+        }
+
+        res.locals.data = noteFileObj;
+        next();
     } catch (err) {
         res.status(400).json({error: err.message});
     }
+}, validateResponse(val.noteFileResponseSchema), (req, res) => {
+    res.status(201).json(res.locals.data);
 });
 
-router.get("/", async(req, res) => {
+router.get("/", async(req, res, next) => {
 
     const subjectId = req.params.subjectId;
 
@@ -33,27 +46,53 @@ router.get("/", async(req, res) => {
         if (!subject) {
             return res.status(404).json({error: "Subject not found"});
         }
-        const noteFile = await NoteFile.find({subjectId: subjectId});
-        res.json(noteFile);
+        const noteFiles = await NoteFile.find({subjectId: subjectId}).select("-__v");
+
+        const finalData = noteFiles.map(noteFile => {
+            const noteFileObj = noteFile.toObject();
+
+            if (noteFileObj._id && noteFileObj.subjectId) {
+                noteFileObj._id = noteFileObj._id.toString();
+                noteFileObj.subjectId = noteFileObj.subjectId.toString();
+            }
+
+            return noteFileObj;
+        });
+
+        res.locals.data = finalData;
+        next();
     } catch (err) {
         res.status(400).json({error: err.message});
     }
+}, validateResponse(val.noteFileArrayResponseSchema), (req, res) => {
+    res.status(200).json(res.locals.data);
 });
 
-router.get("/:id", async(req, res) => {
+router.get("/:id", async(req, res, next) => {
 
     const { id: noteFileId, subjectId } = req.params;
 
     try {
-        const noteFile = await NoteFile.findOne({_id: noteFileId, subjectId: subjectId});
+        const noteFile = await NoteFile.findOne({_id: noteFileId, subjectId: subjectId}).select("-__v");
 
         if (!noteFile) {
             return res.status(404).json({error: "NoteFile not found or does not belong to the specified Subject"});
         }
-        res.json(noteFile);
+
+        const noteFileObj = noteFile.toObject();
+
+        if (noteFileObj._id && noteFileObj.subjectId) {
+            noteFileObj._id = noteFileObj._id.toString();
+            noteFileObj.subjectId = noteFileObj.subjectId.toString();
+        }
+
+        res.locals.data = noteFileObj;
+        next();
     } catch (err) {
         res.status(400).json({error: err.message});
     }
+}, validateResponse(val.noteFileResponseSchema), (req, res) => {
+    res.status(200).json(res.locals.data);
 });
 
 router.delete("/:id", async(req, res) => {

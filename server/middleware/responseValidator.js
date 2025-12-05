@@ -1,0 +1,28 @@
+const Joi = require('joi');
+
+const validateResponse = (schema) => (req, res, next) => {
+    const dataToValidate = res.locals.data;
+
+    if (!dataToValidate) {
+        console.warn("Response Validator: No data found in res.locals.data");
+        return next();
+    }
+
+    const validationSchema = schema;
+
+    const { error, value } = validationSchema.validate(dataToValidate, { abortEarly: false, stripUnknown: false });
+
+    if (error) {
+        console.error("Response Validation Failed:", error.details);
+
+        return res.status(500).json({
+            message: "Internal server error: Response structure is invalid",
+            details: error.details
+        });
+    }
+
+    res.locals.data = value;
+    next();
+};
+
+module.exports = { validateResponse };
