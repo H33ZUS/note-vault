@@ -2662,7 +2662,7 @@
 							"variable": [
 								{
 									"key": "subjectId",
-									"value": "{{subjectId}}"
+									"value": "this_subject_does_not_exist"
 								}
 							]
 						}
