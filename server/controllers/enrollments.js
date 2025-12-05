@@ -8,7 +8,7 @@ const val = require("../validations/enrollmentValidation.js");
 const router = express.Router();
 
 // ENROLL IN SUBJECT
-router.post("/:id/enroll", isAuthenticated, async(req, res, next) => {
+router.post("/:id", isAuthenticated, async(req, res, next) => {
     const subjectId = req.params.id;
     const userId = req.user._id;
 
@@ -47,7 +47,7 @@ router.post("/:id/enroll", isAuthenticated, async(req, res, next) => {
 });
 
 // DROP OUT OF SUBJECT
-router.post("/:id/unenroll", isAuthenticated, async(req, res) => {
+router.delete("/:id", isAuthenticated, async(req, res) => {
     const subjectId = req.params.id;
     const userId = req.user._id;
 

@@ -2596,7 +2596,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/enrollments/:subjectId/enroll",
+							"raw": "{{baseURL}}/api/v1/enrollments/:subjectId",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -2604,8 +2604,7 @@
 								"api",
 								"v1",
 								"enrollments",
-								":subjectId",
-								"enroll"
+								":subjectId"
 							],
 							"variable": [
 								{
@@ -2650,7 +2649,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/enrollments/:subjectId/enroll",
+							"raw": "{{baseURL}}/api/v1/enrollments/:subjectId",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -2658,13 +2657,12 @@
 								"api",
 								"v1",
 								"enrollments",
-								":subjectId",
-								"enroll"
+								":subjectId"
 							],
 							"variable": [
 								{
 									"key": "subjectId",
-									"value": "this_subject_does_not_exists"
+									"value": "{{subjectId}}"
 								}
 							]
 						}
@@ -2703,7 +2701,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/enrollments/:subjectId/enroll",
+							"raw": "{{baseURL}}/api/v1/enrollments/:subjectId",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -2711,8 +2709,7 @@
 								"api",
 								"v1",
 								"enrollments",
-								":subjectId",
-								"enroll"
+								":subjectId"
 							],
 							"variable": [
 								{
@@ -2753,10 +2750,10 @@
 						}
 					],
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/enrollments/:id/unenroll",
+							"raw": "{{baseURL}}/api/v1/enrollments/:id",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -2764,8 +2761,7 @@
 								"api",
 								"v1",
 								"enrollments",
-								":id",
-								"unenroll"
+								":id"
 							],
 							"variable": [
 								{
@@ -2806,10 +2802,10 @@
 						}
 					],
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/enrollments/:id/unenroll",
+							"raw": "{{baseURL}}/api/v1/enrollments/:id",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -2817,8 +2813,7 @@
 								"api",
 								"v1",
 								"enrollments",
-								":id",
-								"unenroll"
+								":id"
 							],
 							"variable": [
 								{
