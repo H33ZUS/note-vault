@@ -1,5 +1,5 @@
 <template>
-    <div class="container mt-4">
+    <div class="container mt-4 text-center-all">
         <h2>Subject Management</h2>
 
         <ul class="nav nav-tabs mb-4">
@@ -39,7 +39,7 @@
               />
         </div>
 
-        <button class="btn btn-primary" @click="createSubject">
+        <button class="btn-message" @click="createSubject">
             Create subject
         </button>
 
