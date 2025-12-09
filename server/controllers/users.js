@@ -5,7 +5,7 @@ const { validateResponse } = require("../middleware/responseValidator");
 const { validateRequest } = require("../middleware/requestValidator");
 const val = require("../validations/userValidation");
 const User = require("../models/user");
-const compareArrays = require("../utils/misc");
+const { compareArrays, checkArray } = require("../utils/misc");
 
 const router = express.Router();
 
