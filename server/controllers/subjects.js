@@ -10,7 +10,6 @@ const val = require("../validations/subjectValidation.js");
 const router = express.Router();
 
 router.post("/", isAuthenticated, isAuthorized("teacher"), validateRequest(val.subjectRequest), async(req, res, next) => {
-
     try {
         const userId = req.user._id;
         const subject = await Subject.create({
