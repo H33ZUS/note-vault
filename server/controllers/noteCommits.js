@@ -2,6 +2,7 @@ const express = require("express");
 const NoteCommit = require("../models/noteCommit.js");
 const NoteFile = require("../models/noteFile.js")
 const { isAuthenticated, isAuthorized } = require("../middleware/auth.js");
+const { compareArrays, checkArray } = require("../utils/misc.js");
 const { validateRequest } = require("../middleware/requestValidator");
 const { validateResponse } = require("../middleware/responseValidator.js");
 const val = require("../validations/noteCommitValidation");
@@ -28,6 +29,8 @@ router.post("/", isAuthenticated, validateRequest(val.noteCommitRequestSchema), 
 
         const noteCommitObj = noteCommit.toObject();
         delete noteCommitObj.__v;
+        delete noteCommitObj.likesArray;
+        delete noteCommitObj.dislikesArray;
 
         if (noteCommitObj._id && noteCommitObj.noteFileId) {
             noteCommitObj._id = noteCommitObj._id.toString();
@@ -61,7 +64,7 @@ router.get("/", async(req, res, next) => {
     }
 
     try {
-        const noteCommits = await NoteCommit.find({noteFileId: noteFileId}).sort(sortOptions).select("-__v");
+        const noteCommits = await NoteCommit.find({noteFileId: noteFileId}).sort(sortOptions).select("-__v -likesArray -dislikesArray");
         if (noteCommits.length == 0) {
             return res.status(404).json({error: "No NoteCommits found for this NoteFile"});
         }
@@ -119,7 +122,7 @@ router.patch("/:id", isAuthenticated, validateRequest(val.noteCommitPatchRequest
             return res.status(403).json({message: "You are not authorized to update another user's note commit"})
         }
 
-        const noteCommit = await NoteCommit.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true}).select("-__v");
+        const noteCommit = await NoteCommit.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true}).select("-__v -likesArray -dislikesArray");
 
         const noteCommitObj = noteCommit.toObject();
 
@@ -138,6 +141,130 @@ router.patch("/:id", isAuthenticated, validateRequest(val.noteCommitPatchRequest
     res.status(200).json(res.locals.data);
 });
 
-// use same path for the rest of the operations but with /:commitId 
+router.post("/:id/likes", isAuthenticated, validateRequest(val.noteCommitLikesRequestSchema), async(req, res, next) => {
+    try{
+        const noteCommitId = req.params.id;
+        const userId = req.user._id;
+        const {like, dislike} = req.body;
+
+        if(like && dislike) {
+            return res.status(403).json({ error: "NoteCommits cant be both liked and disliked" });
+        }
+        if (!like && !dislike) {
+            return res.status(400).json({ error: "no likes" });
+        }
+
+        if (like) {
+            const noteCommit = await NoteCommit.findById(noteCommitId);
+
+            if (checkArray(noteCommit.likesArray, userId)) {
+                update = {
+                    $pull: { likesArray: userId }
+                }
+            } else {
+                if (checkArray(noteCommit.dislikesArray, userId)) {
+                    update = {
+                        $addToSet: { likesArray: userId },
+                        $pull: { dislikesArray: userId }
+                    };
+                } else {
+                    update = {
+                        $addToSet: { likesArray: userId }
+                    };
+                }
+            }
+
+            let updateLike = await NoteCommit.findByIdAndUpdate(
+                noteCommitId, 
+                update, 
+                { 
+                    new: true,
+                    runValidators: true
+                }
+            );
+
+            if (updateLike) {
+                if (updateLike.likesArray === undefined || updateLike.dislikesArray === undefined) {
+                    updateLike.likesArray = [];
+                    updateLike.dislikesArray = [];
+                }
+                updateLike.likes = updateLike.likesArray.length;
+                updateLike.dislikes = updateLike.dislikesArray.length;
+                await updateLike.save();
+            }
+
+            const NoteCommitObj = updateLike.toObject();
+            delete NoteCommitObj.likesArray;
+            delete NoteCommitObj.dislikesArray;
+            delete NoteCommitObj.__v;
+
+            if (NoteCommitObj._id) {
+                NoteCommitObj._id = NoteCommitObj._id.toString();
+                NoteCommitObj.createdBy = NoteCommitObj.createdBy.toString();
+                NoteCommitObj.noteFileId = NoteCommitObj.noteFileId.toString();
+            }
+
+            res.locals.data = NoteCommitObj;
+            next();
+        } else {
+            const noteCommit = await NoteCommit.findById(noteCommitId);
+
+            if (checkArray(noteCommit.dislikesArray, userId)) {
+                update = {
+                    $pull: { dislikesArray: userId }
+                }
+            } else {
+                if (checkArray(noteCommit.likesArray, userId)) {
+                    update = {
+                        $addToSet: { dislikesArray: userId },
+                        $pull: { likesArray: userId }
+                    };
+                } else {
+                    update = {
+                        $addToSet: { dislikesArray: userId }
+                    };
+                }
+            }
+
+            const updateLike = await NoteCommit.findByIdAndUpdate(
+                noteCommitId,
+                update,
+                {
+                    new: true,
+                    runValidators: true
+                }
+            );
+
+            if (updateLike) {
+                if (updateLike.likesArray === undefined || updateLike.dislikesArray === undefined) {
+                    updateLike.likesArray = [];
+                    updateLike.dislikesArray = [];
+                }
+                updateLike.likes = updateLike.likesArray.length;
+                updateLike.dislikes = updateLike.dislikesArray.length;
+                await updateLike.save();
+            }
+
+            const NoteCommitObj = updateLike.toObject();
+            delete NoteCommitObj.likesArray;
+            delete NoteCommitObj.dislikesArray;
+            delete NoteCommitObj.__v;
+
+            if (NoteCommitObj._id) {
+                NoteCommitObj._id = NoteCommitObj._id.toString();
+                NoteCommitObj.createdBy = NoteCommitObj.createdBy.toString();
+                NoteCommitObj.noteFileId = NoteCommitObj.noteFileId.toString();
+            }
+
+            res.locals.data = NoteCommitObj;
+            next();
+        }
+
+    } catch(err) {
+        return res.status(400).json({ "error" : err.message });
+    }
+}, validateResponse(val.noteCommitResponseSchema), (req, res) => {
+    res.status(200).json(res.locals.data);
+});
 
 module.exports = router;

@@ -15,4 +15,22 @@ const compareArrays = (arr1, arr2) => {
     return true;
 }
 
-module.exports = compareArrays;
+ function checkArray(array, targetId) {
+    console.log(array);
+    console.log(targetId);
+    if (!array || !targetId) {
+        return false;
+    }
+
+    const stringArray = array.map(id => id.toString());
+    const targetIdString = targetId.toString();
+
+    if (stringArray.includes(targetIdString)) {
+        return true;
+    }
+ }
+
+module.exports = {
+    compareArrays,
+    checkArray
+}
