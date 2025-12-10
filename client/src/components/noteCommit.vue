@@ -10,14 +10,21 @@
             <h3>{{note}}</h3>
         </div>
         <!--Edit and delete note-->
+        <h4>Likes: {{likes}} Dislikes: {{dislikes}}</h4>
         <div>
             <button v-if="user === username" class="btn btn-primary mt-3" @click="editNote">
             Edit Note
             </button>
+        </div>
+            <button class="btn btn-primary mt-3" @click="likeNoteCommit(true)">
+                Like Note
+            </button>
+            <button class="btn btn-primary mt-3" @click="likeNoteCommit(false)">
+                Dislike Note
+            </button>
             <button v-if="user === username" class="btn btn-danger mt-3" @click="deleteNote">
             Delete Note
             </button>
-        </div>
         <!--Create comment on note-->
         <div>
             <label>Comment</label>
@@ -38,6 +45,8 @@ const props = defineProps({
   topic: String,
   note: String,
   id: String,
+  likes: Number,
+  dislikes: Number,
   subjectId: String,
   noteFileId: String,
   user: String,
@@ -107,6 +116,27 @@ async function deleteNote() {
     console.log(await res.json())
 
     if (!res.ok) throw new Error('Failed to Delete')
+    emit('refreshNotes')
+  } catch (err) {
+
+  }
+}
+
+async function likeNoteCommit(state) {
+  try {
+    const likeBool = state
+    const dislikeBool = !state
+    const res = await fetch(`http://localhost:3000/api/v1/subjects/${props.subjectId}/noteFiles/${props.noteFileId}/noteCommits/${props.id}/likes`, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        like: likeBool,
+        dislike: dislikeBool
+      })
+    })
+    if (!res.ok) throw new Error('Failed to like')
+
     emit('refreshNotes')
   } catch (err) {
 

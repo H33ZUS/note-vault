@@ -32,6 +32,7 @@ const noteCommitArrayResponseSchema = Joi.array().items(noteCommitResponseSchema
 module.exports = {
     noteCommitRequestSchema,
     noteCommitPatchRequestSchema,
+    noteCommitLikesRequestSchema,
     noteCommitResponseSchema,
     noteCommitArrayResponseSchema
 }

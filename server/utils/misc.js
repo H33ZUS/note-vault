@@ -16,8 +16,6 @@ const compareArrays = (arr1, arr2) => {
 }
 
  function checkArray(array, targetId) {
-    console.log(array);
-    console.log(targetId);
     if (!array || !targetId) {
         return false;
     }

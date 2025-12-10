@@ -29,6 +29,8 @@ router.post("/", isAuthenticated, validateRequest(val.noteCommitRequestSchema), 
 
         const noteCommitObj = noteCommit.toObject();
         delete noteCommitObj.__v;
+        delete noteCommitObj.likesArray;
+        delete noteCommitObj.dislikesArray;
 
         if (noteCommitObj._id && noteCommitObj.noteFileId) {
             noteCommitObj._id = noteCommitObj._id.toString();
@@ -197,6 +199,7 @@ router.post("/:id/likes", isAuthenticated, validateRequest(val.noteCommitLikesRe
             if (NoteCommitObj._id) {
                 NoteCommitObj._id = NoteCommitObj._id.toString();
                 NoteCommitObj.createdBy = NoteCommitObj.createdBy.toString();
+                NoteCommitObj.noteFileId = NoteCommitObj.noteFileId.toString();
             }
 
             res.locals.data = NoteCommitObj;
@@ -246,6 +249,7 @@ router.post("/:id/likes", isAuthenticated, validateRequest(val.noteCommitLikesRe
             if (NoteCommitObj._id) {
                 NoteCommitObj._id = NoteCommitObj._id.toString();
                 NoteCommitObj.createdBy = NoteCommitObj.createdBy.toString();
+                NoteCommitObj.noteFileId = NoteCommitObj.noteFileId.toString();
             }
 
             res.locals.data = NoteCommitObj;
@@ -314,6 +318,7 @@ router.delete("/:id/likes", isAuthenticated, validateRequest(val.noteCommitLikes
             if (NoteCommitObj._id) {
                 NoteCommitObj._id = NoteCommitObj._id.toString();
                 NoteCommitObj.createdBy = NoteCommitObj.createdBy.toString();
+                NoteCommitObj.noteFileId = NoteCommitObj.noteFileId.toString();
             }
 
             res.locals.data = NoteCommitObj;
@@ -360,6 +365,7 @@ router.delete("/:id/likes", isAuthenticated, validateRequest(val.noteCommitLikes
             if (NoteCommitObj._id) {
                 NoteCommitObj._id = NoteCommitObj._id.toString();
                 NoteCommitObj.createdBy = NoteCommitObj.createdBy.toString();
+                NoteCommitObj.noteFileId = NoteCommitObj.noteFileId.toString();
             }
 
             res.locals.data = NoteCommitObj;
