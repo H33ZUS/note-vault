@@ -9,6 +9,19 @@ const compareArrays = require("../utils/misc");
 
 const router = express.Router();
 
+router.get("/cookies",  async(req, res) => {
+    try {
+        const token = req.cookies.auth_token
+        if (token) {
+            return res.status(200).json({status: true})
+        }else{
+            return res.status(200).json({status: false})
+        }
+    }catch(err){
+        return res.status(400).json({error: err.message})
+    }
+})
+
 // CREATE A USER
 router.post("/", validateRequest(val.userCreateRequestSchema), async(req, res, next) => {
     try {
