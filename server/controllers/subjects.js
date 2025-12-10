@@ -56,9 +56,28 @@ router.post("/", isAuthenticated, isAuthorized("teacher"), validateRequest(val.s
 });
 
 // get all
-router.get("/", async(req, res, next) => {
+router.get("/", isAuthenticated, async(req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+
+    const filterStatus = req.query.filter ? req.query.filter.toLowerCase() : "all";
     try {
-        const subjects = await Subject.find().select("-__v");
+        let query = {};
+        const userId = req.user._id;
+
+        if (filterStatus === "enrolled" || filterStatus === "available") {
+            const enrollments = await Enrollment.find({ userId }).select("subjectId");
+            const enrolledIds = enrollments.map(e => e.subjectId);
+
+            if (filterStatus === "enrolled") {
+                query = { _id: { $in: enrolledIds } };
+            } else {
+                query = { _id: { $nin: enrolledIds } };
+            }
+        }
+
+        const subjects = await Subject.find(query).select("-__v").collation({ locale: "en", strength: 1 }).sort({ title: 1 });
 
         const finalData = subjects.map(subject => {
             const subjectObj = subject.toObject();
@@ -75,83 +94,6 @@ router.get("/", async(req, res, next) => {
         next();
     } catch (err) {
         res.status(404).json({error: err.message});
-    }
-}, validateResponse(val.subjectArrayResponseSchema), (req, res) => {
-    res.status(200).json(res.locals.data);
-});
-
-// get subjects user is not enrolled in
-router.get("/available", isAuthenticated, async(req, res, next) => {
-
-    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    res.set('Pragma', 'no-cache');
-    res.set('Expires', '0');
-
-    const {sort} = req.query;
-    try {
-        const userId = req.user._id;
-
-        const userCheck = await User.findById(userId);
-        if (!userCheck) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        const enrollments = await Enrollment.find({ userId: userId }).select("subjectId");
-        const enrolledIds = enrollments.map(e => e.subjectId);
-
-        const available = await Subject.find(
-            { _id: { $nin: enrolledIds }}, 
-            null, { collation: { locale: "en", strength: 1 }}).sort({ title: 1 }).select("-__v"); // sort alphabetically
-
-        const finalData = available.map(subject => {
-            const subjectObj = subject.toObject();
-
-            if (subjectObj._id && subjectObj.createdBy) {
-                subjectObj._id = subjectObj._id.toString();
-                subjectObj.createdBy = subjectObj.createdBy.toString();
-            }
-
-            return subjectObj;
-        });
-
-        res.locals.data = finalData;
-        next();
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-}, validateResponse(val.subjectArrayResponseSchema), (req, res) => {
-    res.status(200).json(res.locals.data);
-});
-
-// get subjects user is enrolled in
-router.get("/enrolled", isAuthenticated, async(req, res, next) => {
-
-    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    res.set('Pragma', 'no-cache');
-    res.set('Expires', '0');
-    try {
-        const userId = req.user._id
-
-        const enrollments = await Enrollment.find({ userId}).select("subjectId");
-        const enrolledIds = enrollments.map(e => e.subjectId);
-
-        const subjects = await Subject.find({ _id: { $in: enrolledIds } }).select("-__v");
-
-        const finalData = subjects.map(subject => {
-            const subjectObj = subject.toObject();
-
-            if (subjectObj._id && subjectObj.createdBy) {
-                subjectObj._id = subjectObj._id.toString();
-                subjectObj.createdBy = subjectObj.createdBy.toString();
-            }
-
-            return subjectObj;
-        });
-
-        res.locals.data = finalData;
-        next();
-    } catch (err) {
-        res.status(400).json({ message: err.message });
     }
 }, validateResponse(val.subjectArrayResponseSchema), (req, res) => {
     res.status(200).json(res.locals.data);
