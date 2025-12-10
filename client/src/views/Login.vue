@@ -15,7 +15,7 @@
         <!-- Password -->
         <div class="mb-3">
             <input
-                type="text"
+                type="password"
                 v-model="password"
                 class="form-control"
                 placeholder="Enter password"
