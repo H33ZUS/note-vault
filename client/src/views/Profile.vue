@@ -8,7 +8,10 @@
             <input type="text" v-model="username" class="form-control"/>
         </div>
         <div v-else>
-            <h3>Username: {{username}}</h3>
+          <div class="profile-row">
+            <span class="label">Username:</span>
+            <span class="value">{{ username }}</span>
+          </div>
         </div>
 
         <div v-if="edit">
@@ -16,19 +19,26 @@
             <input type="text" v-model="email" class="form-control"/>
         </div>
         <div v-else>
-            <h3>Email: {{email}}</h3>
+          <div class="profile-row">
+            <span class="label">Email:</span>
+            <span class="value">{{ email }}</span>
+          </div>
         </div>
 
         <!-- EditButton -->
-        <button class="btn btn-primary mt-3" @click="toggleEdit">
-            {{ edit ? 'Save update' : 'update info' }}
+        <div class="flex-center">
+          <button class="btn-message mt-3" @click="toggleEdit">
+            {{ edit ? 'Save update' : 'Update info' }}
         </button>
+        </div>
 
         <div v-if="edit">
             <h3></h3>
         </div>
         <div v-else>
-            <h3>{{message}}</h3>
+          <div class="mt-2">
+            <p>{{message}}</p>
+          </div>
         </div>
 
     </div>

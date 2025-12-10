@@ -32,9 +32,11 @@
                 />
         </div>
 
-        <button class="btn btn-primary" @click="login">
+        <div class="flex-center">
+        <button class="btn-message" @click="login">
             Register
         </button>
+        </div>
 
         <div v-if="message" class="alert alert-info mt-3">
             {{message}}

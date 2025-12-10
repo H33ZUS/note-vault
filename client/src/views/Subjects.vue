@@ -30,7 +30,6 @@
         <div v-if="currentTab === 'create' && isAdminOrTeacher">
           <h2>Create Subject</h2>
           <div class="mb-3">
-            <label class="form-label">Subject Title</label>
             <input
                 type="text"
                 v-model="subjectTitle"
@@ -93,7 +92,7 @@
             title="Delete Subject"
           >
             🗑️ </button>
-          <button class="btn btn-primary" @click="joinSubject(subject._id)">
+          <button class="btn-message" @click="joinSubject(subject._id)">
             Join
           </button>
       </div>
@@ -116,7 +115,7 @@
 
       <div v-for="subject in mySubjects" :key="subject._id" class="card p3 mb-3">
         <h4><router-link :to="`/notefile/${subject._id}`">{{subject.title}}</router-link></h4>
-        <button class="btn btn-prmary" @click="leaveSubject(subject._id)">
+        <button class="btn-message" @click="leaveSubject(subject._id)">
           Leave
         </button>
       </div>

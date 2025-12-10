@@ -14,16 +14,24 @@ html {
 }
 
 body {
-    background-color: #808485;
+    background-color: #0d0628;
     color: #222;
 }
 
-h1 {
+h1, h2, h3, h4, h5, h6 {
     text-align: center;
+    color: whitesmoke !important;
+    font-weight: bold;
 }
 
 p {
     text-align: center;
+    color: whitesmoke !important;
+    font-weight: bold;
+}
+
+label {
+    color: whitesmoke !important;
 }
 
 button {
@@ -31,22 +39,41 @@ button {
     cursor: pointer;
 }
 
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ccc;
+}
+
 #nav {
     text-align: center;
     margin: 1rem 0;
+    border-top: 2px solid #ef7b45;
+    padding-top: 0.5rem;
+    border-bottom: 2px solid #ef7b45;
+    padding-bottom: 0.5rem;
 }
 
 #nav a,
 .nav-link {
-    color: #42b983 !important;
+    color: #ef7b45 !important;
     text-decoration: none;
     font-weight: bold;
     border: none;
+    margin: 0 1rem;
+    padding: 0.5rem 2.3rem;
+    transition: color 0.2s ease, background 0.2s ease;
+    border-radius: 4px;
+    font-size: 1.2rem;
+
 }
 
 .nav-link:hover {
     text-decoration: underline !important;
-    color: #369f6b !important;
+    color: #f86b33 !important;
+    background-color: whitesmoke;
     border: none;
 }
 
@@ -58,14 +85,28 @@ button {
     text-decoration: underline;
 }
 
+.container .mb-3{
+    max-width: 300px;
+    margin: 0.5rem auto;
+    padding: 0;
+    background-color: #0d0628;
+    border-radius: 8px;
+    color: whitesmoke;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
 }
 
-.text-center {
-    text-align: center;
+.mb-3 {
+    width: 100%;
+    max-width: 250px;
+    margin: 0.5rem auto;
+    padding: 0;
 }
 
 .mt-1 {
@@ -90,14 +131,40 @@ button {
     text-align: center;
 }
 
+.profile-row {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 0.5rem;
+    font-size: 1.3rem;
+    color: whitesmoke !important;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+    margin-left: 22rem;
+
+}
+
+.label {
+    text-align: right;
+    font-weight: bold;
+}
+
 .btn-message {
-    background-color: #42b983 !important;
+    background-color: #ef7b45 !important;
     color: whitesmoke !important;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
+    font-weight: bold;
 }
 
 .btn-message:hover {
-    background-color: #369f8b !important; /* darker when hovering over */
+    background-color: #f86b33 !important; /* darker when hovering over */
 }
+
+.form-center-block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
