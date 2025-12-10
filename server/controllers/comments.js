@@ -202,7 +202,9 @@ router.post("/:id/likes", isAuthenticated, validateRequest(val.commentLikesReque
             
             // checking if comment has already been liked by the user and setting update body
             if (checkArray(comment.likesArray, userId)) {
-                return res.status(400).json({ message: "Comment has already been liked by this user" });
+                update = {
+                    $pull: { likesArray: userId }
+                }
             } else {
                 if (checkArray(comment.dislikesArray, userId)) {
                     update = {
@@ -265,7 +267,9 @@ router.post("/:id/likes", isAuthenticated, validateRequest(val.commentLikesReque
 
             // checking if comment has already been disliked by the user and setting update body
             if (checkArray(comment.dislikesArray, userId)) {
-                return res.status(400).json({ message: "Comment has already been disliked by this user" });
+                update = {
+                    $pull: { dislikesArray: userId }
+                }
             } else {
                 if (checkArray(comment.likesArray, userId)) {
                     update = {
@@ -293,6 +297,8 @@ router.post("/:id/likes", isAuthenticated, validateRequest(val.commentLikesReque
                     updateLike.likesArray = [];
                     updateLike.dislikesArray = [];
                 }
+                console.log(updateLike.likesArray);
+                console.log(updateLike.dislikesArray);
                 updateLike.likes = updateLike.likesArray.length;
                 updateLike.dislikes = updateLike.dislikesArray.length;
                 await updateLike.save();
@@ -319,131 +325,6 @@ router.post("/:id/likes", isAuthenticated, validateRequest(val.commentLikesReque
         }
     } catch(err) {
         return res.status(400).json({ error : err.message });
-    }
-}, validateResponse(val.commentResponseSchema), (req, res) => {
-    res.status(200).json(res.locals.data);
-});
-
-router.delete("/:id/likes", isAuthenticated, validateRequest(val.commentLikesRequestSchema), async(req, res, next) => {
-    try{
-        const commentId = req.params.id;
-        const userId = req.body._id;
-        const {like, dislike} = req.body;
-
-        if(like && dislike) {
-            return res.status(403).json({ error: "Comments cant be both liked and disliked" });
-        }
-        if (!like && !dislike) {
-            return res.status(400).json({ error: "no likes" });
-        }
-
-        // REMOVE LIKE
-        if (like) {
-            const comment = await Comment.findById(commentId);
-
-            if (comment.likes <= 0 || comment.dislikes <= 0) {
-                return res.status(404).json({ message: "You cannot remove a like or dislike from a comment with 0 likes or dislikes" });
-            }
-
-            if (!checkArray(comment.likesArray, userId)) {
-                return res.status(400).json({ message: "Comment has not been liked by this user"});
-            } else {
-                update = {
-                    $pull: { likesArray: userId }
-                };
-            }
-
-            const updateLike = await Comment.findByIdAndUpdate(
-                commentId, 
-                update,
-                {
-                    new: true,
-                    runValidators: true
-                }
-            );
-
-            if (updateLike) {
-                if (updateLike.likesArray === undefined || updateLike.dislikesArray === undefined) {
-                    updateLike.likesArray = [];
-                    updateLike.dislikesArray = [];
-                }
-                updateLike.likes = updateLike.likesArray.length;
-                updateLike.dislikes = updateLike.dislikesArray.length;
-                await updateLike.save();
-            }
-
-            const commentObj = updateLike.toObject();
-            delete commentObj.likesArray;
-            delete commentObj.dislikesArray;
-            delete commentObj.__v;
-
-            if (commentObj._id) {
-                commentObj._id = commentObj._id.toString();
-                commentObj.createdBy = commentObj.createdBy.toString();
-
-                if (commentObj.commentedOnComment) {
-                    commentObj.commentedOnComment = commentObj.commentedOnComment.toString();
-                } else {
-                    commentObj.commentedOnNote = commentObj.commentedOnNote.toString();
-                }
-            }
-
-            res.locals.data = commentObj;
-            next();
-        } else {
-            const comment = await Comment.findById(commentId);
-
-            if (comment.likes <= 0 || comment.dislikes <= 0) {
-                return res.status(404).json({ message: "You cannot remove a like or dislike from a comment with 0 likes or dislikes" });
-            }
-
-            if (!checkArray(comment.dislikesArray, userId)) {
-                return res.status(400).json({ message: "Comment has not been disliked by this user"});
-            } else {
-                update = {
-                    $pull: { dislikesArray: userId }
-                };
-            }
-            const updateLike = await Comment.findByIdAndUpdate(
-                commentId, 
-                update,
-                {
-                    new: true,
-                    runValidators: true
-                }
-            );
-
-            if (updateLike) {
-                if (updateLike.likesArray === undefined || updateLike.dislikesArray === undefined) {
-                    updateLike.likesArray = [];
-                    updateLike.dislikesArray = [];
-                }
-                updateLike.likes = updateLike.likesArray.length;
-                updateLike.dislikes = updateLike.dislikesArray.length;
-                await updateLike.save();
-            }
-
-            const commentObj = updateLike.toObject();
-            delete commentObj.likesArray;
-            delete commentObj.dislikesArray;
-            delete commentObj.__v;
-
-            if (commentObj._id) {
-                commentObj._id = commentObj._id.toString();
-                commentObj.createdBy = commentObj.createdBy.toString();
-
-                if (commentObj.commentedOnComment) {
-                    commentObj.commentedOnComment = commentObj.commentedOnComment.toString();
-                } else {
-                    commentObj.commentedOnNote = commentObj.commentedOnNote.toString();
-                }
-            }
-
-            res.locals.data = commentObj;
-            next();
-        }
-    } catch(err) {
-        return res.status(400).json({ error: err.message });
     }
 }, validateResponse(val.commentResponseSchema), (req, res) => {
     res.status(200).json(res.locals.data);
