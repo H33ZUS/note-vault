@@ -192,7 +192,7 @@ export default {
 
     async joinSubject(subjectId) {
       try {
-        const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}/enroll`, {
+        const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-type': 'application/json' },
@@ -224,7 +224,7 @@ export default {
 
     async leaveSubject(subjectId) {
       try {
-        const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}/unenroll`, {
+        const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}`, {
           method: 'POST',
           credentials: 'include'
         })
