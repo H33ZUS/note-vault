@@ -1,5 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_testing';
 const { isAuthenticated, isAuthorized } = require("../middleware/auth");
 const { validateResponse } = require("../middleware/responseValidator");
 const { validateRequest } = require("../middleware/requestValidator");
@@ -65,16 +67,26 @@ router.post("/login", validateRequest(val.userLoginRequestSchema), async(req, re
     const { username, password } = req.body
 
     try {
-        const user = await User.findOne({ username: username });   
-        
+        const user = await User.findOne({ username: username }); 
+                
         if (user) {
             const isMatch = await bcrypt.compare(password, user.password);
 
             if (isMatch) {
-                const userId = user._id;
+                const payload = {
+                    userId: user._id,
+                    roles: user.roles
+                };
 
-                res.cookie("auth_token", userId.toString(), {
-                    maxAge: 1000 * 60 * 60 * 24,
+                console.log(JWT_SECRET);
+
+                const token = jwt.sign(
+                    payload, 
+                    JWT_SECRET,
+                    { expiresIn: '12h' }
+                );
+
+                res.cookie("auth_token", token, {
                     httpOnly: true,
                     secure: req.app.get("env") === "production",
                     sameSite: "Lax"
