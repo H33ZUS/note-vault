@@ -3,7 +3,7 @@
         <h2>Profile overview</h2>
 
         <!-- Username -->
-        <div v-if="edit">
+        <div v-if="edit" class="mb-3">
             <label>Username</label>
             <input type="text" v-model="username" class="form-control"/>
         </div>
@@ -14,7 +14,7 @@
           </div>
         </div>
 
-        <div v-if="edit">
+        <div v-if="edit" class="mb-3">
             <label>Email</label>
             <input type="text" v-model="email" class="form-control"/>
         </div>
@@ -29,11 +29,10 @@
         <div class="flex-center">
           <button class="btn-message mt-3" @click="toggleEdit">
             {{ edit ? 'Save update' : 'Update info' }}
-        </button>
+          </button>
         </div>
-
         <div v-if="edit">
-            <h3></h3>
+          <h3></h3>
         </div>
         <div v-else>
           <div class="mt-2">

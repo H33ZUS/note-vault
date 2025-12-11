@@ -161,10 +161,30 @@ input[type="text"], input[type="password"] {
     background-color: #f86b33 !important; /* darker when hovering over */
 }
 
-.form-center-block {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+/* if screen is smaller than 768 px, use these */
+@media (max-width: 768px) {
+
+    .profile-row {
+        margin-left: 0;
+        justify-content: start;
+        margin: 0 auto 0.75rem auto;
+        max-width: 300px;
+    }
+
+    #nav {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    #nav a,
+    .nav-link {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        white-space: nowrap;
+    }
 }
 
 
