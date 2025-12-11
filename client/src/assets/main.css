@@ -1,0 +1,190 @@
+
+/* CSS reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+html {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+    sans-serif;
+    line-height: 1.5;
+}
+
+body {
+    background-color: #0d0628;
+    color: #222;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    text-align: center;
+    color: whitesmoke !important;
+    font-weight: bold;
+}
+
+p {
+    text-align: center;
+    color: whitesmoke !important;
+    font-weight: bold;
+}
+
+label {
+    color: whitesmoke !important;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ccc;
+}
+
+#nav {
+    text-align: center;
+    margin: 1rem 0;
+    border-top: 2px solid #ef7b45;
+    padding-top: 0.5rem;
+    border-bottom: 2px solid #ef7b45;
+    padding-bottom: 0.5rem;
+}
+
+#nav a,
+.nav-link {
+    color: #ef7b45 !important;
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    margin: 0 1rem;
+    padding: 0.5rem 2.3rem;
+    transition: color 0.2s ease, background 0.2s ease;
+    border-radius: 4px;
+    font-size: 1.2rem;
+
+}
+
+.nav-link:hover {
+    text-decoration: underline !important;
+    color: #f86b33 !important;
+    background-color: whitesmoke;
+    border: none;
+}
+
+.nav-link.active {
+    color: #2c3e50 !important;
+}
+
+#nav a:hover {
+    text-decoration: underline;
+}
+
+.container .mb-3{
+    max-width: 300px;
+    margin: 0.5rem auto;
+    padding: 0;
+    background-color: #0d0628;
+    border-radius: 8px;
+    color: whitesmoke;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.mb-3 {
+    width: 100%;
+    max-width: 250px;
+    margin: 0.5rem auto;
+    padding: 0;
+}
+
+.mt-1 {
+    margin-top: 0.5rem;
+}
+
+.mt-2 {
+    margin-top: 1rem;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-center-all * {
+    text-align: center;
+}
+
+.profile-row {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 0.5rem;
+    font-size: 1.3rem;
+    color: whitesmoke !important;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+    margin-left: 22rem;
+
+}
+
+.label {
+    text-align: right;
+    font-weight: bold;
+}
+
+.btn-message {
+    background-color: #ef7b45 !important;
+    color: whitesmoke !important;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: bold;
+}
+
+.btn-message:hover {
+    background-color: #f86b33 !important; /* darker when hovering over */
+}
+
+/* if screen is smaller than 768 px, use these */
+@media (max-width: 768px) {
+
+    .profile-row {
+        margin-left: 0;
+        justify-content: start;
+        margin: 0 auto 0.75rem auto;
+        max-width: 300px;
+    }
+
+    #nav {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    #nav a,
+    .nav-link {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+}
+
+
