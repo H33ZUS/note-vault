@@ -22,6 +22,8 @@
       <noteCommit
       :topic="notecommit.topic"
       :note="notecommit.note"
+      :likes="notecommit.likes"
+      :dislikes="notecommit.dislikes"
       :id="notecommit._id"
       :subjectId="this.subjectId"
       :noteFileId="this.noteFileId"

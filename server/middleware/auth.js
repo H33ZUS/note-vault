@@ -1,4 +1,6 @@
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_testing';
 
 const isAuthenticated = async (req, res, next) => {
     const token = req.cookies.auth_token;
@@ -8,20 +10,22 @@ const isAuthenticated = async (req, res, next) => {
     }
 
     try {
-        const user = await User.findById(token);
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const userId = decoded.userId;
+
+        const user = await User.findById(userId);
 
         if (!user) {
-            res.clearCookie("auth_token");
-            return res.status(401).json({ error: "User not found." });
+            return res.status(401).json({ error: "User associated with this token not found." });
         }
 
         req.user = user;
         
         next();
     } catch (err) {
-        console.error("Auth error:", err);
+        console.error("JWT Verification failed:", err.message);
         res.clearCookie('auth_token');
-        return res.status(401).json({ error: "Invalid token format." });
+        return res.status(401).json({ error: "Invalid or expired token." });
     }
 };
 
@@ -32,7 +36,10 @@ const isAuthorized = (requiredRole) => {
         }
 
         try {
-            const user = await User.findById(req.cookies.auth_token);
+            const decoded = jwt.verify(req.cookies.auth_token, JWT_SECRET);
+            const userId = decoded.userId;
+
+            const user = await User.findById(userId);
 
             if (!user) {
                 return res.status(404).json({ message: "User not found" });

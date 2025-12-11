@@ -178,7 +178,7 @@ export default {
       this.joinMessage = ''
 
       try {
-        const res = await fetch('http://localhost:3000/api/v1/subjects/available', {
+        const res = await fetch('http://localhost:3000/api/v1/subjects?filter=available', {
           credentials: 'include'
         })
         if (!res.ok) throw new Error('Failed to load subjects')
@@ -191,7 +191,7 @@ export default {
 
     async joinSubject(subjectId) {
       try {
-        const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}/enroll`, {
+        const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-type': 'application/json' },
@@ -210,7 +210,7 @@ export default {
       this.myMessage = ''
 
       try {
-        const res = await fetch('http://localhost:3000/api/v1/subjects/enrolled', {
+        const res = await fetch('http://localhost:3000/api/v1/subjects?filter=enrolled', {
           credentials: 'include'
         })
         if (!res.ok) throw new Error('Failed to load enrolled subjects')
@@ -223,7 +223,7 @@ export default {
 
     async leaveSubject(subjectId) {
       try {
-        const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}/unenroll`, {
+        const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}`, {
           method: 'POST',
           credentials: 'include'
         })

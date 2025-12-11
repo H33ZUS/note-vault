@@ -35,6 +35,9 @@
     </template>
 
 <script>
+
+import router from '../router'
+
 export default {
   data() {
     return {
@@ -59,8 +62,8 @@ export default {
         const res = await fetch('http://localhost:3000/api/v1/users/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ username: this.username, password: this.password })
+          body: JSON.stringify({ username: this.username, password: this.password }),
+          credentials: 'include'
         })
 
         if (!res.ok) throw new Error('Failed to login')
@@ -68,6 +71,10 @@ export default {
         this.message = 'Logged in successfully'
         this.username = ''
         this.password = ''
+
+        router.push('/').then(() => {
+          window.location.reload()
+        })
       } catch (err) {
         this.message = err.message
       }

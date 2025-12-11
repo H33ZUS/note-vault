@@ -2596,7 +2596,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/enrollments/:subjectId/enroll",
+							"raw": "{{baseURL}}/api/v1/enrollments/:subjectId",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -2604,8 +2604,7 @@
 								"api",
 								"v1",
 								"enrollments",
-								":subjectId",
-								"enroll"
+								":subjectId"
 							],
 							"variable": [
 								{
@@ -2650,7 +2649,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/enrollments/:subjectId/enroll",
+							"raw": "{{baseURL}}/api/v1/enrollments/:subjectId",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -2658,13 +2657,12 @@
 								"api",
 								"v1",
 								"enrollments",
-								":subjectId",
-								"enroll"
+								":subjectId"
 							],
 							"variable": [
 								{
 									"key": "subjectId",
-									"value": "this_subject_does_not_exists"
+									"value": "this_subject_does_not_exist"
 								}
 							]
 						}
@@ -2703,7 +2701,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/enrollments/:subjectId/enroll",
+							"raw": "{{baseURL}}/api/v1/enrollments/:subjectId",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -2711,8 +2709,7 @@
 								"api",
 								"v1",
 								"enrollments",
-								":subjectId",
-								"enroll"
+								":subjectId"
 							],
 							"variable": [
 								{
@@ -2753,10 +2750,10 @@
 						}
 					],
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/enrollments/:id/unenroll",
+							"raw": "{{baseURL}}/api/v1/enrollments/:id",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -2764,8 +2761,7 @@
 								"api",
 								"v1",
 								"enrollments",
-								":id",
-								"unenroll"
+								":id"
 							],
 							"variable": [
 								{
@@ -2806,10 +2802,10 @@
 						}
 					],
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/api/v1/enrollments/:id/unenroll",
+							"raw": "{{baseURL}}/api/v1/enrollments/:id",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -2817,8 +2813,7 @@
 								"api",
 								"v1",
 								"enrollments",
-								":id",
-								"unenroll"
+								":id"
 							],
 							"variable": [
 								{
@@ -5340,192 +5335,6 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"like\" : true,\n    \"dislike\" : true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/noteCommits/{{noteCommitId}}/comments/{{commentId}}/likes",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"subjects",
-								"{{subjectId}}",
-								"noteFiles",
-								"{{noteFileId}}",
-								"noteCommits",
-								"{{noteCommitId}}",
-								"comments",
-								"{{commentId}}",
-								"likes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "200 - Remove like",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful POST request\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([200]);",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"like\" : true,\n    \"dislike\" : false\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/noteCommits/{{noteCommitId}}/comments/{{commentId}}/likes",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"subjects",
-								"{{subjectId}}",
-								"noteFiles",
-								"{{noteFileId}}",
-								"noteCommits",
-								"{{noteCommitId}}",
-								"comments",
-								"{{commentId}}",
-								"likes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "403 - Remove like",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful POST request\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([403]);",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"like\" : true,\n    \"dislike\" : true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}/noteFiles/{{noteFileId}}/noteCommits/{{noteCommitId}}/comments/{{commentId}}/likes",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"subjects",
-								"{{subjectId}}",
-								"noteFiles",
-								"{{noteFileId}}",
-								"noteCommits",
-								"{{noteCommitId}}",
-								"comments",
-								"{{commentId}}",
-								"likes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "400 - Remove like",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Successful POST request\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([400]);",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"like\" : false,\n    \"dislike\" : false\n}",
 							"options": {
 								"raw": {
 									"language": "json"

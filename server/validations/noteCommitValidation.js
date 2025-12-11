@@ -10,11 +10,16 @@ const noteCommitPatchRequestSchema = Joi.object({
     note: Joi.string().min(1).required()
 }).unknown(false);
 
+const noteCommitLikesRequestSchema = Joi.object({
+    like: Joi.bool().required(),
+    dislike: Joi.bool().required()
+}).unknown(false);
+
 // RESPONSE SCHEMAS
 const noteCommitResponseSchema = Joi.object({
     _id: Joi.string().hex().length(24).required(),
-    dislikes: Joi.number().required(),
     likes: Joi.number().required(),
+    dislikes: Joi.number().required(),
     createdBy: Joi.string().hex().length(24).required(),
     note: Joi.string().min(1).required(),
     topic: Joi.string().min(5).max(100).required(),
@@ -27,6 +32,7 @@ const noteCommitArrayResponseSchema = Joi.array().items(noteCommitResponseSchema
 module.exports = {
     noteCommitRequestSchema,
     noteCommitPatchRequestSchema,
+    noteCommitLikesRequestSchema,
     noteCommitResponseSchema,
     noteCommitArrayResponseSchema
 }

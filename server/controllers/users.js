@@ -1,13 +1,28 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_testing';
 const { isAuthenticated, isAuthorized } = require("../middleware/auth");
 const { validateResponse } = require("../middleware/responseValidator");
 const { validateRequest } = require("../middleware/requestValidator");
 const val = require("../validations/userValidation");
 const User = require("../models/user");
-const compareArrays = require("../utils/misc");
+const { compareArrays, checkArray } = require("../utils/misc");
 
 const router = express.Router();
+
+router.get("/cookies",  async(req, res) => {
+    try {
+        const token = req.cookies.auth_token
+        if (token) {
+            return res.status(200).json({status: true})
+        }else{
+            return res.status(200).json({status: false})
+        }
+    }catch(err){
+        return res.status(400).json({error: err.message})
+    }
+})
 
 // CREATE A USER
 router.post("/", validateRequest(val.userCreateRequestSchema), async(req, res, next) => {
@@ -65,16 +80,26 @@ router.post("/login", validateRequest(val.userLoginRequestSchema), async(req, re
     const { username, password } = req.body
 
     try {
-        const user = await User.findOne({ username: username });   
-        
+        const user = await User.findOne({ username: username }); 
+                
         if (user) {
             const isMatch = await bcrypt.compare(password, user.password);
 
             if (isMatch) {
-                const userId = user._id;
+                const payload = {
+                    userId: user._id,
+                    roles: user.roles
+                };
 
-                res.cookie("auth_token", userId.toString(), {
-                    maxAge: 1000 * 60 * 60 * 24,
+                console.log(JWT_SECRET);
+
+                const token = jwt.sign(
+                    payload, 
+                    JWT_SECRET,
+                    { expiresIn: '12h' }
+                );
+
+                res.cookie("auth_token", token, {
                     httpOnly: true,
                     secure: req.app.get("env") === "production",
                     sameSite: "Lax"
