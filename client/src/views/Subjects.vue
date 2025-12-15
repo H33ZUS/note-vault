@@ -1,5 +1,6 @@
 <template>
     <div class="container mt-4 text-center-all">
+        <h1 class="page-title">NoteVault</h1>
         <h2>Subject Management</h2>
 
         <ul class="nav nav-tabs mb-4">
@@ -56,7 +57,7 @@
         No subjects available to join.
       </div>
 
-      <div v-for="subject in availableSubjects" :key="subject._id" class="card p-3 mb-3 d-flex flex-row align-items-center justify-content-between">
+      <div v-for="subject in availableSubjects" :key="subject._id" class="subject-card">
         <div v-if="editingSubjectId === subject._id">
           <input
             type="text"
@@ -113,7 +114,7 @@
         You are not enrolled in any subjects.
       </div>
 
-      <div v-for="subject in mySubjects" :key="subject._id" class="card p3 mb-3">
+      <div v-for="subject in mySubjects" :key="subject._id" class="subject-card">
         <h4><router-link :to="`/notefile/${subject._id}`">{{subject.title}}</router-link></h4>
         <button class="btn-message" @click="leaveSubject(subject._id)">
           Leave

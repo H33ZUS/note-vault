@@ -1,11 +1,8 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link>
       <router-link v-if="isLoggedIn" to="/subjects">Subjects</router-link>
       <router-link v-if="isLoggedIn" to="/profile/view">Profile</router-link>
-      <router-link v-if="!isLoggedIn" to="/login">Login</router-link>
-      <router-link v-if="!isLoggedIn" to="/signup">Register</router-link>
     </div>
     <!-- Render the content of the current page view -->
     <router-view/>
@@ -42,9 +39,4 @@ onMounted(async () => {
   gap: 0.5rem; /* spacing between links */
 }
 
-#nav > *:not(:last-child)::after {
-  content: "|";
-  margin-left: 0.5rem;
-}
 </style>
--->

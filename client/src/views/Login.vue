@@ -1,7 +1,9 @@
 <template>
     <div class="container mt-4">
+        <h1 class="page-title">NoteVault</h1>
         <h2>Login</h2>
 
+        <div class="login-register-card">
         <!-- Username -->
         <div class="mb-3">
             <input
@@ -21,11 +23,15 @@
                 placeholder="Enter password"
                 />
         </div>
-
-        <div class="flex-center">
-        <button class="btn-message" @click="login">
+        <div class="flex-center login-actions">
+          <button class="btn-message" @click="login">
             Login
-        </button>
+          </button>
+          <p class="login-or">Or</p>
+          <router-link to="/signup" class="btn-message btn-secondary">
+            Register
+          </router-link>
+        </div>
         </div>
 
         <div v-if="message" class="alert alert-info mt-3">
