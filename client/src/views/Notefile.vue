@@ -1,24 +1,34 @@
+<!-- eslint-disable vue/no-v-model-argument -->
 <template>
-  <div class="container mt-4">
-    <h2>Notes for: {{subjectId}}</h2>
+  <div class="">
 
+    <h2>Notes for: {{subjectId}}</h2>
+    <div class="noteCommitCreate">
     <!-- Create Note -->
-    <div>
+    <h2>Create note</h2>
+    <div >
         <label>Topic</label>
-        <input type="text" v-model="topic" class="form-control"/>
+        <input type="text" v-model="topic" class="inputNoteCommit"/>
     </div>
     <div>
-        <label>Note</label>
-        <input type="text" v-model="note" class="form-control"/>
-    </div>
+  <label>Note</label>
+  <quill-editor
+  ref="editor"
+  v-model:content="note"
+  content-type="html"
+  :options="{ theme: 'snow' }"
+/>
+
+</div>
 
     <!-- upload note -->
-    <button class="btn btn-primary mt-3" @click="uploadNote">
+    <button class="postBtn" @click="uploadNote">
         Post note
     </button>
+    </div>
 
     <!--NoteCommits-->
-    <div v-for="notecommit in notes" :key="notecommit._id" class="card p3 mb-3">
+    <div v-for="notecommit in notes" :key="notecommit._id">
       <noteCommit
       :topic="notecommit.topic"
       :note="notecommit.note"
@@ -32,7 +42,7 @@
       @refreshNotes="getNotes()"
       />
       <!--Comments-->
-      <div v-for="comment in notecommit.comments" :key="comment._id" class="card p3 mb-3">
+      <div v-for="comment in notecommit.comments" :key="comment._id">
         <comment
         :content="comment.comment"
         :username="comment.createdBy.username"
@@ -53,7 +63,11 @@
 </template>
 
 <script>
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
+
 export default {
+  components: { QuillEditor },
   data() {
     return {
       note: '',
@@ -78,6 +92,7 @@ export default {
   methods: {
     async uploadNote() {
       try {
+        console.log('Note content:', this.note)
         const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}/noteFiles/${this.noteFileId}/noteCommits`, {
           method: 'POST',
           headers: { 'Content-type': 'application/json' },
@@ -94,6 +109,7 @@ export default {
         this.message = 'Note posted'
         this.note = ''
         this.topic = ''
+        this.$refs.editor.setContents([])
 
         await this.getNotes()
       } catch (err) {

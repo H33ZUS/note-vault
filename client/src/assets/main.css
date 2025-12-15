@@ -39,6 +39,106 @@ button {
     cursor: pointer;
 }
 
+.noteCommit {
+    outline: 3px solid #ccc;
+    border-radius: 1rem;
+    padding: 1vw;
+    margin: 2vw;
+}
+
+.noteCommitCreate {
+    outline: 3px solid #ccc;
+    border-radius: 1rem;
+    padding: 1vw;
+    margin: 2vw;
+    margin-bottom: 6vw;
+}
+
+label {
+    text-align: right;
+    font-weight: bold;
+}
+
+li{
+    color: whitesmoke !important;
+    text-align: left;
+}
+
+.ql-editor{
+    min-height: 30vh;
+    color: #ccc;
+}
+
+.likeCounter{
+    text-align: right;
+    margin: 1vw;
+    font-size: 6vh;
+    color: #ccc;
+}
+
+.likebtn{
+    border: none;
+    background: none;
+}
+
+.noteCommitMenu{
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.editMenu{
+    margin: 1vw;
+}
+
+.editMenuBtn{
+    color: #ccc;
+    font-size: 6vh;
+    padding-top: -4vh;
+    border-radius: 1vw;
+    background: none;
+    background-color:#13093c;
+}
+
+.dropdownMenu{
+    display: none;
+    position: absolute;
+    margin-top: 0;
+    text-align: left;
+    border-radius: 1vh;
+    top: calc(100%-1vh);
+}
+
+.editMenu:hover .dropdownMenu{
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdownMenu button{
+    color: #ccc;
+    font-size: 3vh;
+    border-radius: 1vw;
+    background: none;
+    background-color:#13093c;
+}
+
+.postBtn{
+    margin-top: 1vh;
+    color: #ccc;
+    font-size: 3vh;
+    border-radius: 1vw;
+    background: none;
+    background-color:#13093c;
+    padding-right: 1vw;
+    padding-left: 1vw;
+}
+
+.inputNoteCommit{
+    background-color: #0d0628;
+    color: #ccc;
+}
+
 input[type="text"], input[type="password"] {
     width: 100%;
     padding: 0.5rem;

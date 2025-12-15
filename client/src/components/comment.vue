@@ -11,7 +11,7 @@
         <h4>created by: {{username}}</h4>
         <h4>Likes: {{likes}} Dislikes: {{dislikes}}</h4>
         <div>
-            <button v-if="user === username" class="btn btn-primary mt-3" @click="editComment(id)">
+            <button v-if="user === username" class="btn-message" @click="editComment(id)">
             Edit comment
             </button>
         </div>
@@ -31,7 +31,7 @@
             <button class="btn btn-primary mt-3" @click="uploadComment(id)">
                 Post comment
             </button>
-            <div v-for="comment in comments" :key="comment._id" class="card p3 mb-3">
+            <div v-for="comment in comments" :key="comment._id">
                 <comment
                 :content="comment.comment"
                 :username="comment.createdBy.username"

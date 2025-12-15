@@ -1,30 +1,44 @@
+<!-- eslint-disable vue/no-v-model-argument -->
 <template>
-    <div>
+    <div class="noteCommit">
+
         <div v-if="edit">
             <h1>{{topic}}</h1>
+
             <label>Note</label>
-            <input type="text" v-model="newNote" class="form-control"/>
+            <quill-editor v-model:content="newNote" content-type="html" :options="{ theme: 'snow' }" />
+
         </div>
         <div v-else>
             <h1>{{topic}}</h1>
-            <h3>{{note}}</h3>
+            <div class="noteCommit">
+            <div v-html="safeNote"></div>
+            </div>
         </div>
+
         <!--Edit and delete note-->
-        <h4>Likes: {{likes}} Dislikes: {{dislikes}}</h4>
-        <div>
-            <button v-if="user === username" class="btn btn-primary mt-3" @click="editNote">
-            Edit Note
-            </button>
+        <div class="noteCommitMenu">
+          <div class="editMenu">
+            <button class="editMenuBtn">⋯</button>
+            <div class="dropdownMenu">
+              <div>
+              <button v-if="user === username" @click="editNote">
+              Edit Note
+              </button>
+              </div>
+              <div>
+              <button v-if="user === username"  @click="deleteNote">
+              Delete Note
+              </button>
+              </div>
+            </div>
+          </div>
+          <div class="likeCounter">
+            <button class="likebtn" @click="likeNoteCommit(true)">
+                  👍 </button> {{likes}} <button class="likebtn" @click="likeNoteCommit(false)">
+                  👎 </button> {{dislikes}}
+          </div>
         </div>
-            <button class="btn btn-primary mt-3" @click="likeNoteCommit(true)">
-                Like Note
-            </button>
-            <button class="btn btn-primary mt-3" @click="likeNoteCommit(false)">
-                Dislike Note
-            </button>
-            <button v-if="user === username" class="btn btn-danger mt-3" @click="deleteNote">
-            Delete Note
-            </button>
         <!--Create comment on note-->
         <div>
             <label>Comment</label>
@@ -37,7 +51,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import DOMPurify from 'dompurify'
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 const emit = defineEmits(['refreshNotes'])
 
@@ -58,6 +75,8 @@ const newComment = ref('')
 const edit = ref('')
 edit.value = false
 
+const safeNote = computed(() => DOMPurify.sanitize(props.note))
+
 async function uploadComment() {
   try {
     if (!newComment.value) {
@@ -72,7 +91,7 @@ async function uploadComment() {
         commentedOnNote: props.id
       })
     })
-    console.log(await res.json())
+    emit('refreshNotes')
 
     if (!res.ok) throw new Error('Failed to update')
     newComment.value = ''
