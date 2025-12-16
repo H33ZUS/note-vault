@@ -46,6 +46,34 @@ button {
     margin: 2vw;
 }
 
+.comment {
+    outline: 3px solid #ccc;
+    border-radius: 1rem;
+    padding: 1vw;
+    margin: 2vw;
+}
+
+.createComment {
+    outline: 3px solid #ccc;
+    border-radius: 0 0 1rem 1rem;
+    padding: 1vw;
+    margin: -1vw;
+}
+
+.connectorLayer{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.threadContainer {
+    position: relative;
+}
+
 .noteCommitCreate {
     outline: 3px solid #ccc;
     border-radius: 1rem;
@@ -86,6 +114,7 @@ li{
     justify-content: space-between;
     align-items: center;
     position: relative;
+    margin: 2vw;
 }
 
 .editMenu{
@@ -95,7 +124,6 @@ li{
 .editMenuBtn{
     color: #ccc;
     font-size: 6vh;
-    padding-top: -4vh;
     border-radius: 1vw;
     background: none;
     background-color:#13093c;

@@ -1,5 +1,6 @@
 <template>
-    <div :style="{ marginLeft: `${depth *50}px`}">
+    <div :style="{ marginLeft: `${(depth) + 5}vw`}">
+      <div class="comment">
         <div v-if="edit">
             <label>Comment</label>
             <input type="text" v-model="newContent" class="form-control"/>
@@ -31,6 +32,7 @@
             <button class="btn btn-primary mt-3" @click="uploadComment(id)">
                 Post comment
             </button>
+            </div>
             <div v-for="comment in comments" :key="comment._id">
                 <comment
                 :content="comment.comment"

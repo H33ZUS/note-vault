@@ -40,13 +40,15 @@
           </div>
         </div>
         <!--Create comment on note-->
-        <div>
-            <label>Comment</label>
-            <input type="text" v-model="newComment" class="form-control"/>
+        <div class="createComment">
+          <div>
+              <label>Comment</label>
+              <input type="text" v-model="newComment" class="inputNoteCommit"/>
+          </div>
+          <button class="postBtn" @click="uploadComment">
+              Post comment
+          </button>
         </div>
-        <button class="btn btn-primary mt-3" @click="uploadComment">
-            Post comment
-        </button>
     </div>
 </template>
 
