@@ -52,6 +52,8 @@
     </template>
 
 <script>
+import router from '@/router'
+
 export default {
   data() {
     return {
@@ -90,6 +92,7 @@ export default {
         this.username = ''
         this.password = ''
         this.email = ''
+        router.push('/subjects')
       } catch (err) {
         this.message = err.message
       }

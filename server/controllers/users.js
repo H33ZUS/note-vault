@@ -11,17 +11,19 @@ const { compareArrays, checkArray } = require("../utils/misc");
 
 const router = express.Router();
 
-router.get("/cookies",  async(req, res) => {
-    try {
-        const token = req.cookies.auth_token
-        if (token) {
-            return res.status(200).json({status: true})
-        }else{
-            return res.status(200).json({status: false})
-        }
-    }catch(err){
-        return res.status(400).json({error: err.message})
-    }
+router.get("/cookies", async (req, res) => {
+  const token = req.cookies.auth_token
+  if (!token) {
+    return res.status(401).json({ status: false })
+  }
+
+  try {
+    jwt.verify(token, JWT_SECRET)
+    return res.status(200).json({ status: true })
+  } catch {
+    res.clearCookie("auth_token")
+    return res.status(401).json({ status: false })
+  }
 })
 
 // CREATE A USER

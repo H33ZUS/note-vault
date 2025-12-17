@@ -67,37 +67,23 @@
           />
         </div>
         <h4 class="mb-0" v-else>{{ subject.title }}</h4>
-        <div class="d-flex">
-          <div v-if="isAdminOrTeacher">
-            <button
-              v-if="editingSubjectId !== subject._id"
-              class="btn btn-sm btn-outline-info me-2"
-              @click="startEditing(subject)"
-              title="Edit Subject"
-            >
-              ✏️
-            </button>
-            <button
-              v-else
-              class="btn btn-sm btn-success me-2"
-              @click="saveSubjectName(subject._id)"
-              title="Save Changes"
-            >
-              💾
-          </button>
-        </div>
-          <button
-            v-if="isAdminOrTeacher"
-            class="btn btn-sm btn-outline-danger me-2"
-            @click="deleteSubject(subject._id)"
-            title="Delete Subject"
-          >
-            🗑️ </button>
+        <div class="subject-actions">
           <button class="btn-message" @click="joinSubject(subject._id)">
             Join
+        </button>
+
+        <div v-if="isAdminOrTeacher" class="menu-wrapper" @click.stop>
+          <button class="menu-btn" @click="toggleMenu(subject._id)">
+            ⋮
           </button>
+
+          <div v-if="openMenuId === subject._id" class="menu-dropdown">
+            <button @click="startEditing(subject)">Edit</button>
+            <button @click="deleteSubject(subject._id)">Delete</button>
+          </div>
+        </div>
       </div>
-    </div>
+     </div>
 
       <div v-if="joinMessage" class="alert alert-info mt-3">
         {{ joinMessage }}
@@ -144,7 +130,9 @@ export default {
       isAdminOrTeacher: false,
 
       editingSubjectId: null,
-      editedTitle: ''
+      editedTitle: '',
+
+      openMenuId: null
     }
   },
   mounted() {
@@ -255,11 +243,13 @@ export default {
             this.currentTab = 'join'
             this.fetchAvailableSubjects()
           }
-        } else if (res.status === 401) {
+        } else {
+          this.$router.push('/login')
           this.isAdminOrTeacher = false
         }
       } catch (err) {
         console.error('Failed to fetch user role', err)
+        this.$router.push('/login')
         this.isAdminOrTeacher = false
       }
     },
@@ -283,8 +273,14 @@ export default {
         this.joinMessage = 'Error deleting subject: ' + err.message
       }
     },
+
+    toggleMenu(subjectId) {
+      this.openMenuId = this.openMenuId === subjectId ? null : subjectId
+    },
+
     // iniates editing mode
     startEditing(subject) {
+      this.openMenuId = null
       this.editingSubjectId = subject._id
       this.editedTitle = subject.title
       this.joinMessage = ''

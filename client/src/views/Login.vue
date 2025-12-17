@@ -42,8 +42,6 @@
 
 <script>
 
-import router from '../router'
-
 export default {
   data() {
     return {
@@ -74,13 +72,15 @@ export default {
 
         if (!res.ok) throw new Error('Failed to login')
 
+        if (res.status !== 204) {
+          await res.json()
+        }
+
         this.message = 'Logged in successfully'
         this.username = ''
         this.password = ''
 
-        router.push('/').then(() => {
-          window.location.reload()
-        })
+        this.$router.replace('/subjects')
       } catch (err) {
         this.message = err.message
       }
