@@ -244,12 +244,12 @@ export default {
             this.fetchAvailableSubjects()
           }
         } else {
-          this.$router.push('/login')
+          this.$router.replace('/login')
           this.isAdminOrTeacher = false
         }
       } catch (err) {
         console.error('Failed to fetch user role', err)
-        this.$router.push('/login')
+        this.$router.replace('/login')
         this.isAdminOrTeacher = false
       }
     },

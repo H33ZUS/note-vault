@@ -109,7 +109,10 @@ export default {
           credentials: 'include'
         })
 
-        if (!res.ok) throw new Error('Failed to get user')
+        if (!res.ok) {
+          this.$router.replace('/login')
+          throw new Error('Failed to get user')
+        }
 
         const data = await res.json()
 
@@ -153,7 +156,10 @@ export default {
           credentials: 'include'
         })
 
-        if (!res.ok) throw new Error('Failed to get notefile')
+        if (!res.ok) {
+          this.$router.replace('/login')
+          throw new Error('Failed to get notefile')
+        }
 
         const data = await res.json()
         this.noteFileId = data[0]._id
@@ -173,7 +179,10 @@ export default {
           credentials: 'include'
         })
 
-        if (!res.ok) throw new Error('Failed to get notes')
+        if (!res.ok) {
+          this.$router.replace('/login')
+          throw new Error('Failed to get notes')
+        }
 
         const data = await res.json()
 

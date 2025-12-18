@@ -88,7 +88,10 @@ export default {
           credentials: 'include'
         })
 
-        if (!res.ok) throw new Error('Failed to get user')
+        if (!res.ok) {
+          this.$router.replace('login')
+          throw new Error('Failed to get user')
+        }
 
         const data = await res.json()
 
