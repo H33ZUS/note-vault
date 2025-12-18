@@ -2,6 +2,7 @@
     <div class="container mt-4">
         <h2>Login</h2>
 
+        <div class="login-register-card">
         <!-- Username -->
         <div class="mb-3">
             <input
@@ -21,11 +22,15 @@
                 placeholder="Enter password"
                 />
         </div>
-
-        <div class="flex-center">
-        <button class="btn-message" @click="login">
+        <div class="flex-center login-actions">
+          <button class="btn-message" @click="login">
             Login
-        </button>
+          </button>
+          <p class="login-or">Or</p>
+          <router-link to="/signup" class="btn-message btn-secondary">
+            Register
+          </router-link>
+        </div>
         </div>
 
         <div v-if="message" class="alert alert-info mt-3">
@@ -35,8 +40,6 @@
     </template>
 
 <script>
-
-import router from '../router'
 
 export default {
   data() {
@@ -68,13 +71,15 @@ export default {
 
         if (!res.ok) throw new Error('Failed to login')
 
+        if (res.status !== 204) {
+          await res.json()
+        }
+
         this.message = 'Logged in successfully'
         this.username = ''
         this.password = ''
 
-        router.push('/').then(() => {
-          window.location.reload()
-        })
+        this.$router.replace('/subjects')
       } catch (err) {
         this.message = err.message
       }

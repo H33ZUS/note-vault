@@ -1,8 +1,7 @@
 <template>
   <div class="container mt-4 text-center">
     <b-container fluid>
-      <h1 class="display-5 fw-bold">NoteHub</h1>
-      <p class="fs-4">Study together, succeed together</p>
+      <h1 class="page-title">NoteHub</h1>
     </b-container>
   </div>
 </template>

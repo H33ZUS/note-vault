@@ -2,6 +2,7 @@
     <div class="container mt-4">
         <h2>Sign up</h2>
 
+        <div class="login-register-card">
         <!-- Username -->
         <div class="mb-3">
             <input
@@ -32,10 +33,15 @@
                 />
         </div>
 
-        <div class="flex-center">
-        <button class="btn-message" @click="login">
+        <div class="flex-center login-actions">
+          <button class="btn-message" @click="login">
             Register
-        </button>
+          </button>
+          <p class="login-or">Already have an account?</p>
+          <router-link to="/login" class="btn-message btn-secondary">
+            Login
+          </router-link>
+        </div>
         </div>
 
         <div v-if="message" class="alert alert-info mt-3">
@@ -45,6 +51,8 @@
     </template>
 
 <script>
+import router from '@/router'
+
 export default {
   data() {
     return {
@@ -83,6 +91,7 @@ export default {
         this.username = ''
         this.password = ''
         this.email = ''
+        router.push('/subjects')
       } catch (err) {
         this.message = err.message
       }
