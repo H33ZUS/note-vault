@@ -1,11 +1,15 @@
 <template>
-  <div id="app">
-    <div id="nav" v-if="loginChecked">
-      <router-link v-if="isLoggedIn" to="/subjects">Subjects</router-link>
-      <router-link v-if="isLoggedIn" to="/profile/view">Profile</router-link>
-    </div>
-    <!-- Render the content of the current page view -->
+  <div id="layout-wrapper"> <header class="main-header">
+    <h1 class="page-title">NoteVault</h1>
+    <nav id="nav" v-if="loginChecked">
+      <router-link v-if="isLoggedIn" to="/subjects" class="nav-link">Subjects</router-link>
+      <router-link v-if="isLoggedIn" to="/profile/view" class="nav-link">Profile</router-link>
+    </nav>
+  </header>
+
+  <main id="app">
     <router-view v-if="loginChecked"/>
+  </main>
   </div>
 </template>
 

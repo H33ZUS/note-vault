@@ -1,6 +1,5 @@
 <template>
-    <div class="container mt-4 text-center-all">
-        <h1 class="page-title">NoteVault</h1>
+    <div class="container mt-4">
         <h2>Subject Management</h2>
 
         <ul class="nav nav-tabs mb-4">

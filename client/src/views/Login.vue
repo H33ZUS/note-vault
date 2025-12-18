@@ -1,6 +1,5 @@
 <template>
     <div class="container mt-4">
-        <h1 class="page-title">NoteVault</h1>
         <h2>Login</h2>
 
         <div class="login-register-card">
