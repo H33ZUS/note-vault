@@ -1,5 +1,5 @@
 <template>
-    <div class="container mt-4 text-center-all">
+    <div class="container mt-4">
         <h2>Subject Management</h2>
 
         <ul class="nav nav-tabs mb-4">
@@ -56,7 +56,7 @@
         No subjects available to join.
       </div>
 
-      <div v-for="subject in availableSubjects" :key="subject._id" class="card p-3 mb-3 d-flex flex-row align-items-center justify-content-between">
+      <div v-for="subject in availableSubjects" :key="subject._id" class="subject-card">
         <div v-if="editingSubjectId === subject._id">
           <input
             type="text"
@@ -66,37 +66,23 @@
           />
         </div>
         <h4 class="mb-0" v-else>{{ subject.title }}</h4>
-        <div class="d-flex">
-          <div v-if="isAdminOrTeacher">
-            <button
-              v-if="editingSubjectId !== subject._id"
-              class="btn btn-sm btn-outline-info me-2"
-              @click="startEditing(subject)"
-              title="Edit Subject"
-            >
-              ✏️
-            </button>
-            <button
-              v-else
-              class="btn btn-sm btn-success me-2"
-              @click="saveSubjectName(subject._id)"
-              title="Save Changes"
-            >
-              💾
-          </button>
-        </div>
-          <button
-            v-if="isAdminOrTeacher"
-            class="btn btn-sm btn-outline-danger me-2"
-            @click="deleteSubject(subject._id)"
-            title="Delete Subject"
-          >
-            🗑️ </button>
+        <div class="subject-actions">
           <button class="btn-message" @click="joinSubject(subject._id)">
             Join
+        </button>
+
+        <div v-if="isAdminOrTeacher" class="menu-wrapper" @click.stop>
+          <button class="menu-btn" @click="toggleMenu(subject._id)">
+            ⋮
           </button>
+
+          <div v-if="openMenuId === subject._id" class="menu-dropdown">
+            <button @click="startEditing(subject)">Edit</button>
+            <button @click="deleteSubject(subject._id)">Delete</button>
+          </div>
+        </div>
       </div>
-    </div>
+     </div>
 
       <div v-if="joinMessage" class="alert alert-info mt-3">
         {{ joinMessage }}
@@ -113,7 +99,7 @@
         You are not enrolled in any subjects.
       </div>
 
-      <div v-for="subject in mySubjects" :key="subject._id" class="card p3 mb-3">
+      <div v-for="subject in mySubjects" :key="subject._id" class="subject-card">
         <h4><router-link :to="`/notefile/${subject._id}`">{{subject.title}}</router-link></h4>
         <button class="btn-message" @click="leaveSubject(subject._id)">
           Leave
@@ -143,7 +129,9 @@ export default {
       isAdminOrTeacher: false,
 
       editingSubjectId: null,
-      editedTitle: ''
+      editedTitle: '',
+
+      openMenuId: null
     }
   },
   mounted() {
@@ -254,11 +242,13 @@ export default {
             this.currentTab = 'join'
             this.fetchAvailableSubjects()
           }
-        } else if (res.status === 401) {
+        } else {
+          this.$router.replace('/login')
           this.isAdminOrTeacher = false
         }
       } catch (err) {
         console.error('Failed to fetch user role', err)
+        this.$router.replace('/login')
         this.isAdminOrTeacher = false
       }
     },
@@ -282,8 +272,14 @@ export default {
         this.joinMessage = 'Error deleting subject: ' + err.message
       }
     },
+
+    toggleMenu(subjectId) {
+      this.openMenuId = this.openMenuId === subjectId ? null : subjectId
+    },
+
     // iniates editing mode
     startEditing(subject) {
+      this.openMenuId = null
       this.editingSubjectId = subject._id
       this.editedTitle = subject.title
       this.joinMessage = ''
