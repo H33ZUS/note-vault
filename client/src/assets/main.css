@@ -63,16 +63,6 @@ button {
     margin: -1vw;
 }
 
-.connectorLayer{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 9999;
-}
-
 .commentEnd{
     margin: 4vh;
 }

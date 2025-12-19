@@ -30,6 +30,7 @@
           </div>
         </div>
         </div>
+        <div class="createComment">
                 <div>
                     <label>Comment</label>
                     <input type="text" v-model="newComment" class="inputNoteCommit"/>
@@ -38,6 +39,7 @@
             <button class="btn-message" @click="uploadComment(id)">
                 Post comment
             </button>
+            </div>
             </div>
             <div v-for="comment in comments" :key="comment._id">
                 <comment
