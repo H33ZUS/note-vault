@@ -57,6 +57,9 @@
         @refreshNotes="getNotes()"
         :user="this.user"
         />
+        <div class="commentEnd">
+          h
+        </div>
       </div>
     </div>
   </div>
