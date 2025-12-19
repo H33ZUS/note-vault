@@ -39,6 +39,100 @@ button {
     cursor: pointer;
 }
 
+.noteCommit {
+    outline: 3px solid #ccc;
+    border-radius: 1rem;
+    padding: 1vw;
+    margin-left: 2vw;
+    margin-right: 2vw;
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+}
+
+.comment {
+    outline: 3px solid #ccc;
+    border-radius: 1rem;
+    padding: 1vw;
+    margin: 2vw;
+}
+
+.createComment {
+    outline: 3px solid #ccc;
+    border-radius: 0 0 1rem 1rem;
+    padding: 1vw;
+    margin: -1vw;
+}
+
+.commentEnd{
+    margin: 4vh;
+}
+
+.threadContainer {
+    position: relative;
+}
+
+.noteCommitCreate {
+    outline: 3px solid #ccc;
+    border-radius: 1rem;
+    padding: 1vw;
+    margin: 2vw;
+    margin-bottom: 6vw;
+}
+
+label {
+    text-align: right;
+    font-weight: bold;
+}
+
+li{
+    color: whitesmoke !important;
+    text-align: left;
+}
+
+.ql-editor{
+    min-height: 30vh;
+    color: #ccc;
+}
+
+.likeCounter{
+    text-align: right;
+    margin: 1vw;
+    font-size: 3vh;
+    color: #ccc;
+}
+
+.likebtn{
+    border: none;
+    background: none;
+}
+
+.noteCommitMenu{
+    display: flex; 
+    justify-content: flex-end;
+    align-items: right;
+    position: relative;
+    margin-left: 2vw;
+    margin-right: 2vw;
+    margin-bottom: 2vh;
+}
+
+.editMenu{
+    margin: 1vw;
+}
+
+.editMenuBtn{
+    color: #ccc;
+    font-size: 6vh;
+    border-radius: 1vw;
+    background: none;
+    background-color:#13093c;
+}
+
+.inputNoteCommit{
+    background-color: #0d0628;
+    color: #ccc;
+}
+
 input[type="text"], input[type="password"] {
     width: 100%;
     padding: 0.5rem;

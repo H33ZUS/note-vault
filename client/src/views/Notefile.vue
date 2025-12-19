@@ -1,24 +1,35 @@
+<!-- eslint-disable vue/no-v-model-argument -->
 <template>
-  <div class="container mt-4">
-    <h2>Notes for: {{subjectId}}</h2>
-
+  <div class="">
+    <br>
+    <h2>Notes for: {{subjectName}}</h2>
+    <div class="noteCommitCreate">
     <!-- Create Note -->
-    <div>
+    <h2>Create note</h2>
+    <div >
         <label>Topic</label>
-        <input type="text" v-model="topic" class="form-control"/>
+        <input type="text" v-model="topic" class="inputNoteCommit"/>
     </div>
     <div>
-        <label>Note</label>
-        <input type="text" v-model="note" class="form-control"/>
-    </div>
+  <label>Note</label>
+  <quill-editor
+  ref="editor"
+  v-model:content="note"
+  content-type="html"
+  :options="{ theme: 'snow' }"
+/>
+<br>
+
+</div>
 
     <!-- upload note -->
-    <button class="btn btn-primary mt-3" @click="uploadNote">
+    <button class="btn-message" @click="uploadNote">
         Post note
     </button>
+    </div>
 
     <!--NoteCommits-->
-    <div v-for="notecommit in notes" :key="notecommit._id" class="card p3 mb-3">
+    <div v-for="notecommit in notes" :key="notecommit._id">
       <noteCommit
       :topic="notecommit.topic"
       :note="notecommit.note"
@@ -32,7 +43,7 @@
       @refreshNotes="getNotes()"
       />
       <!--Comments-->
-      <div v-for="comment in notecommit.comments" :key="comment._id" class="card p3 mb-3">
+      <div v-for="comment in notecommit.comments" :key="comment._id">
         <comment
         :content="comment.comment"
         :username="comment.createdBy.username"
@@ -47,13 +58,20 @@
         @refreshNotes="getNotes()"
         :user="this.user"
         />
+        <div class="commentEnd">
+          <br>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
+
 export default {
+  components: { QuillEditor },
   data() {
     return {
       note: '',
@@ -67,17 +85,20 @@ export default {
       commentedOnId: '',
       commentDepth: 123,
       user: '',
-      userId: ''
+      userId: '',
+      subjectName: ''
     }
   },
   mounted() {
     this.getNotefile()
     this.getUserData()
+    this.getSubject()
   },
 
   methods: {
     async uploadNote() {
       try {
+        console.log('Note content:', this.note)
         const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}/noteFiles/${this.noteFileId}/noteCommits`, {
           method: 'POST',
           headers: { 'Content-type': 'application/json' },
@@ -94,6 +115,7 @@ export default {
         this.message = 'Note posted'
         this.note = ''
         this.topic = ''
+        this.$refs.editor.setContents([])
 
         await this.getNotes()
       } catch (err) {
@@ -144,6 +166,26 @@ export default {
         await this.getNotes()
       } catch (err) {
         this.message = 'Error' + err.message
+      }
+    },
+    async getSubject() {
+      try {
+        this.subjectId = this.$route.params.id
+        const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        })
+
+        if (!res.ok) {
+          this.$router.replace('/login')
+        }
+
+        const data = await res.json()
+        this.subjectName = data.title
+        this.message = this.notes
+      } catch (err) {
+        this.message = 'Error: ' + err.message
       }
     },
 

@@ -1,5 +1,7 @@
 <template>
-    <div :style="{ marginLeft: `${depth *50}px`}">
+    <div :style="{ marginLeft: `${(depth) + 5}vw`}">
+      <div class="comment">
+        <h4 style="text-align: right">{{username}}</h4>
         <div v-if="edit">
             <label>Comment</label>
             <input type="text" v-model="newContent" class="form-control"/>
@@ -8,30 +10,38 @@
             <h4>{{content}}</h4>
         </div>
 
-        <h4>created by: {{username}}</h4>
-        <h4>Likes: {{likes}} Dislikes: {{dislikes}}</h4>
-        <div>
-            <button v-if="user === username" class="btn btn-primary mt-3" @click="editComment(id)">
+        <div class="noteCommitMenu">
+        <div class="likeCounter">
+        <button class="likebtn" @click="likeComment(true)">
+                  👍 </button> {{likes}} <button class="likebtn" @click="likeComment(false)">
+                  👎 </button> {{dislikes}}
+        </div>
+        <button v-if="user === username" class="menu-btn" @click="toggleMenu">⋮</button>
+        <div v-if="editMenu" class="menu-dropdown" style="top: 3rem">
+          <div>
+            <button v-if="user === username" class="btn-message" @click="editComment(id)">
             Edit comment
             </button>
-        </div>
-            <button class="btn btn-primary mt-3" @click="likeComment(true, id)">
-                Like comment
-            </button>
-            <button class="btn btn-primary mt-3" @click="likeComment(false, id)">
-                Dislike comment
-            </button>
+          </div>
+          <div>
             <button v-if="user === username" class="btn btn-danger mt-3" @click="deleteComment(id)">
                 Delete comment
             </button>
+          </div>
+        </div>
+        </div>
+        <div class="createComment">
                 <div>
                     <label>Comment</label>
-                    <input type="text" v-model="newComment" class="form-control"/>
+                    <input type="text" v-model="newComment" class="inputNoteCommit"/>
                 </div>
-            <button class="btn btn-primary mt-3" @click="uploadComment(id)">
+                <br>
+            <button class="btn-message" @click="uploadComment(id)">
                 Post comment
             </button>
-            <div v-for="comment in comments" :key="comment._id" class="card p3 mb-3">
+            </div>
+            </div>
+            <div v-for="comment in comments" :key="comment._id">
                 <comment
                 :content="comment.comment"
                 :username="comment.createdBy.username"
@@ -72,7 +82,12 @@ const props = defineProps({
   user: String
 })
 
+const editMenu = ref(false)
 const newContent = ref(props.content)
+
+async function toggleMenu() {
+  editMenu.value = !editMenu.value
+}
 
 async function editComment() {
   try {
