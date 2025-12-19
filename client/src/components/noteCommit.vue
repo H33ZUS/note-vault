@@ -18,9 +18,13 @@
 
         <!--Edit and delete note-->
         <div class="noteCommitMenu">
-          <div class="editMenu">
-            <button class="editMenuBtn">⋯</button>
-            <div class="dropdownMenu">
+          <div class="likeCounter">
+            <button class="likebtn" @click="likeNoteCommit(true)">
+                  👍 </button> {{likes}} <button class="likebtn" @click="likeNoteCommit(false)">
+                  👎 </button> {{dislikes}}
+          </div>
+          <button v-if="user === username" class="menu-btn" @click="toggleMenu">⋮</button>
+            <div v-if="editMenu" class="menu-dropdown" style="top: 3rem">
               <div>
               <button v-if="user === username" @click="editNote">
               Edit Note
@@ -32,12 +36,6 @@
               </button>
               </div>
             </div>
-          </div>
-          <div class="likeCounter">
-            <button class="likebtn" @click="likeNoteCommit(true)">
-                  👍 </button> {{likes}} <button class="likebtn" @click="likeNoteCommit(false)">
-                  👎 </button> {{dislikes}}
-          </div>
         </div>
         <!--Create comment on note-->
         <div class="createComment">
@@ -45,9 +43,11 @@
               <label>Comment</label>
               <input type="text" v-model="newComment" class="inputNoteCommit"/>
           </div>
-          <button class="postBtn" @click="uploadComment">
+          <br>
+          <button class="btn-message" @click="uploadComment">
               Post comment
           </button>
+          <br>
         </div>
     </div>
 </template>
@@ -72,12 +72,18 @@ const props = defineProps({
   username: String
 })
 
+const editMenu = ref(false)
+
 const newNote = ref(props.note)
 const newComment = ref('')
 const edit = ref('')
 edit.value = false
 
 const safeNote = computed(() => DOMPurify.sanitize(props.note))
+
+async function toggleMenu() {
+  editMenu.value = !editMenu.value
+}
 
 async function uploadComment() {
   try {

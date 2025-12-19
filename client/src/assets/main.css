@@ -43,7 +43,10 @@ button {
     outline: 3px solid #ccc;
     border-radius: 1rem;
     padding: 1vw;
-    margin: 2vw;
+    margin-left: 2vw;
+    margin-right: 2vw;
+    margin-top: 2vh;
+    margin-bottom: 1vh;
 }
 
 .comment {
@@ -104,7 +107,7 @@ li{
 .likeCounter{
     text-align: right;
     margin: 1vw;
-    font-size: 6vh;
+    font-size: 3vh;
     color: #ccc;
 }
 
@@ -115,10 +118,12 @@ li{
 
 .noteCommitMenu{
     display: flex; 
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-end;
+    align-items: right;
     position: relative;
-    margin: 2vw;
+    margin-left: 2vw;
+    margin-right: 2vw;
+    margin-bottom: 2vh;
 }
 
 .editMenu{

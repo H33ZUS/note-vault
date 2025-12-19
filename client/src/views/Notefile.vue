@@ -1,8 +1,8 @@
 <!-- eslint-disable vue/no-v-model-argument -->
 <template>
   <div class="">
-
-    <h2>Notes for: {{subjectId}}</h2>
+    <br>
+    <h2>Notes for: {{subjectName}}</h2>
     <div class="noteCommitCreate">
     <!-- Create Note -->
     <h2>Create note</h2>
@@ -18,11 +18,12 @@
   content-type="html"
   :options="{ theme: 'snow' }"
 />
+<br>
 
 </div>
 
     <!-- upload note -->
-    <button class="postBtn" @click="uploadNote">
+    <button class="btn-message" @click="uploadNote">
         Post note
     </button>
     </div>
@@ -58,7 +59,7 @@
         :user="this.user"
         />
         <div class="commentEnd">
-          h
+          <br>
         </div>
       </div>
     </div>
@@ -84,12 +85,14 @@ export default {
       commentedOnId: '',
       commentDepth: 123,
       user: '',
-      userId: ''
+      userId: '',
+      subjectName: ''
     }
   },
   mounted() {
     this.getNotefile()
     this.getUserData()
+    this.getSubject()
   },
 
   methods: {
@@ -163,6 +166,26 @@ export default {
         await this.getNotes()
       } catch (err) {
         this.message = 'Error' + err.message
+      }
+    },
+    async getSubject() {
+      try {
+        this.subjectId = this.$route.params.id
+        const res = await fetch(`http://localhost:3000/api/v1/subjects/${this.subjectId}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        })
+
+        if (!res.ok) {
+          this.$router.replace('/login')
+        }
+
+        const data = await res.json()
+        this.subjectName = data.title
+        this.message = this.notes
+      } catch (err) {
+        this.message = 'Error: ' + err.message
       }
     },
 
