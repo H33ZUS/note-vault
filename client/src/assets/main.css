@@ -138,39 +138,6 @@ li{
     background-color:#13093c;
 }
 
-.dropdownMenu{
-    display: none;
-    position: absolute;
-    margin-top: 0;
-    text-align: left;
-    border-radius: 1vh;
-    top: calc(100%-1vh);
-}
-
-.editMenu:hover .dropdownMenu{
-    display: flex;
-    flex-direction: column;
-}
-
-.dropdownMenu button{
-    color: #ccc;
-    font-size: 3vh;
-    border-radius: 1vw;
-    background: none;
-    background-color:#13093c;
-}
-
-.postBtn{
-    margin-top: 1vh;
-    color: #ccc;
-    font-size: 3vh;
-    border-radius: 1vw;
-    background: none;
-    background-color:#13093c;
-    padding-right: 1vw;
-    padding-left: 1vw;
-}
-
 .inputNoteCommit{
     background-color: #0d0628;
     color: #ccc;
