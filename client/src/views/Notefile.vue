@@ -221,9 +221,11 @@ export default {
           credentials: 'include'
         })
 
-        if (!res.ok) {
+        if (res.status === 404) {
+          throw new Error('This note file is empty')
+        } else if (res.status === 401) {
           this.$router.replace('/login')
-          throw new Error('Failed to get notes')
+          throw new Error('You must be logged in to access this resource')
         }
 
         const data = await res.json()
