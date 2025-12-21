@@ -4,6 +4,7 @@
     <nav id="nav" v-if="loginChecked">
       <router-link v-if="isLoggedIn" to="/subjects" class="nav-link">Subjects</router-link>
       <router-link v-if="isLoggedIn" to="/profile/view" class="nav-link">Profile</router-link>
+      <a v-if="isLoggedIn" href="#" @click.prevent="logout" class="nav-link">Logout</a>
     </nav>
   </header>
 
@@ -15,11 +16,12 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const isLoggedIn = ref(false)
 const loginChecked = ref(false)
 const route = useRoute()
+const router = useRouter()
 
 const checkLogin = async () => {
   try {
@@ -40,6 +42,22 @@ const checkLogin = async () => {
     return false
   } finally {
     loginChecked.value = true
+  }
+}
+
+const logout = async () => {
+  try {
+    await fetch('http://localhost:3000/api/v1/users/logout',
+      {
+        method: 'POST',
+        credentials: 'include'
+      }
+    )
+  } catch (err) {
+    console.error('Logout Error:', err)
+  } finally {
+    isLoggedIn.value = false
+    router.push('/login')
   }
 }
 
