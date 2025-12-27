@@ -93,8 +93,6 @@ router.post("/login", validateRequest(val.userLoginRequestSchema), async(req, re
                     roles: user.roles
                 };
 
-                console.log(JWT_SECRET);
-
                 const token = jwt.sign(
                     payload, 
                     JWT_SECRET,

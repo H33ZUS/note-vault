@@ -212,7 +212,7 @@ export default {
     async leaveSubject(subjectId) {
       try {
         const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}`, {
-          method: 'POST',
+          method: 'DELETE',
           credentials: 'include'
         })
         if (!res.ok) throw new Error('Failed to leave')
