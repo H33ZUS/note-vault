@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// import Home from './views/Home.vue'
+import Home from './views/Home.vue'
 import Subjects from './views/Subjects.vue'
 import ProfileView from './views/Profile.vue'
 import Login from './views/Login.vue'
@@ -8,7 +8,7 @@ import Signup from './views/Signup.vue'
 import Notefile from './views/Notefile.vue'
 
 const routes = [
-  { path: '/', redirect: '/login' },
+  { path: '/', name: 'home', component: Home },
   { path: '/subjects', name: 'subjects', component: Subjects, meta: { requiresAuth: true } },
   { path: '/profile/view', name: 'profile-view', component: ProfileView, meta: { requiresAuth: true } },
   { path: '/login', name: 'login', component: Login, meta: { guestOnly: true } },
@@ -24,10 +24,20 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   try {
+    if (!to.meta.requiresAuth && !to.meta.guestOnly) {
+      return next()
+    }
+
     const res = await fetch(
       'http://localhost:3000/api/v1/users/cookies',
       { credentials: 'include' }
     )
+
+    if (!res.ok) {
+      if (to.meta.requiresAuth) return next('/login')
+      return next()
+    }
+
     const data = await res.json()
     const isLoggedIn = data.status
 
