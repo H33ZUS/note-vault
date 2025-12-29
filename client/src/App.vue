@@ -3,6 +3,7 @@
     <h1 class="page-title">NoteVault</h1>
     <nav id="nav" v-if="loginChecked">
       <router-link to="/" class="nav-link">Home</router-link>
+      <router-link to="/about" class="nav-link">About</router-link>
       <router-link v-if="isLoggedIn" to="/subjects" class="nav-link">Subjects</router-link>
       <router-link v-if="isLoggedIn" to="/profile/view" class="nav-link">Profile</router-link>
       <a v-if="isLoggedIn" href="#" @click.prevent="logout" class="nav-link">Logout</a>
@@ -58,7 +59,7 @@ const logout = async () => {
     console.error('Logout Error:', err)
   } finally {
     isLoggedIn.value = false
-    router.push('/login')
+    router.push('/')
   }
 }
 

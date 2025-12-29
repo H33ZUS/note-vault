@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Home from './views/Home.vue'
+import About from './views/About.vue'
 import Subjects from './views/Subjects.vue'
 import ProfileView from './views/Profile.vue'
 import Login from './views/Login.vue'
@@ -9,6 +10,7 @@ import Notefile from './views/Notefile.vue'
 
 const routes = [
   { path: '/', name: 'home', component: Home },
+  { path: '/about', name: 'about', component: About },
   { path: '/subjects', name: 'subjects', component: Subjects, meta: { requiresAuth: true } },
   { path: '/profile/view', name: 'profile-view', component: ProfileView, meta: { requiresAuth: true } },
   { path: '/login', name: 'login', component: Login, meta: { guestOnly: true } },
