@@ -34,10 +34,6 @@ const isMenuOpen = ref(false)
 const route = useRoute()
 const router = useRouter()
 
-watch(() => route.path, () => {
-  isMenuOpen.value = false
-})
-
 const checkLogin = async () => {
   try {
     const res = await fetch('http://localhost:3000/api/v1/users/cookies',
@@ -76,11 +72,15 @@ const logout = async () => {
   }
 }
 
-onMounted(checkLogin)
-
 // re-check login when route changes
 watch(
-  () => route.path, async () => { await checkLogin() }, { immediate: true })
+  () => route.path, 
+  async () => {
+    isMenuOpen.value = false
+    await checkLogin()
+  }, 
+  { immediate: true }
+)
 
 </script>
 
