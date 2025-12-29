@@ -1,18 +1,26 @@
 <template>
-  <div id="layout-wrapper"> <header class="main-header">
-    <h1 class="page-title">NoteVault</h1>
-    <nav id="nav" v-if="loginChecked">
-      <router-link to="/" class="nav-link">Home</router-link>
-      <router-link to="/about" class="nav-link">About</router-link>
-      <router-link v-if="isLoggedIn" to="/subjects" class="nav-link">Subjects</router-link>
-      <router-link v-if="isLoggedIn" to="/profile/view" class="nav-link">Profile</router-link>
-      <a v-if="isLoggedIn" href="#" @click.prevent="logout" class="nav-link">Logout</a>
-    </nav>
-  </header>
+  <div id="layout-wrapper"> 
+    <header class="main-header">
+      <h1 class="page-title">NoteVault</h1>
 
-  <main id="app">
-    <router-view v-if="loginChecked"/>
-  </main>
+      <button class="mobile-menu-btn" @click="isMenuOpen = !isMenuOpen" aria-label="Toggle navigation">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+      <nav id="nav" v-if="loginChecked" :class="{ 'nav-open' : isMenuOpen }">
+        <router-link to="/" class="nav-link">Home</router-link>
+        <router-link to="/about" class="nav-link">About</router-link>
+        <router-link v-if="isLoggedIn" to="/subjects" class="nav-link">Subjects</router-link>
+        <router-link v-if="isLoggedIn" to="/profile/view" class="nav-link">Profile</router-link>
+        <a v-if="isLoggedIn" href="#" @click.prevent="logout" class="nav-link">Logout</a>
+      </nav>
+    </header>
+
+    <main id="app">
+      <router-view v-if="loginChecked"/>
+    </main>
   </div>
 </template>
 
@@ -22,8 +30,13 @@ import { useRoute, useRouter } from 'vue-router'
 
 const isLoggedIn = ref(false)
 const loginChecked = ref(false)
+const isMenuOpen = ref(false)
 const route = useRoute()
 const router = useRouter()
+
+watch(() => route.path, () => {
+  isMenuOpen.value = false
+})
 
 const checkLogin = async () => {
   try {
