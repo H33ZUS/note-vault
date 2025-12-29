@@ -324,7 +324,10 @@ input[type="text"], input[type="password"] {
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
     font-weight: bold;
-    width: 150px;
+    width: 180px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-message:hover {
@@ -337,8 +340,8 @@ input[type="text"], input[type="password"] {
 }
 
 .btn-secondary {
-    background-color: #ef7b45 !important;
-    color: whitesmoke !important;
+    background-color: transparent !important;
+    color: #ef7b45 !important;
     border: 2px solid #ef7b45;
     text-decoration: none;
     display: inline-flex;
@@ -348,8 +351,8 @@ input[type="text"], input[type="password"] {
 }
 
 .btn-secondary:hover {
-    background-color: #ef7b45;
-    color: whitesmoke;
+    background-color: #ef7b45 !important;
+    color: whitesmoke !important;
 }
 
 .login-or {
@@ -388,6 +391,96 @@ input[type="text"], input[type="password"] {
     border-radius: 2px;
 }
 
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  color: whitesmoke;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 3rem 1rem;
+  background-color: #10063e;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+}
+
+.big-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero-text {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+  color: #ccc !important;
+  font-weight: normal;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.cta-buttons {
+  margin-top: 2rem;
+}
+
+.cta-btn {
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.big-btn {
+  padding: 0.8rem 2rem;
+  font-size: 1.2rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background-color: #1a1240;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  transition: transform 0.2s;
+  border: 1px solid #2c3e50;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  border-color: #ef7b45;
+}
+
+.icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  color: #ef7b45;
+  margin-bottom: 1rem;
+}
+
+.feature-card p {
+  color: #ccc !important;
+  font-weight: normal;
+}
+
 /* if screen is smaller than 768 px, use these */
 @media (max-width: 768px) {
 
@@ -411,6 +504,14 @@ input[type="text"], input[type="password"] {
         justify-content: start;
         margin: 0 auto 0.75rem auto;
         max-width: 300px;
+    }
+
+    .big-title {
+        font-size: 2rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
     }
 }
 
