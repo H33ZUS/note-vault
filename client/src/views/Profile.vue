@@ -1,46 +1,45 @@
 <template>
-    <div class="container mt-4">
-        <h2>Profile overview</h2>
+  <div class="container mt-5">
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="profile-avatar">{{ username.charAt(0).toUpperCase() }}</div>
 
-        <!-- Username -->
-        <div v-if="edit" class="mb-3">
-            <label>Username</label>
-            <input type="text" v-model="username" class="form-control"/>
-        </div>
-        <div v-else>
-          <div class="profile-row">
-            <span class="label">Username:</span>
-            <span class="value">{{ username }}</span>
+        <h2 class="feed-title">User Profile</h2>
+        <p class="feed-subtitle">Manage your account</p>
+      </div>
+
+      <div class="profile-body">
+        <div class="profile-field">
+          <label class="field-label">Username</label>
+          <div v-if="edit" class="field-input-wrapper">
+            <input type="text" v-model="username" class="notecommit-input" />
+          </div>
+          <div v-else class="field-value">
+            <span class="username-badge" style="font-size: 1.1rem; padding: 5px 12px;">
+              {{ username }}
+            </span>
           </div>
         </div>
 
-        <div v-if="edit" class="mb-3">
-            <label>Email</label>
-            <input type="text" v-model="email" class="form-control"/>
-        </div>
-        <div v-else>
-          <div class="profile-row">
-            <span class="label">Email:</span>
-            <span class="value">{{ email }}</span>
+        <div class="profile-field">
+          <label class="field-label">Email</label>
+          <div v-if="edit" class="field-input-wrapper">
+            <input type="text" v-model="email" class="notecommit-input" />
+          </div>
+          <div v-else class="field-value text-white">
+            {{ email }}
           </div>
         </div>
+      </div>
 
-        <!-- EditButton -->
-        <div class="flex-center">
-          <button class="btn-message mt-3" @click="toggleEdit">
-            {{ edit ? 'Save update' : 'Update info' }}
-          </button>
-        </div>
-        <div v-if="edit">
-          <h3></h3>
-        </div>
-        <div v-else>
-          <div class="mt-2">
-            <p>{{message}}</p>
-          </div>
-        </div>
-
+      <div class="profile-footer">
+        <button class="btn-message" @click="toggleEdit">
+          {{ edit ? 'Save Changes' : 'Update Profile' }}
+        </button>
+        <p v-if="message" class="status-message">{{ message }}</p>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
