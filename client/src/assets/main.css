@@ -287,6 +287,10 @@ input[type="text"], input[type="password"] {
     margin-top: 1rem;
 }
 
+.mt-3 {
+    margin-top: 2rem;
+}
+
 .flex {
     display: flex;
 }
@@ -350,6 +354,20 @@ input[type="text"], input[type="password"] {
 .btn-secondary:hover {
     background-color: #ef7b45;
     color: whitesmoke;
+}
+
+.btn-danger-message {
+    background-color: #c0392b !important;
+    color: whitesmoke !important;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: bold;
+    width: 150px;
+}
+
+.btn-danger-message:hover{
+    background-color: #8b2920
 }
 
 .login-or {

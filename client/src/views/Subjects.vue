@@ -37,10 +37,19 @@
                 placeholder="Enter subject title"
               />
         </div>
-
+        <div class="flex-center mt-2" style="flex-direction: column">
         <button class="btn-message" @click="createSubject">
             Create subject
         </button>
+
+          <button
+            v-if="isAdminOrTeacher"
+            class="btn-danger-message mt-3"
+            @click="deleteAllSubjects"
+          >
+          Delete subjects
+        </button>
+        </div>
 
         <div v-if="createMessage" class="alert alert-info mt-3">
             {{ createMessage }}
@@ -220,6 +229,27 @@ export default {
         this.mySubjects = this.mySubjects.filter(s => s._id !== subjectId)
       } catch (err) {
         this.myMessage = 'Error: ' + err.message
+      }
+    },
+
+    async deleteAllSubjects() {
+      const confirmed = confirm('Are you sure you want to delete all subjects?')
+
+      if (!confirmed) return
+
+      try {
+        const res = await fetch('http://localhost:3000/api/v1/subjects', {
+          method: 'DELETE',
+          credentials: 'include'
+        })
+        if (!res.ok) throw new Error('Failed to delete all subjects')
+        this.availableSubjects = []
+        this.mySubjects = []
+        this.joinMessage = ''
+        this.myMessage = 'Deleted all subjects successfully'
+      } catch (err) {
+        console.error(err)
+        this.myMessage('Error deleting subjects')
       }
     },
 
