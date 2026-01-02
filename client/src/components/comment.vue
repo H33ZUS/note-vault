@@ -22,10 +22,12 @@
           {{ showReply ? 'Cancel' : 'Reply' }}
         </button>
 
-        <button v-if="user === username" class="menu-btn" @click="toggleMenu">⋮</button>
-        <div v-if="editMenu" class="menu-dropdown">
-          <button @click="editComment">{{ edit ? 'Save' : 'Edit' }} Comment</button>
-          <button class="delete-opt" @click="deleteComment">Delete Comment</button>
+        <div class="menu-wrapper">
+          <button v-if="user === username" class="menu-btn" @click="toggleMenu">⋮</button>
+          <div v-if="editMenu" class="menu-dropdown">
+            <button @click="editComment">{{ edit ? 'Save' : 'Edit' }}</button>
+            <button class="delete-opt" @click="deleteComment">Delete</button>
+          </div>
         </div>
       </div>
 

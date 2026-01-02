@@ -280,6 +280,7 @@ button {
 .comment {
     background: rgba(255, 255, 255, 0.03);
     outline: none !important;
+    overflow: visible !important;
     border-radius: 12px;
     padding: 1.2rem;
     margin: 1rem 0 1rem 2rem;
@@ -387,9 +388,17 @@ button {
     padding: 4px 12px;
     margin-right: 10px;
     border-radius: 25px;
-    gap: 6px;
+    gap: 0.5rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
     height: 40px;
+}
+
+.like-counter, 
+.reply-btn, 
+.menu-wrapper {
+    margin: 0 !important; 
+    display: flex;
+    align-items: center;
 }
 
 .modal-topic-input {
@@ -474,8 +483,9 @@ button {
     flex-wrap: wrap;
     justify-content: flex-end;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
     margin: 1rem 0;
+    margin-top: 1.5rem;
 }
 
 .notefile-feed {
