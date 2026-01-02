@@ -3,9 +3,13 @@
   <div class="container mt-5">
     <div class="feed-header">
       <div class="header-content">
+        <button class="btn-back" @click="$router.push('/subjects')">
+          ← Back
+        </button>
         <h2 class="feed-title">Notes for: {{ subjectName }}</h2>
-        <p class="feed-subtitle">{{ notes.length }} notes shared</p>
+        <div class="header-spacer"></div>
       </div>
+      <p class="feed-subtitle">{{ notes.length }} notes shared</p>
       <button class="btn-create-note" @click="showEditor = true">
         <span class="plus-icon">+ Create Note</span>
       </button>

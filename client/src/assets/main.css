@@ -137,6 +137,24 @@ button {
 
 /* --- NOTE FILES --- */
 
+.btn-back {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ef7b45;
+    border: 1px solid rgba(239, 123, 69, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.btn-back:hover {
+    background: rgba(239, 123, 69, 0.1);
+    border-color: #ef7b45;
+}
+
 .btn-cancel {
     background: transparent;
     color: #8a8ab0;
@@ -255,10 +273,23 @@ button {
 }
 
 .feed-title {
-    margin: 0;
+    flex: 1;
+    margin: 0 10px;
+    font-size: 2rem;
+    overflow-wrap: break-word;
     color: #ef7b45;
-    font-weight: 700;
-    font-size: 2.4rem;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.header-spacer {
+    width: 80px;
 }
 
 .like-btn {
@@ -452,10 +483,6 @@ button {
     
     /* Prevents the text from pushing the container width */
     max-width: 100%; 
-    
-    /* Visual improvements for mobile */
-    line-height: 1.2;
-    text-align: left; /* Centers often look messy when they wrap multiple lines */
 }
 
 /* --- QUILL EDITOR --- */
@@ -1121,6 +1148,11 @@ input[type="text"], input[type="password"] {
         padding: 0 10px;
     }
 
+    .btn-back {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+
     .notefile-feed {
         padding: 1rem 0;
     }
@@ -1140,9 +1172,14 @@ input[type="text"], input[type="password"] {
         border-left: 1px solid rgba(239, 123, 69, 0.3);
     }
 
+    .feed-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
     .feed-title {
         font-size: 1.4rem;
-        text-align: left;
     }
 
     .page-title {
