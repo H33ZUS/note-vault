@@ -76,8 +76,8 @@ button {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #8a8ab0;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -282,11 +282,12 @@ button {
     display: flex;
     align-items: center;
     background: rgba(255, 255, 255, 0.05);
-    padding: 2px 12px;
+    padding: 4px 12px;
     margin-right: 10px;
     border-radius: 25px;
-    gap: 8px;
+    gap: 6px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    height: 40px;
 }
 
 .modal-topic-input {
@@ -304,6 +305,24 @@ button {
     line-height: 1.8;
     color: #d1d1e9;
     font-size: 1.1rem;
+    overflow-wrap: break-word; /* Wraps long words */
+    word-wrap: break-word;
+    word-break: break-word;     /* Alternative for older browsers */
+    max-width: 100%;           /* Ensures it never exceeds the card width */
+    overflow: hidden;
+}
+
+.note-display img, 
+.note-display video, 
+.note-display iframe,
+.note-display table {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+.note-display code {
+    white-space: pre-wrap;      /* Wraps code lines instead of scrolling */
+    word-break: break-all;
 }
 
 .note-display ul, .note-display ol {
@@ -350,12 +369,11 @@ button {
 
 .notecommit-menu {
     display: flex; 
+    flex-wrap: wrap;
     justify-content: flex-end;
-    align-items: right;
-    position: relative;
-    margin-left: 2vw;
-    margin-right: 2vw;
-    margin-bottom: 2vh;
+    align-items: center;
+    gap: 8px;
+    margin: 1rem 0;
 }
 
 .notefile-feed {
@@ -388,16 +406,16 @@ button {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #8a8ab0;
-    width: 75px;
-    height: 50px;
-    border-radius: 25px;
+    width: auto;
+    min-width: 70px;
+    height: 40px;
+    padding: 0 15px;
+    border-radius: 20px;
     align-items: center;
     justify-content: center;
     display: flex;
-    font-size: 1rem;
-    font-weight: 500;
+    font-size: 0.9rem;
     transition: all 0.2s ease;
-    margin-right: 10px;
 }
 
 .reply-btn:hover {
@@ -423,6 +441,21 @@ button {
     background: rgba(239, 123, 69, 0.1);
     padding: 2px 8px;
     border-radius: 4px;
+}
+
+.feed-title, 
+.notecommit h1 {
+    /* Essential for long words or titles */
+    overflow-wrap: break-word; 
+    word-wrap: break-word;
+    word-break: break-word;
+    
+    /* Prevents the text from pushing the container width */
+    max-width: 100%; 
+    
+    /* Visual improvements for mobile */
+    line-height: 1.2;
+    text-align: left; /* Centers often look messy when they wrap multiple lines */
 }
 
 /* --- QUILL EDITOR --- */
@@ -1083,6 +1116,35 @@ input[type="text"], input[type="password"] {
 /* if screen is smaller than 768 px, use these */
 @media (max-width: 768px) {
 
+    .container {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    .notefile-feed {
+        padding: 1rem 0;
+    }
+
+    .notecommit {
+        padding: 1rem; /* Reduced from 2.5rem */
+        border-radius: 12px;
+    }
+
+    .notecommit-menu {
+        justify-content: flex-start;
+        gap: 5px;
+    }
+
+    .comment-thread {
+        margin-left: 0.75rem !important; /* Shorter indentation */
+        border-left: 1px solid rgba(239, 123, 69, 0.3);
+    }
+
+    .feed-title {
+        font-size: 1.4rem;
+        text-align: left;
+    }
+
     .page-title {
         font-size: 1.8rem;
         text-align: center;
@@ -1113,6 +1175,11 @@ input[type="text"], input[type="password"] {
         background-color: #ef7b45;
         border-radius: 10px;
         transition: all 0.3s linear;
+    }
+
+    .reply-btn, .like-counter, .menu-btn {
+        height: 36px;
+        font-size: 0.85rem;
     }
 
     #nav {
