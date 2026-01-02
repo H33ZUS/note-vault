@@ -1,67 +1,70 @@
 <template>
-    <div :style="{ marginLeft: `${(depth) + 5}vw`}">
-      <div class="comment">
-        <h4 style="text-align: right">{{username}}</h4>
-        <div v-if="edit">
-            <label>Comment</label>
-            <input type="text" v-model="newContent" class="form-control"/>
-        </div>
-        <div v-else>
-            <h4>{{content}}</h4>
+  <div class="comment-thread" :style="{ marginLeft: depth > 0 ? '1.5rem' : '0' }">
+    <div class="comment">
+      <div class="comment-header">
+        <span class="username-badge">{{ username }}</span>
+      </div>
+
+      <div class="comment-body">
+        <input v-if="edit" type="text" v-model="newContent" class="notecommit-input"/>
+        <p v-else style="text-align: left; font-weight: normal;">{{ content }}</p>
+      </div>
+
+      <div class="notecommit-menu">
+        <div class="like-counter" style="font-size: 1rem;">
+          <button class="like-btn" @click="likeComment(true)">👍</button> 
+          <span class="count-text">{{ likes }}</span>
+          <button class="like-btn" @click="likeComment(false)">👎</button>
+          <span class="count-text">{{ dislikes }}</span>
         </div>
 
-        <div class="noteCommitMenu">
-        <div class="likeCounter">
-        <button class="likebtn" @click="likeComment(true)">
-                  👍 </button> {{likes}} <button class="likebtn" @click="likeComment(false)">
-                  👎 </button> {{dislikes}}
-        </div>
+        <button class="reply-btn" @click="showReply = !showReply">
+          {{ showReply ? 'Cancel' : 'Reply' }}
+        </button>
+
         <button v-if="user === username" class="menu-btn" @click="toggleMenu">⋮</button>
-        <div v-if="editMenu" class="menu-dropdown" style="top: 3rem">
-          <div>
-            <button v-if="user === username" class="btn-message" @click="editComment(id)">
-            Edit comment
-            </button>
-          </div>
-          <div>
-            <button v-if="user === username" class="btn btn-danger mt-3" @click="deleteComment(id)">
-                Delete comment
-            </button>
-          </div>
+        <div v-if="editMenu" class="menu-dropdown">
+          <button @click="editComment">{{ edit ? 'Save' : 'Edit' }} Comment</button>
+          <button class="delete-opt" @click="deleteComment">Delete Comment</button>
         </div>
-        </div>
-        <div class="createComment">
-                <div>
-                    <label>Comment</label>
-                    <input type="text" v-model="newComment" class="inputNoteCommit"/>
-                </div>
-                <br>
-            <button class="btn-message" @click="uploadComment(id)">
-                Post comment
-            </button>
-            </div>
-            </div>
-            <div v-for="comment in comments" :key="comment._id">
-                <comment
-                :content="comment.comment"
-                :username="comment.createdBy.username"
-                :likes="comment.likes"
-                :dislikes="comment.dislikes"
-                :depth="Number(depth) + 1"
-                :comments="comment.replies"
-                :id="comment._id"
-                :noteCommitId="noteCommitId"
-                :subjectId="subjectId"
-                :noteFileId="noteFileId"
-                @refreshNotes="emit('refreshNotes')"
-                :user="user"
-                />
-        </div>
+      </div>
+
+      <div v-if="showReply" class="comment-create quick-reply" style="margin-top: 10px;">
+        <input 
+          type="text" 
+          v-model="newComment" 
+          placeholder="Write a reply..." 
+          class="notecommit-input"
+          @keyup.enter="uploadComment" 
+        />
+        <button class="btn-message mt-1" @click="uploadComment">Post</button>
+      </div>
     </div>
+
+    <div v-if="comments && comments.length">
+      <div v-for="comment in comments" :key="comment._id">
+        <comment
+          :content="comment.comment"
+          :username="comment.createdBy.username"
+          :likes="comment.likes"
+          :dislikes="comment.dislikes"
+          :depth="Number(depth) + 1"
+          :comments="comment.replies"
+          :id="comment._id"
+          :noteCommitId="noteCommitId"
+          :subjectId="subjectId"
+          :noteFileId="noteFileId"
+          @refreshNotes="emit('refreshNotes')"
+          :user="user"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+const showReply = ref(false)
 const newComment = ref('')
 const edit = ref('')
 edit.value = false
@@ -112,6 +115,7 @@ async function editComment() {
   }
 }
 async function uploadComment() {
+  if (!newComment.value.trim()) return;
   try {
     const res = await fetch(`http://localhost:3000/api/v1/subjects/${props.subjectId}/noteFiles/${props.noteFileId}/noteCommits/${props.noteCommitId}/comments/`, {
       method: 'POST',
@@ -126,9 +130,10 @@ async function uploadComment() {
     if (!res.ok) throw new Error('Failed to update')
 
     newComment.value = ''
+    showReply.value = false
     emit('refreshNotes')
   } catch (err) {
-
+    console.error("Upload error:", err)
   }
 }
 async function deleteComment(id) {

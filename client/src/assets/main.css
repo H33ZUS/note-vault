@@ -1,5 +1,7 @@
 
 /* CSS reset */
+
+/* --- GLOBAL STYLING --- */
 * {
     margin: 0;
     padding: 0;
@@ -39,28 +41,477 @@ button {
     cursor: pointer;
 }
 
-.noteCommit {
-    outline: 3px solid #ccc;
-    border-radius: 1rem;
-    padding: 1vw;
-    margin-left: 2vw;
-    margin-right: 2vw;
-    margin-top: 2vh;
-    margin-bottom: 1vh;
+.btn-message {
+    background-color: #ef7b45 !important;
+    color: white !important;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    width: auto;
+}
+
+.btn-message:hover {
+    background-color: #f86b33 !important; /* darker when hovering over */
+    transform: scale(1.03);
+    box-shadow: 0 4px 10px rgba(239, 123, 69, 0.3);
+}
+
+.delete-opt:hover {
+    background: rgba(255, 0, 0, 0.1) !important;
+    color: #ff4d4d !important;
+}
+
+.mb-3 {
+    width: 100%;
+    max-width: 250px;
+    margin: 0.5rem auto;
+    padding: 0;
+}
+
+.menu-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #8a8ab0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.menu-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ef7b45;
+    border: 1px solid #ef7b45;
+}
+
+.menu-dropdown {
+    position: absolute;
+    top: 100%;
+    z-index: 1010;
+    background: #1a1240;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    right: 0;
+    min-width: 140px;
+    margin-top: 5px;
+}
+
+.menu-dropdown button {
+    display: block;
+    width: 100%;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    text-align: left;
+    background: none;
+    border: none;
+    color: #ccc;
+}
+
+.menu-dropdown button:hover {
+    background: rgba(239, 123, 69, 0.1);
+    color: #ef7b45;
+}
+
+.menu-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.mt-1 {
+    margin-top: 0.5rem;
+}
+
+.mt-2 {
+    margin-top: 1rem;
+}
+
+/* --- NOTE FILES --- */
+
+.btn-cancel {
+    background: transparent;
+    color: #8a8ab0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    margin-right: 1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-create-note {
+    background-color: #ef7b45;
+    color: white;
+    width: 70%;
+    border: none;
+    padding: 1rem 2rem;
+    margin: 0 auto;
+    margin-top: 1rem;
+    border-radius: 50px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(239, 123, 69, 0.3);
+}
+
+.btn-create-note:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239, 123, 69, 0.4);
+}
+
+.btn-toggle-comments {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 5px 0;
+}
+
+.btn-toggle-comments:hover {
+    color: #ef7b45;
 }
 
 .comment {
-    outline: 3px solid #ccc;
-    border-radius: 1rem;
-    padding: 1vw;
-    margin: 2vw;
+    background: rgba(255, 255, 255, 0.03);
+    outline: none !important;
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin: 1rem 0 1rem 2rem;
+    border-left: 2px solid rgba(239, 123, 69, 0.3);
 }
 
-.createComment {
-    outline: 3px solid #ccc;
-    border-radius: 0 0 1rem 1rem;
-    padding: 1vw;
-    margin: -1vw;
+.comment-controls {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid #eee;
+}
+
+.comment-create {
+    background: rgba(0, 0, 0, 0.2);
+    outline: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 0.5rem 0 1.5rem 2rem;
+}
+
+.count-text {
+    font-size: 1rem;
+    color: #8a8ab0;
+    font-weight: 600;
+    margin-left: -2px;
+}
+
+.editor-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(13, 6, 40, 0.9);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.editor-modal {
+    background: #1a1240;
+    width: 90%;
+    max-width: 1000px;
+    height: 80vh;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.feed-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.feed-subtitle {
+    color: #8a8ab0;
+    margin: 0;
+}
+
+.feed-title {
+    margin: 0;
+    color: #ef7b45;
+    font-weight: 700;
+    font-size: 2.4rem;
+}
+
+.like-btn {
+    border: none;
+    background: transparent;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    filter: grayscale(100%) brightness(0.8) opacity(0.6);
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.like-btn:hover {
+    filter: grayscale(0%) brightness(1) opacity(1);
+    transform: scale(1.2) translateY(-2px);
+}
+
+.like-counter {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 12px;
+    margin-right: 10px;
+    border-radius: 25px;
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-topic-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 2rem;
+    outline: none;
+}
+
+.note-display {
+    line-height: 1.8;
+    color: #d1d1e9;
+    font-size: 1.1rem;
+}
+
+.note-display ul, .note-display ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+}
+
+.note-display li {
+    margin-bottom: 0.5rem;
+}
+
+.notecommit {
+    background: #1a1240;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-left: 5px solid #ef7b45;
+    border-radius: 16px;
+    outline: none !important;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.notecommit .notecommit {
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    margin: 0;
+}
+
+.notecommit-create {
+    outline: none !important;
+    margin: 0;
+}
+
+.notecommit-input {
+    background-color: #0d0628;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ccc;
+    padding: 0.8rem;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.notecommit-menu {
+    display: flex; 
+    justify-content: flex-end;
+    align-items: right;
+    position: relative;
+    margin-left: 2vw;
+    margin-right: 2vw;
+    margin-bottom: 2vh;
+}
+
+.notefile-feed {
+    max-width: 800px;
+    margin: 0 auto 5rem auto;
+}
+
+.notefile-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 3rem;
+    padding-top: 4rem;
+    align-items: start;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.plus-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    font-weight: 300;
+}
+
+.ql-container {
+    height: 350px !important;
+    font-size: 1.1rem;
+}
+
+.reply-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #8a8ab0;
+    width: 75px;
+    height: 50px;
+    border-radius: 25px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-right: 10px;
+}
+
+.reply-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ef7b45;
+    border: 1px solid #ef7b45;
+}
+
+.sticky-sidebar {
+    position: sticky;
+    top: 120px;
+    background: #1a1240;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.username-badge {
+    color: #ef7b45;
+    font-weight: bold;
+    font-size: 0.9rem;
+    background: rgba(239, 123, 69, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* --- QUILL EDITOR --- */
+
+.ql-toolbar.ql-snow {
+    background-color: #160b4d;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px 12px 0 0;
+    padding: 10px !important;
+}
+
+.ql-container.ql-snow {
+    background-color: #0d0628;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-top: none !important;
+    border-radius: 0 0 12px 12px;
+    font-family: inherit;
+    font-size: 1.1rem;
+    color: whitesmoke;
+}
+
+.ql-snow .ql-stroke {
+    stroke: #8a8ab0 !important; 
+}
+
+.ql-snow .ql-picker {
+    color: #8a8ab0 !important;
+}
+
+.ql-snow.ql-toolbar button:hover .ql-stroke,
+.ql-snow.ql-toolbar button.ql-active .ql-stroke {
+    stroke: #ef7b45 !important; 
+}
+
+.ql-editor {
+    min-height: 200px;
+    padding: 1.5rem !important;
+    line-height: 1.6;
+}
+
+.ql-editor.ql-blank::before {
+    color: rgba(255, 255, 255, 0.3) !important;
+    font-style: normal;
+}
+
+.ql-container.ql-snow.ql-focus, 
+.ql-toolbar.ql-snow:has(+ .ql-container.ql-focus) {
+    border-color: #ef7b45 !important;
+    box-shadow: 0 0 15px rgba(239, 123, 69, 0.1);
+    transition: all 0.3s ease;
+}
+
+.ql-snow.ql-toolbar button, 
+.ql-snow.ql-toolbar .ql-picker-label {
+    border-radius: 6px !important; /* Adjust to 50% for circles */
+    transition: background 0.2s ease, color 0.2s ease;
+    margin: 2px; /* Adds a bit of space so they don't touch */
+}
+
+.ql-snow.ql-toolbar button:hover,
+.ql-snow.ql-toolbar button.ql-active,
+.ql-snow.ql-toolbar .ql-picker-label:hover,
+.ql-snow.ql-toolbar .ql-picker-item:hover {
+    background-color: rgba(239, 123, 69, 0.15) !important; /* Subtle orange tint */
+    color: #ef7b45 !important;
+}
+
+.ql-snow .ql-picker-options {
+    border-radius: 8px !important;
+    background-color: #160b4d !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    padding: 5px !important;
+}
+
+.ql-snow .ql-stroke {
+    stroke-width: 2.5px !important;
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-options {
+    background-color: #160b4d !important; /* Dark background for the list */
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-item {
+    color: #8a8ab0 !important;
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-item:hover {
+    color: #ef7b45 !important;
 }
 
 .commentEnd{
@@ -69,14 +520,6 @@ button {
 
 .threadContainer {
     position: relative;
-}
-
-.noteCommitCreate {
-    outline: 3px solid #ccc;
-    border-radius: 1rem;
-    padding: 1vw;
-    margin: 2vw;
-    margin-bottom: 6vw;
 }
 
 label {
@@ -89,33 +532,6 @@ li{
     text-align: left;
 }
 
-.ql-editor{
-    min-height: 30vh;
-    color: #ccc;
-}
-
-.likeCounter{
-    text-align: right;
-    margin: 1vw;
-    font-size: 3vh;
-    color: #ccc;
-}
-
-.likebtn{
-    border: none;
-    background: none;
-}
-
-.noteCommitMenu{
-    display: flex; 
-    justify-content: flex-end;
-    align-items: right;
-    position: relative;
-    margin-left: 2vw;
-    margin-right: 2vw;
-    margin-bottom: 2vh;
-}
-
 .editMenu{
     margin: 1vw;
 }
@@ -126,11 +542,6 @@ li{
     border-radius: 1vw;
     background: none;
     background-color:#13093c;
-}
-
-.inputNoteCommit{
-    background-color: #0d0628;
-    color: #ccc;
 }
 
 input[type="text"], input[type="password"] {
@@ -193,6 +604,8 @@ input[type="text"], input[type="password"] {
     margin: 0 auto;
     padding: 1rem;
 }
+
+/* --- LOGIN --- */
 
 .login-register-card {
     background-color: #10063e;
@@ -352,65 +765,6 @@ input[type="text"], input[type="password"] {
     margin-top: auto;
 }
 
-.menu-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
-.menu-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ccc;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    transition: all 0.2s ease;
-}
-
-.menu-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-}
-
-.menu-dropdown {
-    position: absolute;
-    top: 100%;
-    z-index: 1010;
-    background: #1a1240;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 0.5rem;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    right: 0;
-    min-width: 140px;
-    margin-top: 5px;
-}
-
-.menu-dropdown button {
-    display: block;
-    width: 100%;
-    border-radius: 8px;
-    padding: 0.6rem 1rem;
-    text-align: left;
-    background: none;
-    border: none;
-    color: #ccc;
-}
-
-.menu-dropdown button:hover {
-    background: rgba(239, 123, 69, 0.1);
-    color: #ef7b45;
-}
-
-.delete-opt:hover {
-    background: rgba(255, 0, 0, 0.1) !important;
-    color: #ff4d4d !important;
-}
-
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -485,21 +839,6 @@ input[type="text"], input[type="password"] {
     transition: transform 0.3s ease;
 }
 
-.mb-3 {
-    width: 100%;
-    max-width: 250px;
-    margin: 0.5rem auto;
-    padding: 0;
-}
-
-.mt-1 {
-    margin-top: 0.5rem;
-}
-
-.mt-2 {
-    margin-top: 1rem;
-}
-
 .flex {
     display: flex;
 }
@@ -528,25 +867,6 @@ input[type="text"], input[type="password"] {
 .label {
     text-align: right;
     font-weight: bold;
-}
-
-.btn-message {
-    background-color: #ef7b45 !important;
-    color: white !important;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    transition: all 0.2s ease;
-    width: auto;
-}
-
-.btn-message:hover {
-    background-color: #f86b33 !important; /* darker when hovering over */
-    transform: scale(1.03);
-    box-shadow: 0 4px 10px rgba(239, 123, 69, 0.3);
 }
 
 .login-actions {
@@ -747,6 +1067,17 @@ input[type="text"], input[type="password"] {
 
 .mobile-menu-btn {
     display: none;
+}
+
+@media (max-width: 992px) {
+    .notefile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sticky-sidebar {
+        position: static;
+        margin-bottom: 2rem;
+    }
 }
 
 /* if screen is smaller than 768 px, use these */
