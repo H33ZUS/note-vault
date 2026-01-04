@@ -62,7 +62,7 @@
       <div v-if="loadingJoin">Loading...</div>
 
       <div v-else-if="availableSubjects.length === 0" class="alert alert-warning">
-        No subjects available to join.
+        No subjects available to join
       </div>
 
       <div v-for="subject in availableSubjects" :key="subject._id" class="subject-card">
@@ -105,7 +105,7 @@
       <div v-if="loadingMy">Loading...</div>
 
       <div v-else-if="mySubjects.length === 0" class="alert alert-warning">
-        You are not enrolled in any subjects.
+        You are not enrolled in any subjects
       </div>
 
       <div v-for="subject in mySubjects" :key="subject._id" class="subject-card">
@@ -161,12 +161,12 @@ export default {
           body: JSON.stringify({ title: this.subjectTitle })
         })
 
-        if (!res.ok) throw new Error('Failed to create subject')
+        if (!res.ok) throw new Error()
 
         this.createMessage = 'Subject created successfully'
         this.subjectTitle = ''
       } catch (err) {
-        this.createMessage = 'Error: ' + err.message
+        this.createMessage = 'Could not create subject. Try again'
       }
     },
 
@@ -178,10 +178,11 @@ export default {
         const res = await fetch('http://localhost:3000/api/v1/subjects?filter=available', {
           credentials: 'include'
         })
-        if (!res.ok) throw new Error('Failed to load subjects')
+        if (!res.ok) throw new Error()
         this.availableSubjects = await res.json()
       } catch (err) {
-        this.joinMessage = 'Failed to load subjects: ' + err.message
+        this.availableSubjects = [] // prevent stale data
+        this.joinMessage = 'Could not load available subjects. Try again'
       }
       this.loadingJoin = false
     },
@@ -194,11 +195,11 @@ export default {
           headers: { 'Content-type': 'application/json' },
           body: JSON.stringify({ subjectId })
         })
-        if (!res.ok) throw new Error('Failed to join')
+        if (!res.ok) throw new Error()
         this.joinMessage = 'Successfully joined'
         this.availableSubjects = this.availableSubjects.filter(s => s._id !== subjectId) // remove subject from available
       } catch (err) {
-        this.joinMessage = 'Error: ' + err.message
+        this.joinMessage = 'Could not join the subject. Try again'
       }
     },
 
@@ -210,10 +211,10 @@ export default {
         const res = await fetch('http://localhost:3000/api/v1/subjects?filter=enrolled', {
           credentials: 'include'
         })
-        if (!res.ok) throw new Error('Failed to load enrolled subjects')
+        if (!res.ok) throw new Error()
         this.mySubjects = await res.json()
       } catch (err) {
-        this.myMessage = 'Failed to load: ' + err.message
+        this.myMessage = 'Could not load subjects. Try again'
       }
       this.loadingMy = false
     },
@@ -224,32 +225,33 @@ export default {
           method: 'DELETE',
           credentials: 'include'
         })
-        if (!res.ok) throw new Error('Failed to leave')
+        if (!res.ok) throw new Error()
         this.myMessage = 'Left subject successfully'
         this.mySubjects = this.mySubjects.filter(s => s._id !== subjectId)
       } catch (err) {
-        this.myMessage = 'Error: ' + err.message
+        this.myMessage = 'Could not leave subject. Try again'
       }
     },
 
     async deleteAllSubjects() {
-      const confirmed = confirm('Are you sure you want to delete all subjects?')
+      const confirmed = confirm('Are you sure you want to delete all subjects and enrolled subjects?')
 
       if (!confirmed) return
+
+      this.createMessage = ''
 
       try {
         const res = await fetch('http://localhost:3000/api/v1/subjects', {
           method: 'DELETE',
           credentials: 'include'
         })
-        if (!res.ok) throw new Error('Failed to delete all subjects')
+        if (!res.ok) throw new Error()
         this.availableSubjects = []
         this.mySubjects = []
         this.joinMessage = ''
-        this.myMessage = 'Deleted all subjects successfully'
+        this.createMessage = 'Deleted all subjects successfully'
       } catch (err) {
-        console.error(err)
-        this.myMessage('Error deleting subjects')
+        this.createMessage = 'Could not delete all subjects. Try again'
       }
     },
 
@@ -277,7 +279,6 @@ export default {
           this.isAdminOrTeacher = false
         }
       } catch (err) {
-        console.error('Failed to fetch user role', err)
         this.$router.replace('/login')
         this.isAdminOrTeacher = false
       }
@@ -294,12 +295,12 @@ export default {
           credentials: 'include'
         })
         if (!res.ok) {
-          throw new Error('Failed to delete subject')
+          throw new Error()
         }
         this.joinMessage = 'Subject deleted successfully'
         this.availableSubjects = this.availableSubjects.filter(s => s._id !== subjectId)
       } catch (err) {
-        this.joinMessage = 'Error deleting subject: ' + err.message
+        this.joinMessage = 'Could not delete subject. Try again'
       }
     },
 
@@ -327,7 +328,7 @@ export default {
           credentials: 'include',
           body: JSON.stringify({ title: this.editedTitle })
         })
-        if (!res.ok) throw new Error('Failed to update subject title')
+        if (!res.ok) throw new Error()
 
         const updatedSubject = await res.json()
         const index = this.availableSubjects.findIndex(s => s._id === subjectId)
@@ -337,7 +338,7 @@ export default {
         this.joinMessage = `Subject "${updatedSubject.title}" updated successfully`
         this.editingSubjectId = null
       } catch (err) {
-        this.joinMessage = 'Error updating subject: ' + err.message
+        this.joinMessage = 'Could not update subject. Try again'
       }
     }
   }
