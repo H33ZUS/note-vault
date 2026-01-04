@@ -1,55 +1,45 @@
 <!-- eslint-disable vue/no-v-model-argument -->
 <template>
-    <div class="noteCommit">
-
-        <div v-if="edit">
-            <h1>{{topic}}</h1>
-
-            <label>Note</label>
-            <quill-editor v-model:content="newNote" content-type="html" :options="{ theme: 'snow' }" />
-
-        </div>
-        <div v-else>
-            <h1>{{topic}}</h1>
-            <div class="noteCommit">
-            <div v-html="safeNote"></div>
-            </div>
-        </div>
-
-        <!--Edit and delete note-->
-        <div class="noteCommitMenu">
-          <div class="likeCounter">
-            <button class="likebtn" @click="likeNoteCommit(true)">
-                  👍 </button> {{likes}} <button class="likebtn" @click="likeNoteCommit(false)">
-                  👎 </button> {{dislikes}}
-          </div>
-          <button v-if="user === username" class="menu-btn" @click="toggleMenu">⋮</button>
-            <div v-if="editMenu" class="menu-dropdown" style="top: 3rem">
-              <div>
-              <button v-if="user === username" @click="editNote">
-              Edit Note
-              </button>
-              </div>
-              <div>
-              <button v-if="user === username"  @click="deleteNote">
-              Delete Note
-              </button>
-              </div>
-            </div>
-        </div>
-        <!--Create comment on note-->
-        <div class="createComment">
-          <div>
-              <label>Comment</label>
-              <input type="text" v-model="newComment" class="inputNoteCommit"/>
-          </div>
-          <br>
-          <button class="btn-message" @click="uploadComment">
-              Post comment
-          </button>
-          <br>
-        </div>
+  <div class="notecommit">
+    <div class="note-content-wrapper">
+      <h1 class="text-left" style="text-align: left; color: #ef7b45;">{{ topic }}</h1>
+      <div v-if="edit">
+        <quill-editor v-model:content="newNote" content-type="html" :options="{ theme: 'snow' }" />
+      </div>
+      <div v-else class="note-display">
+        <div v-html="safeNote"></div>
+      </div>
     </div>
+
+    <div class="notecommit-menu">
+      <div class="like-counter">
+        <button class="like-btn" @click="likeNoteCommit(true)">👍</button>
+        <span class="count-text">{{ likes }}</span> 
+        
+        <button class="like-btn" @click="likeNoteCommit(false)">👎</button> 
+        <span class="count-text">{{ dislikes }}</span>
+      </div>
+
+      <button class="reply-btn" @click="showReply = !showReply">
+        {{ showReply ? 'Cancel' : 'Reply' }}
+      </button>
+
+      <!--Edit and delete note-->
+      <div class="menu-wrapper">
+        <button v-if="user === username" class="menu-btn" @click="toggleMenu">⋮</button>
+        <div v-if="editMenu" class="menu-dropdown">
+          <button @click="editNote">{{ edit ? 'Save' : 'Edit' }} Note</button>
+          <button class="delete-opt" @click="deleteNote">Delete Note</button>
+        </div>
+      </div>
+    </div>
+
+    <!--Create comment on note-->
+    <div v-if="showReply" class="comment-create quick-reply">
+      <input type="text" v-model="newComment" placeholder="Write a comment..." class="notecommit-input"/>
+      <button class="btn-message mt-1" @click="uploadComment">Post</button>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -59,6 +49,7 @@ import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 const emit = defineEmits(['refreshNotes'])
+const showReply = ref(false)
 
 const props = defineProps({
   topic: String,
