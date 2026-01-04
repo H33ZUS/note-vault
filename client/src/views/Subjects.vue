@@ -1,31 +1,30 @@
 <template>
-    <div class="container mt-4">
-        <h2>Subject Management</h2>
+  <div class="container mt-4">
+    <h2>Subject Management</h2>
 
-        <ul class="nav nav-tabs mb-4">
-          <li class="nav-item" v-if="isAdminOrTeacher">
-            <a
-              class="nav-link"
-              :class="{ active: currentTab === 'create' }"
-              @click="currentTab = 'create'"
-              >Create Subject</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              :class="{ active: currentTab === 'join' }"
-              @click="currentTab = 'join'; fetchAvailableSubjects()"
-              >Join Subject</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              :class="{ active: currentTab === 'my' }"
-              @click="currentTab = 'my'; fetchMySubjects()"
-              >My Subjects</a>
-          </li>
-        </ul>
-
+    <ul class="nav nav-tabs mb-4">
+      <li class="nav-item" v-if="isAdminOrTeacher">
+        <a
+          class="nav-link"
+          :class="{ active: currentTab === 'create' }"
+          @click="currentTab = 'create'"
+        >Create Subject</a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          :class="{ active: currentTab === 'join' }"
+          @click="currentTab = 'join'; fetchAvailableSubjects()"
+        >Join Subject</a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          :class="{ active: currentTab === 'my' }"
+          @click="currentTab = 'my'; fetchMySubjects()"
+        >My Subjects</a>
+      </li>
+    </ul>
         <!-- Create subject -->
         <div v-if="currentTab === 'create' && isAdminOrTeacher">
           <h2>Create Subject</h2>
@@ -65,33 +64,40 @@
         No subjects available to join
       </div>
 
-      <div v-for="subject in availableSubjects" :key="subject._id" class="subject-card">
-        <div v-if="editingSubjectId === subject._id">
-          <input
-            type="text"
-            v-model="editedTitle"
-            class="form-control me-2"
-            @keyup.enter="saveSubjectName(subject._id)"
-          />
-        </div>
-        <h4 class="mb-0" v-else>{{ subject.title }}</h4>
-        <div class="subject-actions">
-          <button class="btn-message" @click="joinSubject(subject._id)">
-            Join
-        </button>
+      <div class="subjects-grid">
+        <TransitionGroup name="list">
+          <div v-for="subject in availableSubjects" :key="subject._id" class="subject-card">
+            <div class="card-content">
+              <div v-if="editingSubjectId === subject._id">
+                <input
+                  type="text"
+                  v-model="editedTitle"
+                  class="form-control"
+                  @keyup.enter="saveSubjectName(subject._id)"
+                />
+              </div>
+              <h4 class="subject-title" v-else>{{ subject.title }}</h4>
+            </div>
 
-        <div v-if="isAdminOrTeacher" class="menu-wrapper" @click.stop>
-          <button class="menu-btn" @click="toggleMenu(subject._id)">
-            ⋮
-          </button>
+            <div class="card-actions">
+              <button class="btn-action join" @click="joinSubject(subject._id)">
+                Join
+              </button>
 
-          <div v-if="openMenuId === subject._id" class="menu-dropdown">
-            <button @click="startEditing(subject)">Edit</button>
-            <button @click="deleteSubject(subject._id)">Delete</button>
+              <div v-if="isAdminOrTeacher" class="menu-wrapper" @click.stop>
+                <button class="icon-menu-btn" @click="toggleMenu(subject._id)">
+                  <span class="dots">⋮</span>
+                </button>
+
+                <div v-if="openMenuId === subject._id" class="menu-dropdown">
+                  <button @click="startEditing(subject)">Edit</button>
+                  <button class="delete-opt" @click="deleteSubject(subject._id)">Delete</button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </TransitionGroup>
       </div>
-     </div>
 
       <div v-if="joinMessage" class="alert alert-info mt-3">
         {{ joinMessage }}
@@ -101,26 +107,47 @@
     <!--Enrolled subjects-->
     <div v-else-if="currentTab === 'my'">
       <h2>My Subjects</h2>
-
       <div v-if="loadingMy">Loading...</div>
 
       <div v-else-if="mySubjects.length === 0" class="alert alert-warning">
         You are not enrolled in any subjects
       </div>
 
-      <div v-for="subject in mySubjects" :key="subject._id" class="subject-card">
-        <h4><router-link :to="`/notefile/${subject._id}`">{{subject.title}}</router-link></h4>
-        <button class="btn-message" @click="leaveSubject(subject._id)">
-          Leave
-        </button>
-      </div>
+      <div class="subjects-grid">
+        <TransitionGroup name="list">
+          <router-link v-for="subject in mySubjects" :key="subject._id" :to="`/notefile/${subject._id}`" class="subject-card clickable-card">
+            <div class="card-content">
+              <h4 class="subject-title">{{ subject.title }}</h4>
+            </div>
 
+            <div class="card-actions">
+              <button class="btn-action leave" @click.stop.prevent="prepareToLeave(subject)">
+                Leave
+              </button>
+            </div>
+          </router-link>
+        </TransitionGroup>
+      </div>
       <div v-if="myMessage" class="alert alert-info mt-3">{{ myMessage }}</div>
+    </div>
+
+    <div v-if="subjectToLeave" class="modal-overlay" @click="subjectToLeave = null">
+      <div class="modal-content" @click.stop>
+        <h3>Leave Subject?</h3>
+        <p>Are you sure you want to leave <strong>{{ subjectToLeave.title }}</strong>? You will lose access to all notes in this subject.</p>
+
+        <div class="modal-actions">
+          <button class="btn-modal-secondary" @click="subjectToLeave = null">Cancel</button>
+          <button class="btn-danger" @click="confirmLeave">Yes, Leave Subject</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { TransitionGroup } from 'vue'
+
 export default {
   data() {
     return {
@@ -140,7 +167,8 @@ export default {
       editingSubjectId: null,
       editedTitle: '',
 
-      openMenuId: null
+      openMenuId: null,
+      subjectToLeave: null
     }
   },
   mounted() {
@@ -304,8 +332,22 @@ export default {
       }
     },
 
+    closeMenuOnOutsideClick(event) {
+      if (!event.target.closest('.menu-wrapper')) {
+        this.openMenuId = null
+        document.removeEventListener('click', this.closeMenuOnOutsideClick)
+      }
+    },
+
     toggleMenu(subjectId) {
-      this.openMenuId = this.openMenuId === subjectId ? null : subjectId
+      if (this.openMenuId === subjectId) {
+        this.openMenuId = null
+      } else {
+        this.openMenuId = subjectId
+        setTimeout(() => {
+          document.addEventListener('click', this.closeMenuOnOutsideClick)
+        }, 0)
+      }
     },
 
     // iniates editing mode
@@ -339,6 +381,28 @@ export default {
         this.editingSubjectId = null
       } catch (err) {
         this.joinMessage = 'Could not update subject. Try again'
+      }
+    },
+
+    prepareToLeave(subject) {
+      this.subjectToLeave = subject
+    },
+
+    async confirmLeave() {
+      const subjectId = this.subjectToLeave._id
+      try {
+        const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        })
+
+        if (!res.ok) throw new Error('Failed to leave subject')
+
+        this.mySubjects = this.mySubjects.filter(s => s._id !== subjectId)
+        this.subjectToLeave = null
+        this.myMessage = 'Left subject successfully'
+      } catch (err) {
+        this.myMessage = 'Error: ' + err.message
       }
     }
   }
