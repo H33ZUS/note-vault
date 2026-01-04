@@ -25,26 +25,34 @@
         >My Subjects</a>
       </li>
     </ul>
+        <!-- Create subject -->
+        <div v-if="currentTab === 'create' && isAdminOrTeacher">
+          <h2>Create Subject</h2>
+          <div class="mb-3">
+            <input
+                type="text"
+                v-model="subjectTitle"
+                class="form-control"
+                placeholder="Enter subject title"
+              />
+        </div>
+        <div class="flex-center mt-2" style="flex-direction: column">
+        <button class="btn-message" @click="createSubject">
+            Create subject
+        </button>
 
-    <!-- Create subject -->
-    <div v-if="currentTab === 'create' && isAdminOrTeacher">
-      <h2>Create Subject</h2>
-      <div class="mb-3">
-        <input
-          type="text"
-          v-model="subjectTitle"
-          class="form-control"
-          placeholder="Enter subject title"
-        />
-      </div>
+          <button
+            v-if="isAdminOrTeacher"
+            class="btn-danger-message mt-3"
+            @click="deleteAllSubjects"
+          >
+          Delete subjects
+        </button>
+        </div>
 
-      <button class="btn-message" @click="createSubject">
-        Create subject
-      </button>
-
-      <div v-if="createMessage" class="alert alert-info mt-3">
-        {{ createMessage }}
-      </div>
+        <div v-if="createMessage" class="alert alert-info mt-3">
+            {{ createMessage }}
+        </div>
     </div>
 
     <!--Join subject-->
@@ -53,7 +61,7 @@
       <div v-if="loadingJoin">Loading...</div>
 
       <div v-else-if="availableSubjects.length === 0" class="alert alert-warning">
-        No subjects available to join.
+        No subjects available to join
       </div>
 
       <div class="subjects-grid">
@@ -102,7 +110,7 @@
       <div v-if="loadingMy">Loading...</div>
 
       <div v-else-if="mySubjects.length === 0" class="alert alert-warning">
-        You are not enrolled in any subjects.
+        You are not enrolled in any subjects
       </div>
 
       <div class="subjects-grid">
@@ -138,7 +146,7 @@
 </template>
 
 <script>
-import { TransitionGroup } from 'vue';
+import { TransitionGroup } from 'vue'
 
 export default {
   data() {
@@ -181,12 +189,12 @@ export default {
           body: JSON.stringify({ title: this.subjectTitle })
         })
 
-        if (!res.ok) throw new Error('Failed to create subject')
+        if (!res.ok) throw new Error()
 
         this.createMessage = 'Subject created successfully'
         this.subjectTitle = ''
       } catch (err) {
-        this.createMessage = 'Error: ' + err.message
+        this.createMessage = 'Could not create subject. Try again'
       }
     },
 
@@ -198,10 +206,11 @@ export default {
         const res = await fetch('http://localhost:3000/api/v1/subjects?filter=available', {
           credentials: 'include'
         })
-        if (!res.ok) throw new Error('Failed to load subjects')
+        if (!res.ok) throw new Error()
         this.availableSubjects = await res.json()
       } catch (err) {
-        this.joinMessage = 'Failed to load subjects: ' + err.message
+        this.availableSubjects = [] // prevent stale data
+        this.joinMessage = 'Could not load available subjects. Try again'
       }
       this.loadingJoin = false
     },
@@ -214,11 +223,11 @@ export default {
           headers: { 'Content-type': 'application/json' },
           body: JSON.stringify({ subjectId })
         })
-        if (!res.ok) throw new Error('Failed to join')
+        if (!res.ok) throw new Error()
         this.joinMessage = 'Successfully joined'
         this.availableSubjects = this.availableSubjects.filter(s => s._id !== subjectId) // remove subject from available
       } catch (err) {
-        this.joinMessage = 'Error: ' + err.message
+        this.joinMessage = 'Could not join the subject. Try again'
       }
     },
 
@@ -230,12 +239,48 @@ export default {
         const res = await fetch('http://localhost:3000/api/v1/subjects?filter=enrolled', {
           credentials: 'include'
         })
-        if (!res.ok) throw new Error('Failed to load enrolled subjects')
+        if (!res.ok) throw new Error()
         this.mySubjects = await res.json()
       } catch (err) {
-        this.myMessage = 'Failed to load: ' + err.message
+        this.myMessage = 'Could not load subjects. Try again'
       }
       this.loadingMy = false
+    },
+
+    async leaveSubject(subjectId) {
+      try {
+        const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        })
+        if (!res.ok) throw new Error()
+        this.myMessage = 'Left subject successfully'
+        this.mySubjects = this.mySubjects.filter(s => s._id !== subjectId)
+      } catch (err) {
+        this.myMessage = 'Could not leave subject. Try again'
+      }
+    },
+
+    async deleteAllSubjects() {
+      const confirmed = confirm('Are you sure you want to delete all subjects and enrolled subjects?')
+
+      if (!confirmed) return
+
+      this.createMessage = ''
+
+      try {
+        const res = await fetch('http://localhost:3000/api/v1/subjects', {
+          method: 'DELETE',
+          credentials: 'include'
+        })
+        if (!res.ok) throw new Error()
+        this.availableSubjects = []
+        this.mySubjects = []
+        this.joinMessage = ''
+        this.createMessage = 'Deleted all subjects successfully'
+      } catch (err) {
+        this.createMessage = 'Could not delete all subjects. Try again'
+      }
     },
 
     async checkUserRoles() {
@@ -262,7 +307,6 @@ export default {
           this.isAdminOrTeacher = false
         }
       } catch (err) {
-        console.error('Failed to fetch user role', err)
         this.$router.replace('/login')
         this.isAdminOrTeacher = false
       }
@@ -279,27 +323,27 @@ export default {
           credentials: 'include'
         })
         if (!res.ok) {
-          throw new Error('Failed to delete subject')
+          throw new Error()
         }
         this.joinMessage = 'Subject deleted successfully'
         this.availableSubjects = this.availableSubjects.filter(s => s._id !== subjectId)
       } catch (err) {
-        this.joinMessage = 'Error deleting subject: ' + err.message
+        this.joinMessage = 'Could not delete subject. Try again'
       }
     },
 
     closeMenuOnOutsideClick(event) {
       if (!event.target.closest('.menu-wrapper')) {
-        this.openMenuId = null;
+        this.openMenuId = null
         document.removeEventListener('click', this.closeMenuOnOutsideClick)
       }
     },
 
     toggleMenu(subjectId) {
       if (this.openMenuId === subjectId) {
-        this.openMenuId = null;
+        this.openMenuId = null
       } else {
-        this.openMenuId = subjectId;
+        this.openMenuId = subjectId
         setTimeout(() => {
           document.addEventListener('click', this.closeMenuOnOutsideClick)
         }, 0)
@@ -326,7 +370,7 @@ export default {
           credentials: 'include',
           body: JSON.stringify({ title: this.editedTitle })
         })
-        if (!res.ok) throw new Error('Failed to update subject title')
+        if (!res.ok) throw new Error()
 
         const updatedSubject = await res.json()
         const index = this.availableSubjects.findIndex(s => s._id === subjectId)
@@ -336,29 +380,29 @@ export default {
         this.joinMessage = `Subject "${updatedSubject.title}" updated successfully`
         this.editingSubjectId = null
       } catch (err) {
-        this.joinMessage = 'Error updating subject: ' + err.message
+        this.joinMessage = 'Could not update subject. Try again'
       }
     },
 
     prepareToLeave(subject) {
-      this.subjectToLeave = subject;
+      this.subjectToLeave = subject
     },
 
     async confirmLeave() {
-      const subjectId = this.subjectToLeave._id;
+      const subjectId = this.subjectToLeave._id
       try {
         const res = await fetch(`http://localhost:3000/api/v1/enrollments/${subjectId}`, {
           method: 'DELETE',
           credentials: 'include'
-        });
+        })
 
-        if (!res.ok) throw new Error('Failed to leave subject');
+        if (!res.ok) throw new Error('Failed to leave subject')
 
-        this.mySubjects = this.mySubjects.filter(s => s._id !== subjectId);
-        this.subjectToLeave = null;
-        this.myMessage = 'Left subject successfully';
+        this.mySubjects = this.mySubjects.filter(s => s._id !== subjectId)
+        this.subjectToLeave = null
+        this.myMessage = 'Left subject successfully'
       } catch (err) {
-        this.myMessage = 'Error: ' + err.message;
+        this.myMessage = 'Error: ' + err.message
       }
     }
   }
