@@ -1,21 +1,3 @@
-## Getting started
-
-```bash
-# Clone repository
-git clone git@git.chalmers.se:courses/dit342/group-00-web.git
-
-# Change into the directory
-cd group-00-web
-
-# Setup backend
-cd server && npm install
-npm run dev
-
-# Setup frontend
-cd client && npm install
-npm run serve
-```
-
 ## System Definition (MS0)
 
 ### Purpose
